@@ -1,1031 +1,151 @@
 <!doctype html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>ByMeVPN — Свобода в интернете 2026</title>
-        <meta
-            name="description"
-            content="Быстрый и полностью анонимность VPN. No-logs. До 10 Гбит/с. Стабильно работает в России 2026. От 59 ₽."
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        />
-        <style>
-            :root {
-                --gradient: linear-gradient(90deg, #00d4ff, #00ff9d);
-                --gradient-blue: linear-gradient(135deg, #00b4ff, #0099ff);
-                --gradient-green: linear-gradient(135deg, #00ff9d, #10b981);
-                --dark: #05050b;
-                --card: rgba(15, 15, 35, 0.75);
-                --border: rgba(0, 212, 255, 0.12);
-                --text: #e9e9ff;
-                --text-light: #c8c8ff;
-                --accent: #00ff9d;
-            }
-
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            html,
-            body {
-                overflow-x: hidden;
-            }
-
-            body {
-                font-family: "Inter", sans-serif;
-                background: var(--dark);
-                color: var(--text);
-                line-height: 1.6;
-            }
-
-            .gradient-text {
-                background: var(--gradient);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .gradient-blue {
-                background: var(--gradient-blue);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .gradient-green {
-                background: var(--gradient-green);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            header {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 72px;
-                padding: 0 5vw;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                background: rgba(5, 5, 11, 0.96);
-                backdrop-filter: blur(20px);
-                border-bottom: 1px solid var(--border);
-                z-index: 1000;
-            }
-
-            .logo-wrap {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                flex-shrink: 0;
-            }
-
-            .logo {
-                height: 42px;
-                max-width: 48px;
-                object-fit: contain;
-                filter: drop-shadow(0 0 12px #00ff9d33);
-            }
-
-            .brand-name {
-                font-size: 1.95rem;
-                font-weight: 900;
-                letter-spacing: -1.3px;
-                white-space: nowrap;
-            }
-
-            .main-nav {
-                display: flex;
-                align-items: center;
-                gap: 2.6rem;
-            }
-
-            .main-nav a {
-                color: var(--text-light);
-                text-decoration: none;
-                font-weight: 500;
-                transition: color 0.25s;
-            }
-
-            .main-nav a:hover {
-                color: #fff;
-            }
-
-            .btn-trial {
-                padding: 0.78rem 2rem;
-                border: 2px solid var(--accent);
-                border-radius: 999px;
-                color: var(--accent);
-                font-weight: 600;
-                white-space: nowrap;
-                transition: all 0.3s;
-            }
-
-            .btn-trial:hover {
-                background: var(--accent);
-                color: #05050b;
-                transform: translateY(-2px);
-            }
-
-            .hamburger {
-                display: none;
-                flex-direction: column;
-                justify-content: space-between;
-                width: 34px;
-                height: 24px;
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 0;
-                transition: all 0.4s ease;
-            }
-
-            .hamburger span {
-                display: block;
-                height: 3px;
-                width: 100%;
-                background: var(--accent);
-                border-radius: 3px;
-                box-shadow: 0 0 8px rgba(0, 255, 157, 0.4);
-                transition: all 0.35s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-            }
-
-            .hamburger.active span:nth-child(1) {
-                transform: translateY(10.5px) rotate(135deg);
-            }
-
-            .hamburger.active span:nth-child(2) {
-                opacity: 0;
-                transform: scale(0.1);
-            }
-
-            .hamburger.active span:nth-child(3) {
-                transform: translateY(-10.5px) rotate(-135deg);
-            }
-
-            /* Плавные анимации появления */
-            .fade-in-on-scroll {
-                opacity: 0;
-                transform: translateY(50px);
-                transition:
-                    opacity 0.9s ease-out,
-                    transform 0.9s ease-out;
-            }
-
-            .fade-in-on-scroll.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            .fade-in-left {
-                opacity: 0;
-                transform: translateX(-70px);
-                transition:
-                    opacity 1.1s ease-out,
-                    transform 1.1s ease-out;
-            }
-
-            .fade-in-left.visible {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            .fade-in-right {
-                opacity: 0;
-                transform: translateX(70px);
-                transition:
-                    opacity 1.1s ease-out,
-                    transform 1.1s ease-out;
-            }
-
-            .fade-in-right.visible {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            #hero {
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                padding: 140px 5vw 90px;
-                position: relative;
-                overflow: hidden;
-            }
-
-            #hero canvas {
-                position: absolute;
-                inset: 0;
-                z-index: 0;
-                pointer-events: none;
-            }
-
-            .hero h1 {
-                font-size: clamp(4.2rem, 11vw, 11.5rem);
-                font-weight: 900;
-                line-height: 0.88;
-                letter-spacing: -6px;
-                margin-bottom: 1.5rem;
-                background: linear-gradient(90deg, #00ff9d, #00d4ff, #a855f7);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .hero-subtitle {
-                font-size: clamp(1.4rem, 3.8vw, 2rem);
-                max-width: 820px;
-                margin: 0 auto 3rem;
-                color: #d8d8ff;
-                font-weight: 400;
-                letter-spacing: -0.3px;
-                line-height: 1.4;
-            }
-
-            .hero-stats {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1.8rem;
-                margin: 0 auto 4.5rem;
-            }
-
-            .stat-pill {
-                background: rgba(0, 255, 157, 0.06);
-                border: 1px solid rgba(0, 255, 157, 0.25);
-                border-radius: 999px;
-                padding: 0.95rem 2.2rem;
-                font-size: clamp(1.05rem, 2.5vw, 1.3rem);
-                font-weight: 700;
-                color: #00ff9d;
-                white-space: nowrap;
-                box-shadow: 0 4px 20px rgba(0, 255, 157, 0.05);
-            }
-
-            .btn-start {
-                display: inline-flex;
-                align-items: center;
-                gap: 1.2rem;
-                padding: 1.35rem 5rem;
-                font-size: 1.48rem;
-                font-weight: 800;
-                background: var(--gradient);
-                color: #05050b;
-                border-radius: 999px;
-                text-decoration: none;
-                box-shadow: 0 0 80px rgba(0, 255, 157, 0.42);
-                transition: all 0.4s ease;
-            }
-
-            .btn-start:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 0 120px rgba(0, 255, 157, 0.6);
-            }
-
-            .container {
-                max-width: 1320px;
-                margin: 0 auto;
-                padding: 0 5vw;
-            }
-
-            h2 {
-                font-size: 3.1rem;
-                text-align: center;
-                margin-bottom: 3.8rem;
-            }
-
-            #benefits,
-            #tariffs,
-            #connect-faq {
-                padding: 90px 0;
-            }
-
-            /* Что вы получаете: Строго по 3 в ряд */
-            .benefits-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 2rem;
-            }
-
-            .benefit {
-                background: var(--card);
-                border: 1px solid var(--border);
-                border-radius: 1.5rem;
-                padding: 2.6rem 1.9rem;
-                text-align: center;
-                transition: all 0.4s ease;
-            }
-
-            .benefit:hover {
-                border-color: var(--accent);
-                transform: translateY(-10px);
-                box-shadow: 0 25px 60px rgba(0, 255, 157, 0.18);
-            }
-
-            .benefit i {
-                font-size: 3.2rem;
-                background: var(--gradient);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                margin-bottom: 1.3rem;
-            }
-
-            /* Тарифы: Сетка из 4 колонок */
-            .tariffs-grid {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 1.5rem;
-                align-items: stretch;
-            }
-
-            .tariff {
-                background: var(--card);
-                border: 1px solid var(--border);
-                border-radius: 1.6rem;
-                padding: 2.8rem 1.5rem;
-                text-align: center;
-                transition: all 0.4s ease;
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-            }
-
-            .tariff:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
-            }
-
-            .tariff.best {
-                border-color: var(--accent);
-                box-shadow: 0 0 40px rgba(0, 255, 157, 0.25);
-                transform: scale(1.03);
-                z-index: 2;
-            }
-
-            .tariff.best:hover {
-                transform: scale(1.05) translateY(-10px);
-                box-shadow: 0 30px 70px rgba(0, 255, 157, 0.35);
-            }
-
-            .popular {
-                position: absolute;
-                top: -16px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: var(--accent);
-                color: #05050b;
-                padding: 5px 22px;
-                border-radius: 999px;
-                font-size: 0.88rem;
-                font-weight: 700;
-                box-shadow: 0 6px 20px rgba(0, 255, 157, 0.45);
-                white-space: nowrap;
-            }
-
-            .tariff-name {
-                font-size: 1.35rem;
-                font-weight: 700;
-                margin-bottom: 0.5rem;
-            }
-
-            .tariff-price {
-                font-size: clamp(2.4rem, 3.5vw, 3.8rem);
-                font-weight: 900;
-                margin: 0.5rem 0;
-                line-height: 1.1;
-            }
-
-            .tariff-period {
-                color: #a0a0d0;
-                font-size: 1.02rem;
-                margin-bottom: 2rem;
-                min-height: 2.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .buy-btn {
-                display: block;
-                padding: 1.1rem;
-                background: var(--gradient);
-                color: #05050b;
-                border-radius: 999px;
-                font-weight: 700;
-                font-size: 1.18rem;
-                text-decoration: none;
-                transition: all 0.3s;
-                margin-top: auto;
-            }
-
-            .buy-btn:hover {
-                transform: scale(1.05);
-            }
-
-            .two-col {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 5.5rem;
-                align-items: start;
-            }
-
-            .steps {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 1.9rem;
-            }
-
-            .step {
-                background: var(--card);
-                border: 1px solid var(--border);
-                border-radius: 1.5rem;
-                padding: 2.4rem 1.8rem;
-                text-align: center;
-            }
-
-            .step i {
-                font-size: 3.1rem;
-                color: var(--accent);
-                margin-bottom: 1.3rem;
-            }
-
-            /* FAQ Без зависаний */
-            .faq-item {
-                background: var(--card);
-                border: 1px solid var(--border);
-                border-radius: 1.3rem;
-                margin-bottom: 1.1rem;
-                overflow: hidden;
-                transition: border-color 0.3s;
-            }
-
-            .faq-q {
-                padding: 1.6rem 2.4rem;
-                font-size: 1.26rem;
-                font-weight: 600;
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                transition: background 0.25s;
-                user-select: none;
-            }
-
-            .faq-q:hover {
-                background: rgba(0, 212, 255, 0.08);
-            }
-
-            .faq-q i {
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            .faq-item.open .faq-q i {
-                transform: rotate(180deg);
-            }
-
-            .faq-a {
-                max-height: 0;
-                overflow: hidden;
-                color: #d0d0ff;
-                transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            .faq-a-inner {
-                padding: 0 2.4rem 1.8rem;
-            }
-
-            footer {
-                text-align: center;
-                padding: 5rem 5vw 3.5rem;
-                color: #8080a0;
-                font-size: 0.95rem;
-                border-top: 1px solid var(--border);
-            }
-
-            /* Адаптивный дизайн */
-            @media (max-width: 1200px) {
-                .tariffs-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 2rem;
-                    max-width: 740px;
-                    margin: 0 auto;
-                }
-                .tariff.best {
-                    transform: none;
-                }
-                .tariff.best:hover {
-                    transform: translateY(-10px);
-                }
-            }
-
-            @media (max-width: 1024px) {
-                .benefits-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-
-            @media (max-width: 920px) {
-                header {
-                    height: 68px;
-                    padding: 0 4vw;
-                }
-
-                .hamburger {
-                    display: flex;
-                }
-
-                .main-nav {
-                    position: fixed;
-                    top: 0;
-                    right: -100%;
-                    width: 88vw;
-                    max-width: 320px;
-                    height: 100vh;
-                    background: var(--dark);
-                    flex-direction: column;
-                    gap: 2.8rem;
-                    padding: 100px 24px 40px;
-                    transition: right 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-                    z-index: 1050;
-                    border-left: 1px solid var(--border);
-                }
-
-                .main-nav.active {
-                    right: 0;
-                }
-
-                .two-col {
-                    grid-template-columns: 1fr;
-                    gap: 4rem;
-                }
-            }
-
-            @media (max-width: 650px) {
-                .benefits-grid {
-                    grid-template-columns: 1fr;
-                }
-                .tariffs-grid {
-                    grid-template-columns: 1fr;
-                    max-width: 360px;
-                }
-                .steps {
-                    grid-template-columns: 1fr;
-                }
-            }
-        </style>
-    </head>
-
-    <body>
-        <header>
-            <div class="logo-wrap">
-                <img
-                    src="photo_2026-05-28_18-36-54.jpg"
-                    alt="byMeVPN"
-                    class="logo"
-                />
-                <div class="gradient-text brand-name">ByMeVPN</div>
-            </div>
-
-            <nav class="main-nav">
-                <a href="#benefits">Возможности</a>
-                <a href="#tariffs">Тарифы</a>
-                <a href="#connect">Подключение</a>
-                <a href="#faq">FAQ</a>
-                <a href="https://t.me/ByMeVPNbot" class="btn-trial"
-                    >Пробный 3 дня</a
-                >
-            </nav>
-
-            <button class="hamburger" aria-label="Открыть меню">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </header>
-
-        <section id="hero">
-            <canvas id="canvas"></canvas>
-            <div class="hero-content fade-in-on-scroll">
-                <h1 class="gradient-text">Прорви блокировку</h1>
-                <div class="hero-subtitle">
-                    Быстрый и полностью анонимный VPN, который стабильно и
-                    надёжно работает в России.
-                </div>
-
-                <!-- Стильные аккуратные плашки без дублирования текста сверху -->
-                <div class="hero-stats">
-                    <div class="stat-pill">
-                        <i
-                            class="fas fa-bolt"
-                            style="color: var(--accent); margin-right: 8px"
-                        ></i>
-                        10 Гбит/с
-                    </div>
-                    <div class="stat-pill">
-                        <i
-                            class="fas fa-laptop-house"
-                            style="color: var(--accent); margin-right: 8px"
-                        ></i>
-                        5 устройств
-                    </div>
-                    <div class="stat-pill">
-                        <i
-                            class="fas fa-gift"
-                            style="color: var(--accent); margin-right: 8px"
-                        ></i>
-                        3 дня бесплатно
-                    </div>
-                </div>
-
-                <a href="#tariffs" class="btn-start">
-                    <i class="fas fa-rocket"></i> Подключиться
-                </a>
-            </div>
-        </section>
-
-        <div class="container">
-            <section id="benefits">
-                <h2 class="gradient-text fade-in-on-scroll">
-                    Что вы получаете
-                </h2>
-                <div class="benefits-grid">
-                    <div class="benefit fade-in-on-scroll">
-                        <i class="fas fa-bolt"></i>
-                        <h3>До 10 Гбит/с</h3>
-                        <p>Реальная скорость без троттлинга</p>
-                    </div>
-                    <div class="benefit fade-in-on-scroll">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>Все устройства</h3>
-                        <p>Windows, macOS, Linux, iOS, Android, роутеры</p>
-                    </div>
-                    <div class="benefit fade-in-on-scroll">
-                        <i class="fas fa-shield-alt"></i>
-                        <h3>Reality-маскировка</h3>
-                        <p>Трафик неотличим от обычного HTTPS</p>
-                    </div>
-                    <div class="benefit fade-in-on-scroll">
-                        <i class="fas fa-ban"></i>
-                        <h3>No-logs</h3>
-                        <p>Никаких записей активности и логов</p>
-                    </div>
-                    <div class="benefit fade-in-on-scroll">
-                        <i class="fas fa-globe"></i>
-                        <h3>15+ стран</h3>
-                        <p>Европа, США, Азия, Турция</p>
-                    </div>
-                    <div class="benefit fade-in-on-scroll">
-                        <i class="fas fa-users"></i>
-                        <h3>5 устройств</h3>
-                        <p>Одна подписка — на всю семью</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tariffs">
-                <h2 class="gradient-text fade-in-on-scroll">Тарифы</h2>
-                <div class="tariffs-grid">
-                    <!-- 1 Месяц -->
-                    <div class="tariff fade-in-on-scroll">
-                        <div>
-                            <div class="tariff-name">1 месяц</div>
-                            <div class="tariff-price gradient-blue">89 ₽</div>
-                            <div class="tariff-period">ежемесячно</div>
-                        </div>
-                        <a
-                            href="https://t.me/ByMeVPNbot"
-                            target="_blank"
-                            class="buy-btn"
-                            >Купить</a
-                        >
-                    </div>
-
-                    <!-- 3 Месяца -->
-                    <div class="tariff fade-in-on-scroll">
-                        <div>
-                            <div class="tariff-name">3 мес. + 1 мес.🎁</div>
-                            <div class="tariff-price gradient-blue">316 ₽</div>
-                            <div class="tariff-period">79 ₽ / мес.</div>
-                        </div>
-                        <a
-                            href="https://t.me/ByMeVPNbot"
-                            target="_blank"
-                            class="buy-btn"
-                            >Купить</a
-                        >
-                    </div>
-
-                    <!-- 6 Месяцев -->
-                    <div class="tariff fade-in-on-scroll">
-                        <div>
-                            <div class="tariff-name">6 мес. + 2 мес.🎁</div>
-                            <div class="tariff-price gradient-green">552 ₽</div>
-                            <div class="tariff-period">
-                                69 ₽ / мес — экономия 30%
-                            </div>
-                        </div>
-                        <a
-                            href="https://t.me/ByMeVPNbot"
-                            target="_blank"
-                            class="buy-btn"
-                            >Купить</a
-                        >
-                    </div>
-
-                    <!-- 12 Месяцев -->
-                    <div class="tariff best fade-in-on-scroll">
-                        <div class="popular">Рекомендуем</div>
-                        <div>
-                            <div class="tariff-name">12 мес. + 3 мес.🎁</div>
-                            <div class="tariff-price gradient-green">885 ₽</div>
-                            <div class="tariff-period">
-                                59 ₽ / мес. — самая выгодная
-                            </div>
-                        </div>
-                        <a
-                            href="https://t.me/ByMeVPNbot"
-                            target="_blank"
-                            class="buy-btn"
-                            >Купить</a
-                        >
-                    </div>
-                </div>
-            </section>
-
-            <section id="connect-faq">
-                <div class="two-col">
-                    <div class="fade-in-left">
-                        <h2 id="connect" class="gradient-text">
-                            Как подключиться
-                        </h2>
-                        <div class="steps">
-                            <div class="step fade-in-on-scroll">
-                                <i class="fab fa-telegram"></i>
-                                <h3>1. Откройте бота</h3>
-                                <p>@ByMeVPNbot</p>
-                            </div>
-                            <div class="step fade-in-on-scroll">
-                                <i class="fas fa-credit-card"></i>
-                                <h3>2. Выберите тариф</h3>
-                                <p>Оплатите любым способом</p>
-                            </div>
-                            <div class="step fade-in-on-scroll">
-                                <i class="fas fa-link"></i>
-                                <h3>3. Получите конфиг</h3>
-                                <p>sub:// ссылка</p>
-                            </div>
-                            <div class="step fade-in-on-scroll">
-                                <i class="fas fa-plug"></i>
-                                <h3>4. Подключитесь</h3>
-                                <p>через Happ, v2rayNG, Nekobox</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="fade-in-right">
-                        <h2 id="faq" class="gradient-text">Частые вопросы</h2>
-                        <div class="faq-item">
-                            <div class="faq-q">
-                                Работает ли в России в 2026?
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-a">
-                                <div class="faq-a-inner">
-                                    Да. Прогрессивные протоколы Reality + uTLS
-                                    маскируют весь ваш трафик под обычное
-                                    посещение сайтов с HTTPS. Заблокировать или
-                                    отследить это практически невозможно.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-q">
-                                Сколько устройств можно подключить?
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-a">
-                                <div class="faq-a-inner">
-                                    Вы можете одновременно использовать до 5
-                                    любых устройств на одной подписке без
-                                    ограничений по скорости.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-q">
-                                Сохраняете ли вы логи?
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-a">
-                                <div class="faq-a-inner">
-                                    Нет. Мы придерживаемся строгой no-logs
-                                    политики. Ваша история посещений и трафик
-                                    нигде не записываются и не сохраняются.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-q">
-                                Есть бесплатный тест?
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-a">
-                                <div class="faq-a-inner">
-                                    Да — каждому новому пользователю доступен
-                                    полноценный пробный период на 3 дня со всеми
-                                    возможностями.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-q">
-                                Через какие приложения работает?
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-a">
-                                <div class="faq-a-inner">
-                                    Полная совместимость со всеми популярными
-                                    клиентами: Happ, v2rayNG, Nekobox, Hiddify,
-                                    Sing-box и другими.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090f1d">
+  <meta name="description" content="ByMeVPN — удобный VPN без сложных настроек. 3 дня бесплатно без карты, затем выберите подходящий тариф. Подключение и управление через Telegram-бота.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="ByMeVPN — скорость, свобода, простота">
+  <meta property="og:description" content="VPN, который просто работает. Попробуйте 3 дня бесплатно — без привязки карты.">
+  <meta property="og:url" content="https://bymevpn-site.duckdns.org/">
+  <title>ByMeVPN — скорость. Свобода. Простота.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750&display=swap">
+  <link rel="icon" href="https://raw.githubusercontent.com/Brof14/ByMeVPN-app/main/app/src/main/res/drawable-nodpi/byme_app_icon.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+  <header class="site-header" id="top">
+    <div class="nav-container">
+      <a href="#top" class="brand" aria-label="ByMeVPN — на главную">
+        <img width="36" height="36" alt="" src="https://raw.githubusercontent.com/Brof14/ByMeVPN-app/main/app/src/main/res/drawable-nodpi/byme_connect_shield_transparent.png">
+        <span>ByMe<span class="brand-accent">VPN</span></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Открыть меню"><span></span><span></span><span></span></button>
+      <nav id="site-nav" class="site-nav" aria-label="Основная навигация">
+        <a href="#product">Приложение</a>
+        <a href="#benefits">Преимущества</a>
+        <a href="#plans">Тарифы</a>
+        <a href="#faq">Вопросы</a>
+        <a class="nav-cta" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Попробовать бесплатно <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section-shell" aria-labelledby="hero-heading">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> BYMEVPN <span class="eyebrow-divider">/</span> СОЗДАН ДЛЯ ПРОСТОТЫ</div>
+        <h1 id="hero-heading">Свобода в интернете.<br><span>Без лишних действий.</span></h1>
+        <p class="hero-lead">ByMeVPN — VPN, который просто работает. Быстрое подключение к привычным сайтам и приложениям, без сложной настройки.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Попробовать 3 дня бесплатно <span aria-hidden="true">↗</span></a>
+          <a class="button button-secondary" href="#product">Посмотреть приложение <span aria-hidden="true">↓</span></a>
         </div>
+        <p class="hero-note"><span class="note-check" aria-hidden="true">✓</span> Без привязки банковской карты <span class="note-separator">·</span> Для новых пользователей</p>
+      </div>
+      <div class="hero-product" aria-label="Демонстрационная визуализация мобильного интерфейса ByMeVPN">
+        <div class="hero-halo" aria-hidden="true"></div>
+        <div class="hero-device">
+          <div class="phone-glass">
+            <div class="phone-status" aria-hidden="true"><span>9:41</span><span>●●●  ▰</span></div>
+            <div class="phone-brand"><span class="mini-shield"><img alt="" src="https://raw.githubusercontent.com/Brof14/ByMeVPN-app/main/app/src/main/res/drawable-nodpi/byme_connect_shield_transparent.png"></span><strong>ByMe<span>VPN</span></strong><span class="phone-help" aria-hidden="true">?</span></div>
+            <div class="phone-eyebrow">ВАШЕ ПОДКЛЮЧЕНИЕ</div>
+            <div class="vpn-emblem"><div class="vpn-emblem-inner"><img alt="Символ ByMeVPN" src="https://raw.githubusercontent.com/Brof14/ByMeVPN-app/main/app/src/main/res/drawable-nodpi/byme_connect_shield_transparent.png"></div></div>
+            <div class="phone-state"><span class="state-check" aria-hidden="true">✓</span> VPN запущен</div>
+            <p class="phone-caption">Соединение с сервером проверено</p>
+            <div class="phone-timer">00:00:26</div>
+            <div class="phone-server"><span class="phone-server-kicker">МЕСТОПОЛОЖЕНИЕ</span><div class="phone-server-main"><span class="flag-de" aria-hidden="true"></span><strong>Германия</strong><span class="phone-arrow" aria-hidden="true">›</span></div><span class="connected-indicator">● Подключено</span></div>
+            <div class="phone-bottom" aria-hidden="true"><span>◉<small>Главная</small></span><span>⚙<small>Настройки</small></span><span>♙<small>Аккаунт</small></span></div>
+          </div>
+        </div>
+        <div class="product-caption">Визуальная демонстрация интерфейса · фактический вид может отличаться</div>
+      </div>
+      <div class="hero-bottom-note">Скорость. Свобода. Простота.</div>
+    </section>
 
-        <footer>
-            © 2026 ByMeVPN. Все права защищены.<br />
-            <small>Скорость · Анонимность · Честность</small>
-        </footer>
+    <section class="section-divider" aria-label="Кратко о сервисе"><div class="section-shell quick-facts"><span>Без ручного копирования ключей в собственном приложении</span><span class="fact-divider"></span><span>До 10 устройств в зависимости от тарифа</span><span class="fact-divider"></span><span>Поддержка в Telegram</span></div></section>
 
-        <script>
-            // Плавный скролл по якорям
-            document.querySelectorAll('a[href^="#"]').forEach((a) => {
-                a.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    document
-                        .querySelector(a.getAttribute("href"))
-                        .scrollIntoView({ behavior: "smooth" });
-                });
-            });
+    <section id="product" class="section section-shell" aria-labelledby="product-heading">
+      <div class="section-intro">
+        <p class="overline">О ПРОДУКТЕ</p>
+        <h2 id="product-heading">Важное — на первом плане.<br><span class="muted-heading">Остальное мы упростили.</span></h2>
+        <p>Дизайн ByMeVPN сосредоточен на главном: состоянии соединения, выборе сервера и доступе к подписке.</p>
+      </div>
+      <div class="product-layout">
+        <div class="product-illustration" aria-label="Иллюстрация главного экрана ByMeVPN">
+          <div class="showcase-surface">
+            <span class="showcase-kicker">BYMEVPN / МОБИЛЬНЫЙ ИНТЕРФЕЙС</span>
+            <div class="showcase-logo-wrap"><img alt="" src="https://raw.githubusercontent.com/Brof14/ByMeVPN-app/main/app/src/main/res/drawable-nodpi/byme_connect_shield_transparent.png"></div>
+            <h3>Одно касание.<br>Готово.</h3>
+            <p>Понятный статус. Контроль подключения.</p>
+            <div class="showcase-status"><span class="status-led" aria-hidden="true"></span><span>VPN подключён</span><span class="showcase-status-check" aria-hidden="true">✓</span></div>
+          </div>
+        </div>
+        <div class="product-points">
+          <article class="product-point"><span class="point-index">01 /</span><div><h3>Простое подключение</h3><p>Без технических терминов на каждом шаге. Откройте приложение и управляйте VPN в одном месте.</p></div></article>
+          <article class="product-point"><span class="point-index">02 /</span><div><h3>Состояние видно сразу</h3><p>Подключён, подключается или отключён — никаких неоднозначных статусов.</p></div></article>
+          <article class="product-point"><span class="point-index">03 /</span><div><h3>Контроль над подпиской</h3><p>Узнайте, сколько осталось дней, и переходите к управлению подпиской без лишних действий.</p></div></article>
+        </div>
+      </div>
+    </section>
 
-            // Intersection Observer для анимаций при скролле
-            const scrollObserver = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add("visible");
-                        }
-                    });
-                },
-                {
-                    threshold: 0.1,
-                    rootMargin: "0px 0px -8% 0px",
-                },
-            );
+    <section id="benefits" class="section benefits-section" aria-labelledby="benefits-heading"><div class="section-shell">
+      <div class="section-intro centered"><p class="overline">ПОЧЕМУ BYMEVPN</p><h2 id="benefits-heading">Меньше настроек.<br><span class="muted-heading">Больше свободы.</span></h2></div>
+      <div class="benefits-grid">
+        <article class="benefit benefit-primary"><div class="feature-symbol" aria-hidden="true">↗</div><div><h3>Начните за несколько шагов</h3><p>Пробный период оформляется через Telegram-бота. В приложении — понятное управление подключением.</p></div></article>
+        <article class="benefit"><div class="feature-symbol" aria-hidden="true">⌁</div><div><h3>Выбор сервера</h3><p>Подключайтесь к доступным локациям. Набор серверов зависит от состояния сервиса и подписки.</p></div></article>
+        <article class="benefit"><div class="feature-symbol" aria-hidden="true">▣</div><div><h3>Несколько устройств</h3><p>Тарифы на 2, 5 или 10 устройств. Выберите подходящий вариант без переплаты за ненужные устройства.</p></div></article>
+      </div>
+    </div></section>
 
-            document
-                .querySelectorAll(
-                    ".fade-in-on-scroll, .fade-in-left, .fade-in-right",
-                )
-                .forEach((el) => {
-                    scrollObserver.observe(el);
-                });
+    <section id="how" class="section section-shell" aria-labelledby="how-heading">
+      <div class="section-intro"><p class="overline">КАК НАЧАТЬ</p><h2 id="how-heading">От первого касания<br>до подключения.</h2><p>Простой старт без лишних обязательств.</p></div>
+      <div class="steps"><article class="step"><span class="step-number">01</span><h3>Откройте бота</h3><p>Перейдите в официальный Telegram-бот ByMeVPN.</p></article><article class="step"><span class="step-number">02</span><h3>Активируйте пробный период</h3><p>Три дня бесплатно без карты, если ранее вы его не использовали.</p></article><article class="step"><span class="step-number">03</span><h3>Подключитесь</h3><p>Следуйте инструкции для вашего устройства или используйте доступное приложение.</p></article></div>
+      <div class="section-action"><a class="button button-primary" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Начать бесплатно <span aria-hidden="true">↗</span></a></div>
+    </section>
 
-            // Мобильное меню (Гамбургер)
-            document.addEventListener("DOMContentLoaded", () => {
-                const ham = document.querySelector(".hamburger");
-                const nav = document.querySelector(".main-nav");
+    <section id="plans" class="section plans-section" aria-labelledby="plans-heading"><div class="section-shell">
+      <div class="section-intro centered"><p class="overline">ТАРИФЫ</p><h2 id="plans-heading">Прозрачные условия.<br><span class="muted-heading">Выберите свой ритм.</span></h2><p>Цены ниже указаны для 2 устройств. Доступны также варианты на 5 и 10 устройств.</p></div>
+      <div class="plans-grid">
+        <article class="plan"><div><span class="plan-label">1 месяц</span><div class="plan-price">89 ₽ <small>/ мес.</small></div><p>30 дней доступа</p></div><div class="plan-footer"><strong>89 ₽ всего</strong><a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer" aria-label="Выбрать тариф 1 месяц">Выбрать <span aria-hidden="true">↗</span></a></div></article>
+        <article class="plan"><div><span class="plan-label">3 + 1 месяц</span><div class="plan-price">79 ₽ <small>/ мес.</small></div><p>4 месяца доступа</p></div><div class="plan-footer"><strong>316 ₽ всего</strong><a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer" aria-label="Выбрать тариф 3 плюс 1 месяц">Выбрать <span aria-hidden="true">↗</span></a></div></article>
+        <article class="plan"><div><span class="plan-label">6 + 2 месяца</span><div class="plan-price">69 ₽ <small>/ мес.</small></div><p>8 месяцев доступа</p></div><div class="plan-footer"><strong>552 ₽ всего</strong><a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer" aria-label="Выбрать тариф 6 плюс 2 месяца">Выбрать <span aria-hidden="true">↗</span></a></div></article>
+        <article class="plan featured"><div class="plan-highlight">МИНИМАЛЬНАЯ ЦЕНА ЗА МЕСЯЦ</div><div><span class="plan-label">12 + 3 месяца</span><div class="plan-price">59 ₽ <small>/ мес.</small></div><p>15 месяцев доступа</p></div><div class="plan-footer"><strong>885 ₽ всего</strong><a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer" aria-label="Выбрать тариф 12 плюс 3 месяца">Выбрать <span aria-hidden="true">↗</span></a></div></article>
+      </div>
+      <p class="pricing-disclosure">Помесячные значения для длительных планов рассчитаны с учётом бонусных месяцев. Полная сумма списывается при покупке. Актуальная цена и доступность тарифа подтверждаются в боте перед оплатой.</p>
+      <div class="trial-strip"><div><span class="trial-overline">ЕЩЁ НЕ ПРОБОВАЛИ?</span><h3>3 дня бесплатно.</h3><p>Без привязки карты. После окончания пробного периода вы сами выбираете, продолжать ли пользоваться сервисом.</p></div><a class="button button-primary" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Получить 3 дня <span aria-hidden="true">↗</span></a></div>
+    </div></section>
 
-                ham.addEventListener("click", () => {
-                    ham.classList.toggle("active");
-                    nav.classList.toggle("active");
-                });
+    <section class="section section-shell platform-section" aria-labelledby="platform-heading">
+      <div class="section-intro"><p class="overline">ПЛАТФОРМЫ</p><h2 id="platform-heading">ByMeVPN — там,<br>где вам удобно.</h2><p>Проверяйте актуальные способы подключения и наличие приложений в официальном Telegram-боте.</p></div>
+      <div class="platform-grid">
+        <div class="platform-item"><span class="platform-icon" aria-hidden="true">▣</span><div><h3>Android</h3><p>Мобильное приложение</p></div><span class="platform-status">В разработке</span></div>
+        <div class="platform-item"><span class="platform-icon" aria-hidden="true">⊞</span><div><h3>Windows</h3><p>Собственное приложение</p></div><span class="platform-status">В разработке</span></div>
+        <div class="platform-item"><span class="platform-icon" aria-hidden="true">⌘</span><div><h3>Linux</h3><p>Версия для компьютеров</p></div><span class="platform-status">В разработке</span></div>
+        <a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer" class="platform-item available"><span class="platform-icon" aria-hidden="true">↗</span><div><h3>Telegram</h3><p>Оформление доступа и инструкции</p></div><span class="platform-status live">Доступен сейчас</span></a>
+      </div>
+    </section>
 
-                document.querySelectorAll(".main-nav a").forEach((link) => {
-                    link.addEventListener("click", () => {
-                        ham.classList.remove("active");
-                        nav.classList.remove("active");
-                    });
-                });
-            });
+    <section id="faq" class="section faq-section" aria-labelledby="faq-heading"><div class="section-shell faq-layout"><div><p class="overline">ЧАСТЫЕ ВОПРОСЫ</p><h2 id="faq-heading">Всё просто.<br><span class="muted-heading">И без мелкого шрифта.</span></h2><p>Не нашли ответа? Напишите в поддержку.</p><a class="quiet-link" href="https://t.me/ByMeVPNSupportBot" target="_blank" rel="noopener noreferrer">Связаться с поддержкой ↗</a></div>
+      <div class="faq-list">
+        <details><summary>Пробный период действительно бесплатный?</summary><p>Да. Для новых пользователей предусмотрены 3 дня бесплатного доступа без привязки карты. Повторно воспользоваться тем же пробным периодом нельзя.</p></details>
+        <details><summary>Что произойдёт после трёх дней?</summary><p>Пробный доступ завершится. Для продолжения потребуется выбрать и оплатить тариф. Бесплатный пробный период сам по себе не создаёт платную подписку.</p></details>
+        <details><summary>Сколько устройств можно подключить?</summary><p>Доступны тарифы на 2, 5 и 10 устройств. Конкретный лимит зависит от выбранного тарифа и отображается при оформлении.</p></details>
+        <details><summary>Как подключиться к VPN?</summary><p>Откройте официальный Telegram-бот, активируйте доступ и следуйте инструкции для вашей платформы. В собственных приложениях ByMeVPN подключение максимально упрощено.</p></details>
+        <details><summary>Как управлять оплатой и продлением?</summary><p>Проверяйте параметры подписки и доступные способы управления в Telegram-боте или приложении. Условия автоматического продления должны отображаться до оплаты.</p></details>
+        <details><summary>Как получить помощь?</summary><p>Поддержка доступна через официальный Telegram-бот поддержки ByMeVPN.</p></details>
+      </div></div></section>
 
-            // Умный динамический FAQ (без лагов, анимация через max-height)
-            document.querySelectorAll(".faq-item").forEach((item) => {
-                const q = item.querySelector(".faq-q");
-                const a = item.querySelector(".faq-a");
+    <section class="final-cta section-shell" aria-labelledby="cta-heading"><div class="final-cta-glow" aria-hidden="true"></div><p class="overline">BYMEVPN</p><h2 id="cta-heading">Просто подключитесь.<br><span>Остальное — лишнее.</span></h2><p>Три дня, чтобы познакомиться с ByMeVPN. Бесплатно и без карты.</p><a class="button button-primary" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Попробовать бесплатно <span aria-hidden="true">↗</span></a></section>
+  </main>
 
-                q.addEventListener("click", () => {
-                    const isOpen = item.classList.contains("open");
-
-                    document.querySelectorAll(".faq-item").forEach((el) => {
-                        el.classList.remove("open");
-                        el.querySelector(".faq-a").style.maxHeight = null;
-                    });
-
-                    if (!isOpen) {
-                        item.classList.add("open");
-                        a.style.maxHeight = a.scrollHeight + "px";
-                    }
-                });
-            });
-
-            // Интерактивный бэкграунд с частицами (Particles)
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            let particles = [];
-            let animationFrame;
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resizeCanvas();
-
-            class Particle {
-                constructor() {
-                    this.reset();
-                }
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2.4 + 0.5;
-                    this.speedX = Math.random() * 0.7 - 0.35;
-                    this.speedY = Math.random() * 0.7 - 0.35;
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-                }
-                draw() {
-                    ctx.fillStyle = "rgba(0,255,157,0.75)";
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
-            function createParticles() {
-                const count = window.innerWidth < 768 ? 55 : 105;
-                particles = Array.from({ length: count }, () => new Particle());
-            }
-            createParticles();
-
-            function connectParticles() {
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.hypot(dx, dy);
-                        if (dist < 135) {
-                            ctx.strokeStyle = `rgba(0,255,157,${1 - dist / 135})`;
-                            ctx.lineWidth = 0.9;
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-
-            function animate() {
-                ctx.fillStyle = "rgba(5,5,11,0.12)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                particles.forEach((p) => {
-                    p.update();
-                    p.draw();
-                });
-                connectParticles();
-                animationFrame = requestAnimationFrame(animate);
-            }
-            animate();
-
-            let resizeTimer;
-            window.addEventListener("resize", () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    cancelAnimationFrame(animationFrame);
-                    resizeCanvas();
-                    createParticles();
-                    animate();
-                }, 180);
-            });
-        </script>
-    </body>
+  <footer class="site-footer"><div class="section-shell footer-content"><a href="#top" class="footer-brand">ByMe<span>VPN</span></a><span>Скорость. Свобода. Простота.</span><div class="footer-links"><a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Telegram-бот</a><a href="https://t.me/ByMeVPNSupportBot" target="_blank" rel="noopener noreferrer">Поддержка</a></div><small>© <span id="year">2026</span> ByMeVPN</small></div></footer>
+</body>
 </html>
