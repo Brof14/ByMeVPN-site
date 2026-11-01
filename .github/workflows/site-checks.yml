@@ -1,0 +1,22 @@
+name: Site checks
+on:
+  push:
+    branches: ["main", "design/**"]
+  pull_request:
+    paths:
+      - "index.html"
+      - "styles.css"
+      - "app.js"
+      - "tests/**"
+      - ".github/workflows/site-checks.yml"
+jobs:
+  static-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source contracts
+        run: python3 -m unittest discover -s tests -v
+      - name: Check JavaScript syntax
+        run: node --check app.js
