@@ -8,6 +8,8 @@ on:
       - "styles.css"
       - "app.js"
       - "tests/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/site-checks.yml"
 jobs:
   static-contract:
@@ -20,3 +22,13 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Check JavaScript syntax
         run: node --check app.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install browser runtime
+        run: |
+          npm ci
+          npx playwright-core install --with-deps chromium
+      - name: Run real-browser visual regression checks
+        run: npm run test:browser

@@ -1,0 +1,952 @@
+{
+  "testedAt": "2026-11-02T16:04:02.820Z",
+  "viewports": [
+    {
+      "name": "390x844",
+      "width": 390,
+      "height": 844,
+      "revealCount": 14,
+      "downMeasurements": [
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 359,
+          "width": 350,
+          "height": 125,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 356,
+          "width": 350,
+          "height": 132,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 366,
+          "width": 350,
+          "height": 112,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 366,
+          "width": 350,
+          "height": 112,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 366,
+          "width": 350,
+          "height": 112,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 230,
+          "width": 350,
+          "height": 384,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 277,
+          "width": 350,
+          "height": 290,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 320,
+          "width": 350,
+          "height": 204,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 359,
+          "width": 350,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 360,
+          "width": 350,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 359,
+          "width": 350,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 255,
+          "width": 350,
+          "height": 334,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 338,
+          "width": 350,
+          "height": 167,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 214,
+          "width": 350,
+          "height": 415,
+          "inViewport": true
+        }
+      ],
+      "upMeasurements": [
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 214,
+          "width": 350,
+          "height": 415,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 338,
+          "width": 350,
+          "height": 167,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 255,
+          "width": 350,
+          "height": 334,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 359,
+          "width": 350,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 360,
+          "width": 350,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 359,
+          "width": 350,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 320,
+          "width": 350,
+          "height": 204,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 277,
+          "width": 350,
+          "height": 290,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 230,
+          "width": 350,
+          "height": 384,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 366,
+          "width": 350,
+          "height": 112,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 366,
+          "width": 350,
+          "height": 112,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 366,
+          "width": 350,
+          "height": 112,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 356,
+          "width": 350,
+          "height": 132,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 20,
+          "y": 359,
+          "width": 350,
+          "height": 125,
+          "inViewport": true
+        }
+      ],
+      "sceneRows": [
+        {
+          "id": "off",
+          "row": "1",
+          "top": 1214,
+          "bottom": 2008,
+          "width": 350,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "off"
+        },
+        {
+          "id": "connecting",
+          "row": "2",
+          "top": 2008,
+          "bottom": 2801,
+          "width": 350,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "connecting"
+        },
+        {
+          "id": "connected",
+          "row": "3",
+          "top": 2801,
+          "bottom": 3594,
+          "width": 350,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "connected"
+        },
+        {
+          "id": "servers",
+          "row": "4",
+          "top": 3594,
+          "bottom": 4388,
+          "width": 350,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "servers"
+        }
+      ],
+      "sectionShots": [
+        "section-hero.png",
+        "section-product.png",
+        "section-features.png",
+        "section-android.png",
+        "section-next-steps.png",
+        "section-terms.png",
+        "section-faq.png",
+        "section-footer.png"
+      ],
+      "video": "bymevpn-recovery/visual/390x844/scroll-390x844.webm",
+      "fastSkipScene": "servers",
+      "overflow": {
+        "width": 390,
+        "viewport": 390
+      },
+      "browserErrors": []
+    },
+    {
+      "name": "768x1024",
+      "width": 768,
+      "height": 1024,
+      "revealCount": 14,
+      "downMeasurements": [
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 437,
+          "width": 691,
+          "height": 151,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 403,
+          "width": 290,
+          "height": 218,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 376,
+          "y": 447,
+          "width": 353,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 376,
+          "y": 447,
+          "width": 353,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 376,
+          "y": 447,
+          "width": 353,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 311,
+          "width": 340,
+          "height": 403,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 426,
+          "y": 292,
+          "width": 320,
+          "height": 440,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 387,
+          "width": 310,
+          "height": 251,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 396,
+          "y": 449,
+          "width": 333,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 396,
+          "y": 450,
+          "width": 333,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 396,
+          "y": 449,
+          "width": 333,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 396,
+          "width": 691,
+          "height": 231,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 419,
+          "width": 270,
+          "height": 186,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 356,
+          "y": 324,
+          "width": 373,
+          "height": 439,
+          "inViewport": true
+        }
+      ],
+      "upMeasurements": [
+        {
+          "opacity": 1,
+          "x": 356,
+          "y": 324,
+          "width": 373,
+          "height": 439,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 419,
+          "width": 270,
+          "height": 186,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 396,
+          "width": 691,
+          "height": 231,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 396,
+          "y": 449,
+          "width": 333,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 396,
+          "y": 450,
+          "width": 333,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 396,
+          "y": 449,
+          "width": 333,
+          "height": 126,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 387,
+          "width": 310,
+          "height": 251,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 426,
+          "y": 292,
+          "width": 320,
+          "height": 440,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 311,
+          "width": 340,
+          "height": 403,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 376,
+          "y": 447,
+          "width": 353,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 376,
+          "y": 447,
+          "width": 353,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 376,
+          "y": 447,
+          "width": 353,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 403,
+          "width": 290,
+          "height": 218,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 38,
+          "y": 437,
+          "width": 691,
+          "height": 151,
+          "inViewport": true
+        }
+      ],
+      "sceneRows": [
+        {
+          "id": "off",
+          "row": "1",
+          "top": 1398,
+          "bottom": 2074,
+          "width": 691,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "off"
+        },
+        {
+          "id": "connecting",
+          "row": "2",
+          "top": 2074,
+          "bottom": 2749,
+          "width": 691,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "connecting"
+        },
+        {
+          "id": "connected",
+          "row": "3",
+          "top": 2749,
+          "bottom": 3425,
+          "width": 691,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "connected"
+        },
+        {
+          "id": "servers",
+          "row": "4",
+          "top": 3425,
+          "bottom": 4101,
+          "width": 691,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "servers"
+        }
+      ],
+      "sectionShots": [
+        "section-hero.png",
+        "section-product.png",
+        "section-features.png",
+        "section-android.png",
+        "section-next-steps.png",
+        "section-terms.png",
+        "section-faq.png",
+        "section-footer.png"
+      ],
+      "video": "bymevpn-recovery/visual/768x1024/scroll-768x1024.webm",
+      "fastSkipScene": "servers",
+      "overflow": {
+        "width": 768,
+        "viewport": 768
+      },
+      "browserErrors": []
+    },
+    {
+      "name": "1440x900",
+      "width": 1440,
+      "height": 900,
+      "revealCount": 14,
+      "downMeasurements": [
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 342,
+          "width": 1296,
+          "height": 214,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 348,
+          "width": 496,
+          "height": 204,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 697,
+          "y": 386,
+          "width": 671,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 697,
+          "y": 386,
+          "width": 671,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 697,
+          "y": 386,
+          "width": 671,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 231,
+          "width": 513,
+          "height": 439,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 715,
+          "y": 230,
+          "width": 653,
+          "height": 440,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 311,
+          "width": 531,
+          "height": 278,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 719,
+          "y": 389,
+          "width": 649,
+          "height": 123,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 719,
+          "y": 389,
+          "width": 649,
+          "height": 123,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 719,
+          "y": 389,
+          "width": 649,
+          "height": 123,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 369,
+          "width": 1296,
+          "height": 163,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 331,
+          "width": 472,
+          "height": 237,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 660,
+          "y": 231,
+          "width": 709,
+          "height": 439,
+          "inViewport": true
+        }
+      ],
+      "upMeasurements": [
+        {
+          "opacity": 1,
+          "x": 660,
+          "y": 231,
+          "width": 709,
+          "height": 439,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 331,
+          "width": 472,
+          "height": 237,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 369,
+          "width": 1296,
+          "height": 163,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 719,
+          "y": 389,
+          "width": 649,
+          "height": 123,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 719,
+          "y": 389,
+          "width": 649,
+          "height": 123,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 719,
+          "y": 389,
+          "width": 649,
+          "height": 123,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 311,
+          "width": 531,
+          "height": 278,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 715,
+          "y": 230,
+          "width": 653,
+          "height": 440,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 231,
+          "width": 513,
+          "height": 439,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 697,
+          "y": 386,
+          "width": 671,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 697,
+          "y": 386,
+          "width": 671,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 697,
+          "y": 386,
+          "width": 671,
+          "height": 129,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 348,
+          "width": 496,
+          "height": 204,
+          "inViewport": true
+        },
+        {
+          "opacity": 1,
+          "x": 72,
+          "y": 342,
+          "width": 1296,
+          "height": 214,
+          "inViewport": true
+        }
+      ],
+      "sceneRows": [
+        {
+          "id": "off",
+          "row": "1",
+          "top": 1498,
+          "bottom": 2092,
+          "width": 1290,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "off"
+        },
+        {
+          "id": "connecting",
+          "row": "2",
+          "top": 2092,
+          "bottom": 2686,
+          "width": 1290,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "connecting"
+        },
+        {
+          "id": "connected",
+          "row": "3",
+          "top": 2686,
+          "bottom": 3280,
+          "width": 1290,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "connected"
+        },
+        {
+          "id": "servers",
+          "row": "4",
+          "top": 3280,
+          "bottom": 3874,
+          "width": 1290,
+          "copyOpacity": 1,
+          "copyInViewport": true,
+          "screenVisible": true,
+          "screenState": "servers"
+        }
+      ],
+      "sectionShots": [
+        "section-hero.png",
+        "section-product.png",
+        "section-features.png",
+        "section-android.png",
+        "section-next-steps.png",
+        "section-terms.png",
+        "section-faq.png",
+        "section-footer.png"
+      ],
+      "video": "bymevpn-recovery/visual/1440x900/scroll-1440x900.webm",
+      "fastSkipScene": "servers",
+      "overflow": {
+        "width": 1440,
+        "viewport": 1440
+      },
+      "browserErrors": []
+    }
+  ],
+  "fallbackChecks": [
+    {
+      "viewport": "390x844",
+      "mode": "javascript-disabled",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "390x844",
+      "mode": "intersection-observer-unsupported",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "390x844",
+      "mode": "reduced-motion",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "768x1024",
+      "mode": "javascript-disabled",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "768x1024",
+      "mode": "intersection-observer-unsupported",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "768x1024",
+      "mode": "reduced-motion",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "1440x900",
+      "mode": "javascript-disabled",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "1440x900",
+      "mode": "intersection-observer-unsupported",
+      "count": 14,
+      "minimumOpacity": 1
+    },
+    {
+      "viewport": "1440x900",
+      "mode": "reduced-motion",
+      "count": 14,
+      "minimumOpacity": 1
+    }
+  ]
+}

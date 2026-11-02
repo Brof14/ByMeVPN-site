@@ -20,11 +20,14 @@ class SiteParser(HTMLParser):
         self.images: list[dict[str, str]] = []
         self.buttons: list[dict[str, str]] = []
         self.details_count = 0
+        self.reveal_count = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if "id" in attrs:
             self.ids.append(attrs["id"])
+        if "data-reveal" in attrs:
+            self.reveal_count += 1
         if tag == "a":
             self.links.append(attrs)
         if tag == "img":
@@ -99,7 +102,7 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("Подберём сервер", HTML)
         for nav_label in ("Главная", "Настройки", "Аккаунт"):
             self.assertIn(f">{nav_label}</span>", HTML)
-        self.assertIn("Макет интерфейса", HTML)
+        self.assertIn("макет интерфейса", HTML.lower())
         self.assertIn("реальное подключение не запускается", HTML.lower())
         self.assertIn('aria-live="polite"', HTML)
 
@@ -109,13 +112,35 @@ class SiteContractTests(unittest.TestCase):
             self.assertIn(f'data-scene="{scene}"', HTML)
         for state in ("connecting", "connected"):
             self.assertIn(f'{state}:', JS)
-        self.assertIn('scene === "servers"', JS)
+        self.assertIn('sceneId === "servers"', JS)
         for api in ("fetch(", "XMLHttpRequest", "WebSocket("):
             self.assertNotIn(api, JS)
         self.assertIn("IntersectionObserver", JS)
         self.assertIn('matchMedia("(prefers-reduced-motion: reduce)")', JS)
-        self.assertIn("scrollIntoView", JS)
-        self.assertIn('render({ announcement: "" });', JS)
+        self.assertIn("scrollToScene", JS)
+        self.assertIn('window.scrollTo({ top:', JS)
+        self.assertIn('render();', JS)
+        self.assertNotIn("sceneObserver", JS)
+        self.assertIn("requestAnimationFrame(syncSceneToScroll)", JS)
+
+    def test_reveals_use_one_class_and_are_visible_without_javascript(self):
+        self.assertEqual(self.doc.reveal_count, 14)
+        self.assertIn(".reveal-enabled [data-reveal]:not(.is-visible)", CSS)
+        self.assertIn(".reveal-enabled [data-reveal].is-visible", CSS)
+        self.assertIn('entry.target.classList.add("is-visible")', JS)
+        self.assertNotIn("is-revealed", CSS + JS)
+        self.assertRegex(CSS, r"(?s)\[data-reveal\]\s*\{[^}]*opacity:\s*1")
+        self.assertIn('"IntersectionObserver" in window', JS)
+
+    def test_story_scenes_have_four_explicit_ordered_rows(self):
+        rows = re.findall(
+            r"\.story-scenes\s*>\s*\.story-scene:nth-child\((\d)\)\s*\{\s*grid-row:\s*(\d)",
+            CSS,
+        )
+        self.assertEqual(rows, [("1", "1"), ("2", "2"), ("3", "3"), ("4", "4")])
+        self.assertIn("grid-template-rows: repeat(4, minmax(66svh, auto))", CSS)
+        self.assertIn("grid-template-rows: repeat(4, minmax(94svh, auto))", CSS)
+        self.assertNotRegex(CSS, r"\.story-scene:nth-child\(5\)")
 
     def test_menu_and_selection_controls_are_accessible(self):
         self.assertIn('aria-expanded="false"', HTML)
