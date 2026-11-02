@@ -1,4 +1,4 @@
-"""Dependency-free static contract checks for the ByMeVPN marketing site."""
+"""Static contract checks for the ByMeVPN product-story site."""
 from __future__ import annotations
 
 from html.parser import HTMLParser
@@ -19,17 +19,20 @@ class SiteParser(HTMLParser):
         self.links: list[dict[str, str]] = []
         self.images: list[dict[str, str]] = []
         self.buttons: list[dict[str, str]] = []
+        self.details_count = 0
 
     def handle_starttag(self, tag, attrs):
-        d = dict(attrs)
-        if "id" in d:
-            self.ids.append(d["id"])
+        attrs = dict(attrs)
+        if "id" in attrs:
+            self.ids.append(attrs["id"])
         if tag == "a":
-            self.links.append(d)
+            self.links.append(attrs)
         if tag == "img":
-            self.images.append(d)
+            self.images.append(attrs)
         if tag == "button":
-            self.buttons.append(d)
+            self.buttons.append(attrs)
+        if tag == "details":
+            self.details_count += 1
 
 
 class SiteContractTests(unittest.TestCase):
@@ -42,9 +45,12 @@ class SiteContractTests(unittest.TestCase):
         self.assertEqual(len(self.doc.ids), len(set(self.doc.ids)))
 
     def test_internal_targets_resolve(self):
+        ids = set(self.doc.ids)
         for link in self.doc.links:
-            if link.get("href", "").startswith("#"):
-                self.assertIn(link["href"][1:], self.doc.ids)
+            href = link.get("href", "")
+            if href.startswith("#"):
+                self.assertIn(href[1:], ids, href)
+        self.assertIn("benefits", ids)
 
     def test_external_blank_tabs_are_safe(self):
         for link in self.doc.links:
@@ -52,38 +58,10 @@ class SiteContractTests(unittest.TestCase):
                 rel = set(link.get("rel", "").split())
                 self.assertTrue({"noopener", "noreferrer"}.issubset(rel), link)
 
-    def test_images_have_alt(self):
+    def test_images_have_alt_and_local_assets_exist(self):
         self.assertTrue(self.doc.images)
         for image in self.doc.images:
             self.assertIn("alt", image)
-
-    def test_no_unverified_trial_or_price_promises(self):
-        for claim in ("3 дня бесплатно", "без привязки банковской карты", "89 ₽", "316 ₽", "552 ₽", "885 ₽"):
-            self.assertNotIn(claim.lower(), HTML.lower())
-        self.assertNotIn('class="plan"', HTML)
-
-    def test_no_unverified_marketing_claims(self):
-        for claim in ("10 Гбит/с", "No-logs", "полностью анонимный", "15+ стран", "100% аноним"):
-            self.assertNotIn(claim.lower(), HTML.lower())
-
-    def test_checkout_disclosure_points_to_current_offer(self):
-        self.assertIn("полную сумму", HTML.lower())
-        self.assertIn("автопродление", HTML.lower())
-        self.assertIn("указанный способ отмены", HTML.lower())
-
-    def test_demo_has_two_disclosed_states_and_no_network_code(self):
-        self.assertIn('id="demo-screen" data-state="off"', HTML)
-        self.assertIn('aria-pressed="false"', HTML)
-        self.assertIn("Показать VPN: запущен", HTML)
-        self.assertIn('aria-live="polite"', HTML)
-        self.assertIn("VPN выключен", HTML)
-        self.assertIn("VPN запущен", JS)
-        self.assertIn("Реальное подключение не запускалось", HTML)
-        self.assertIn("dataset.state", JS)
-        for api in ("fetch(", "XMLHttpRequest", "WebSocket("):
-            self.assertNotIn(api, JS)
-
-    def test_assets_are_local_and_present(self):
         self.assertNotIn("fonts.googleapis.com", HTML + CSS)
         self.assertNotIn("raw.githubusercontent.com", HTML + CSS)
         paths = re.findall(r'(?:src|href)="(assets/[^\"]+)"', HTML)
@@ -92,25 +70,85 @@ class SiteContractTests(unittest.TestCase):
         for relative in paths:
             with self.subTest(path=relative):
                 self.assertTrue((ROOT / relative).is_file(), relative)
-        self.assertIn("logo-fallback", CSS + JS)
 
-    def test_accessible_navigation(self):
-        self.assertRegex(HTML, r'aria-expanded="false"')
-        self.assertRegex(HTML, r'aria-controls="site-nav"')
-        self.assertIn('id="site-nav"', HTML)
+    def test_no_unverified_trial_price_or_network_promises(self):
+        for claim in (
+            "3 дня бесплатно", "без привязки банковской карты", "89 ₽", "316 ₽",
+            "552 ₽", "885 ₽", "10 Гбит/с", "no-logs", "полностью анонимный",
+            "15+ стран", "100% аноним", "бесплатный пробный период",
+        ):
+            self.assertNotIn(claim.lower(), HTML.lower())
+        self.assertNotIn('class="plan"', HTML)
+
+    def test_android_release_is_honest_and_disabled(self):
+        self.assertIn("Публичная версия пока не выпущена", HTML)
+        self.assertIn("Публичная загрузка недоступна", HTML)
+        download_buttons = [b for b in self.doc.buttons if "button-disabled" in b.get("class", "")]
+        self.assertEqual(len(download_buttons), 2)
+        self.assertTrue(all("disabled" in button for button in download_buttons))
+        self.assertFalse(any("download" in link.get("href", "").lower() for link in self.doc.links))
+        self.assertFalse(any(".apk" in link.get("href", "").lower() for link in self.doc.links))
+        self.assertNotIn("play.google.com", HTML)
+
+    def test_android_mock_matches_confirmed_ui_and_is_disclosed(self):
+        self.assertIn('id="demo-screen" data-state="off"', HTML)
+        for label in ("VPN выключен", "Подключение…", "VPN запущен"):
+            self.assertIn(label, HTML)
+        self.assertIn("Сервер не выбран", HTML)
+        self.assertIn("Выберите страну или доверьтесь автоматике", HTML)
+        self.assertIn("Подберём сервер", HTML)
+        for nav_label in ("Главная", "Настройки", "Аккаунт"):
+            self.assertIn(f">{nav_label}</span>", HTML)
+        self.assertIn("Макет интерфейса", HTML)
+        self.assertIn("реальное подключение не запускается", HTML.lower())
+        self.assertIn('aria-live="polite"', HTML)
+
+    def test_demo_has_four_scenes_no_network_and_reduced_motion(self):
+        for scene in ("off", "connecting", "connected", "servers"):
+            self.assertIn(f'data-demo-scene="{scene}"', HTML)
+            self.assertIn(f'data-scene="{scene}"', HTML)
+        for state in ("connecting", "connected"):
+            self.assertIn(f'{state}:', JS)
+        self.assertIn('scene === "servers"', JS)
+        for api in ("fetch(", "XMLHttpRequest", "WebSocket("):
+            self.assertNotIn(api, JS)
+        self.assertIn("IntersectionObserver", JS)
+        self.assertIn('matchMedia("(prefers-reduced-motion: reduce)")', JS)
+        self.assertIn("scrollIntoView", JS)
+        self.assertIn('render({ announcement: "" });', JS)
+
+    def test_menu_and_selection_controls_are_accessible(self):
+        self.assertIn('aria-expanded="false"', HTML)
+        self.assertIn('aria-controls="site-nav"', HTML)
         self.assertIn('class="skip-link"', HTML)
-        self.assertIn('event.key === "Escape"', JS)
+        self.assertIn('aria-controls="server-sheet"', HTML)
+        self.assertIn('aria-pressed="false"', HTML)
+        self.assertIn("event.key === \"Escape\"", JS)
+        self.assertIn('querySelector(".menu-toggle")', JS)
 
-    def test_responsiveness_and_motion(self):
-        for fragment in ("@media (max-width: 350px)", "@media (max-width: 540px)", "@media (max-width: 820px)", "@media (prefers-reduced-motion: reduce)", ":focus-visible", "overflow-x: clip"):
+    def test_faq_and_purchase_disclosure_remain(self):
+        self.assertEqual(self.doc.details_count, 6)
+        self.assertIn("полную сумму", HTML.lower())
+        self.assertIn("автопродление", HTML.lower())
+        self.assertIn("указанный способ отмены", HTML.lower())
+
+    def test_responsive_motion_and_focus_styles_exist(self):
+        for fragment in (
+            "@media (max-width: 350px)", "@media (max-width: 540px)",
+            "@media (max-width: 760px)", "@media (prefers-reduced-motion: reduce)",
+            ":focus-visible", "overflow-x: clip",
+        ):
             self.assertIn(fragment, CSS)
-        for width in (320, 360, 375, 390, 768, 1280, 1440, 1920):
-            self.assertIn(str(width), (ROOT / "docs/designs/bymevpn-experience.md").read_text(encoding="utf-8"))
+        for width in (360, 390, 768, 1280, 1440, 1920):
+            self.assertIn(str(width), (ROOT / "docs/designs/bymevpn-product-story.md").read_text(encoding="utf-8"))
 
-    def test_no_placeholder_links(self):
+    def test_no_placeholder_links_or_stale_download_logic(self):
         for link in self.doc.links:
             self.assertNotEqual(link.get("href"), "#")
             self.assertFalse(link.get("href", "").startswith("javascript:"))
+        self.assertNotIn("androidReleaseCard", JS)
+        self.assertNotIn("trustedApkUrl", JS)
+
 
 if __name__ == "__main__":
     unittest.main()
