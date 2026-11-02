@@ -1,0 +1,4 @@
+.video-temp/
+.motion-capture/
+*.webm
+motion-errors.json

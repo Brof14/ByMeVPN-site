@@ -3,20 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#060c15" />
+    <meta name="theme-color" content="#090f1d" />
     <meta
       name="description"
-      content="Познакомьтесь с ByMeVPN, посмотрите интерфейс Android-приложения и начните подключение в официальном Telegram-боте."
+      content="Познакомьтесь с интерфейсом ByMeVPN для Android. Публичная версия приложения пока не выпущена."
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" />
-    <meta property="og:title" content="ByMeVPN: связь на твоих условиях" />
+    <meta property="og:title" content="ByMeVPN — приложение для Android" />
     <meta
       property="og:description"
-      content="Интерфейс ByMeVPN для Android и официальный путь подключения через Telegram."
+      content="Крупный интерактивный обзор ByMeVPN для Android. Это демо интерфейса: VPN не подключается."
     />
     <meta property="og:url" content="https://bymevpn-site.duckdns.org/" />
-    <title>ByMeVPN: связь на твоих условиях</title>
+    <title>ByMeVPN — приложение для Android</title>
     <link rel="icon" href="assets/brand/bymevpn-shield.png" type="image/png" />
     <link
       rel="preload"
@@ -25,34 +25,16 @@
       type="font/woff2"
       crossorigin
     />
-    <link
-      rel="preload"
-      href="assets/fonts/inter-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="assets/generated/bymevpn-hero-orbit.webp"
-      as="image"
-      type="image/webp"
-      fetchpriority="high"
-    />
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Перейти к содержимому</a>
+
     <header class="site-header" id="top">
-      <div class="nav-container">
-        <a href="#top" class="brand" aria-label="ByMeVPN: на главную">
-          <img
-            width="38"
-            height="38"
-            alt=""
-            src="assets/brand/bymevpn-shield.png"
-          />
+      <div class="nav-shell">
+        <a class="brand" href="#top" aria-label="ByMeVPN — на главную">
+          <img src="assets/brand/bymevpn-shield.png" width="36" height="36" alt="" />
           <span>ByMe<span class="brand-accent">VPN</span></span>
         </a>
         <button
@@ -64,530 +46,220 @@
         >
           <span></span><span></span><span></span>
         </button>
-        <nav id="site-nav" class="site-nav" aria-label="Основная навигация">
+        <nav class="site-nav" id="site-nav" aria-label="Основная навигация">
           <a href="#product">Приложение</a>
-          <a href="#android">Android</a>
-          <a
-            class="nav-cta"
-            href="https://t.me/ByMeVPNbot"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Начать в Telegram <span aria-hidden="true">↗</span></a
-          >
+          <a href="#how">Как начать</a>
+          <a href="#faq">Вопросы</a>
+          <a class="nav-android" href="#android">Android <span aria-hidden="true">↗</span></a>
         </nav>
       </div>
     </header>
 
     <main id="main">
-      <section class="hero launch-hero" aria-labelledby="hero-heading">
-        <img
-          class="hero-art"
-          src="assets/generated/bymevpn-hero-orbit.webp"
-          width="1672"
-          height="941"
-          alt=""
-          fetchpriority="high"
-        />
-        <div class="hero-shell">
-          <div class="hero-copy">
-            <h1 id="hero-heading">В сети.<br /><span>По-своему.</span></h1>
-            <p class="hero-lead">
-              В боте выберите доступный способ и следуйте инструкции
-              подключения.
-            </p>
-            <div class="hero-actions">
-              <a
-                class="button button-primary"
-                href="https://t.me/ByMeVPNbot"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Начать в Telegram <span aria-hidden="true">↗</span></a
-              >
-              <a class="text-link" href="#product"
-                >Познакомиться с приложением
-                <span aria-hidden="true">↓</span></a
-              >
-            </div>
-            <p class="hero-note">
-              Android-приложение тестируется. Демонстрация не подключает VPN.
-            </p>
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-frame" aria-hidden="true"><span></span><span></span></div>
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-mark"></span> BYMEVPN ДЛЯ ANDROID</p>
+          <h1 id="hero-heading">VPN. <span>По-твоему.</span></h1>
+          <p class="hero-lead">
+            Посмотри, как устроено приложение: состояние подключения, выбор сервера и управление в одном месте.
+          </p>
+          <div class="hero-actions">
+            <button
+              class="button button-disabled"
+              type="button"
+              disabled
+              aria-describedby="hero-release-note"
+            >
+              <span class="download-mark" aria-hidden="true">↓</span>
+              Скачать для Android
+            </button>
+            <a class="hero-secondary" href="#product">Смотреть демо <span aria-hidden="true">↓</span></a>
           </div>
+          <p class="release-note" id="hero-release-note">
+            Публичная сборка ещё не выпущена. Это демо не подключает VPN.
+          </p>
+        </div>
 
-          <div
-            class="cinematic-stage"
-            id="product"
-            aria-label="Макет интерфейса Android-приложения ByMeVPN"
-          >
-            <div class="phone-actor">
-              <div class="hero-device">
-                <div
-                  class="hero-device-screen"
-                  id="demo-screen" data-state="off"
-                >
-                  <div class="phone-island" aria-hidden="true">
-                    <span></span>
+        <div class="hero-product" aria-label="Демонстрационный экран приложения ByMeVPN для Android">
+          <div class="hero-lightline" aria-hidden="true"></div>
+          <div class="hero-device">
+            <div class="device-bezel">
+              <div class="device-island" aria-hidden="true"></div>
+              <div class="device-screen hero-screen">
+                <div class="android-statusbar" aria-hidden="true"><span>9:41</span><span>●●●　▰</span></div>
+                <div class="app-topbar">
+                  <span class="app-wordmark"><img src="assets/brand/bymevpn-shield.png" width="24" height="24" alt="" />ByMe<span>VPN</span></span>
+                  <span class="app-more" aria-hidden="true">···</span>
+                </div>
+                <p class="app-kicker">ВАШЕ ПОДКЛЮЧЕНИЕ</p>
+                <div class="hero-power"><div class="hero-power-core"><img src="assets/brand/bymevpn-shield.png" width="70" height="70" alt="" /></div></div>
+                <p class="hero-device-state">VPN выключен</p>
+                <p class="hero-device-hint">Нажмите, чтобы подключиться</p>
+                <div class="hero-server-row"><span><small>МЕСТОПОЛОЖЕНИЕ</small><strong>Сервер не выбран</strong></span><span aria-hidden="true">›</span></div>
+                <div class="hero-demo-tag">ДЕМО ИНТЕРФЕЙСА · VPN НЕ ПОДКЛЮЧАЕТСЯ</div>
+              </div>
+            </div>
+          </div>
+          <div class="device-shadow" aria-hidden="true"></div>
+          <p class="hero-caption"><span class="caption-dot"></span> Экран собран по текущему Android-интерфейсу</p>
+        </div>
+        <a class="scroll-cue" href="#product" aria-label="Прокрутить к демонстрации приложения"><span></span> ЛИСТАЙ НИЖЕ</a>
+      </section>
+
+      <section class="product-story" id="product" aria-labelledby="product-heading">
+        <div class="section-shell story-heading" data-reveal>
+          <p class="eyebrow"><span class="eyebrow-mark"></span> ИНТЕРАКТИВНОЕ ДЕМО</p>
+          <h2 id="product-heading">Путь подключения<br /><span>на одном экране.</span></h2>
+          <p>Листай сцену или выбери состояние вручную. Макет показывает только интерфейс — сайт не запускает подключение.</p>
+        </div>
+
+        <div class="story-track" id="story-track">
+          <div class="story-device-stage">
+            <div class="story-orbit" aria-hidden="true"><span></span><span></span></div>
+            <div class="phone-device" id="demo-screen" data-state="off">
+              <div class="device-bezel">
+                <div class="device-island" aria-hidden="true"></div>
+                <div class="device-screen app-screen">
+                  <div class="android-statusbar" aria-hidden="true"><span>9:41</span><span>●●●　▰</span></div>
+                  <div class="app-topbar">
+                    <span class="app-wordmark"><img src="assets/brand/bymevpn-shield.png" width="24" height="24" alt="" />ByMe<span>VPN</span></span>
+                    <span class="app-more" aria-hidden="true">···</span>
                   </div>
-                  <div class="phone-topbar">
-                    <span class="phone-brand"
-                      ><img
-                        width="26"
-                        height="26"
-                        src="assets/brand/bymevpn-shield.png"
-                        alt=""
-                      /><strong>ByMe<span>VPN</span></strong></span
-                    >
-                    <span class="phone-top-action" aria-hidden="true">···</span>
-                  </div>
-                  <div class="phone-home">
-                    <p class="phone-kicker">Ваше подключение</p>
-                    <button
-                      class="power-orbit"
-                      id="demo-toggle"
-                      type="button"
-                      aria-pressed="false"
-                      aria-label="Показать VPN: запущен"
-                    >
-                      <span class="power-orbit-ring"></span>
-                      <span class="power-orbit-core"
-                        ><img
-                          src="assets/brand/bymevpn-shield.png"
-                          width="98"
-                          height="98"
-                          alt=""
-                      /></span>
+                  <div class="app-home-view">
+                    <p class="app-kicker">ВАШЕ ПОДКЛЮЧЕНИЕ</p>
+                    <button class="demo-power" id="demo-toggle" type="button" aria-pressed="false" aria-label="Начать демонстрацию подключения">
+                      <span class="power-track" aria-hidden="true"></span>
+                      <span class="power-core"><img src="assets/brand/bymevpn-shield.png" width="72" height="72" alt="" /></span>
                     </button>
-                    <div class="phone-connection-status">
-                      <span class="phone-status-dot" aria-hidden="true"></span
-                      ><span id="demo-state-visible">VPN выключен</span>
-                    </div>
-                    <p class="phone-hint" id="demo-hint">
-                      Нажмите, чтобы подключиться
-                    </p>
-                    <div class="phone-server-card">
-                      <span
-                        ><small>Сервер</small
-                        ><strong>Автоматический выбор</strong></span
-                      >
-                      <span class="phone-chevron" aria-hidden="true">›</span>
-                    </div>
+                    <p class="demo-state-label" id="demo-state-visible">VPN выключен</p>
+                    <p class="demo-state-hint" id="demo-hint">Нажмите, чтобы подключиться</p>
+                    <button class="server-summary" id="server-open" type="button" aria-expanded="false" aria-controls="server-sheet" aria-label="Открыть демонстрацию выбора сервера">
+                      <span><small>МЕСТОПОЛОЖЕНИЕ</small><strong id="selected-server">Сервер не выбран</strong></span>
+                      <span class="server-arrow" aria-hidden="true">›</span>
+                    </button>
                   </div>
-                  <div class="phone-bottom" aria-hidden="true">
-                    <span class="phone-bottom-active"
-                      ><i class="nav-icon nav-icon-home"></i>Главная</span
-                    >
-                    <span
-                      ><i class="nav-icon nav-icon-settings"></i>Настройки</span
-                    >
-                    <span
-                      ><i class="nav-icon nav-icon-account"></i>Аккаунт</span
-                    >
+                  <div class="server-sheet" id="server-sheet" role="region" aria-labelledby="server-sheet-heading" hidden>
+                    <div class="sheet-grab" aria-hidden="true"></div>
+                    <div class="sheet-head"><div><p class="app-kicker">ВЫБОР СЕРВЕРА</p><h3 id="server-sheet-heading">Серверы</h3></div><button class="sheet-close" id="server-close" type="button" aria-label="Вернуться к экрану подключения">×</button></div>
+                    <p class="sheet-copy">Выберите страну или доверьтесь автоматике.</p>
+                    <button class="auto-server" id="auto-server" type="button" aria-pressed="false"><span class="auto-icon" aria-hidden="true">✳</span><span><strong>Автоматически</strong><small>Подберём сервер</small></span><span class="auto-check" aria-hidden="true">✓</span></button>
+                    <p class="server-list-label">ДОСТУПНЫЕ СЕРВЕРЫ</p>
+                    <p class="server-list-note">Список зависит от доступности серверов для аккаунта.</p>
                   </div>
+                  <div class="app-bottom" aria-hidden="true"><span class="is-active"><i>◉</i>Главная</span><span><i>⌖</i>Настройки</span><span><i>○</i>Аккаунт</span></div>
+                  <p class="phone-demo-note">ДЕМО · РЕАЛЬНОЕ ПОДКЛЮЧЕНИЕ НЕ ЗАПУСКАЕТСЯ</p>
                 </div>
               </div>
             </div>
+            <p class="story-device-caption"><span class="caption-dot"></span> Макет интерфейса · без сетевого подключения</p>
+          </div>
 
-            <p
-              class="sr-only"
-              id="demo-announcement"
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-            >Демо: отображается состояние «VPN выключен». Реальное подключение не запускалось.</p>
+          <div class="story-scenes" aria-label="Этапы демонстрации">
+            <article class="story-scene scene-off" data-scene="off" aria-labelledby="scene-off-heading">
+              <div class="scene-copy"><span class="scene-index">01 <i></i> ГОТОВ К ДЕЙСТВИЮ</span><h3 id="scene-off-heading">Сначала —<br /><span>ясный статус.</span></h3><p>Главный экран показывает, включён ли VPN, и какой сервер выбран.</p></div>
+            </article>
+            <article class="story-scene scene-connecting" data-scene="connecting" aria-labelledby="scene-connecting-heading">
+              <div class="scene-copy"><span class="scene-index">02 <i></i> ПЕРЕХОД СОСТОЯНИЯ</span><h3 id="scene-connecting-heading">Подключение<br /><span>видно сразу.</span></h3><p>Во время перехода экран показывает состояние «Подключение…».</p></div>
+            </article>
+            <article class="story-scene scene-connected" data-scene="connected" aria-labelledby="scene-connected-heading">
+              <div class="scene-copy"><span class="scene-index">03 <i></i> СОСТОЯНИЕ ПРИЛОЖЕНИЯ</span><h3 id="scene-connected-heading">Экран сообщает,<br /><span>когда готово.</span></h3><p>В приложении состояние отображается как «VPN запущен». Здесь это только макет.</p></div>
+            </article>
+            <article class="story-scene scene-servers" data-scene="servers" aria-labelledby="scene-servers-heading">
+              <div class="scene-copy"><span class="scene-index">04 <i></i> УПРАВЛЕНИЕ ВЫБОРОМ</span><h3 id="scene-servers-heading">Выбор сервера —<br /><span>рядом.</span></h3><p>Доступные варианты зависят от сервиса и аккаунта. Неподтверждённые локации здесь не показаны.</p></div>
+            </article>
+          </div>
+
+          <div class="story-controls" role="group" aria-label="Выбрать сцену демонстрации">
+            <button type="button" data-demo-scene="off" aria-pressed="true"><span>01</span> Выключен</button>
+            <button type="button" data-demo-scene="connecting" aria-pressed="false"><span>02</span> Подключение</button>
+            <button type="button" data-demo-scene="connected" aria-pressed="false"><span>03</span> Запущен</button>
+            <button type="button" data-demo-scene="servers" aria-pressed="false"><span>04</span> Серверы</button>
+          </div>
+          <p class="sr-only" id="demo-announcement" role="status" aria-live="polite" aria-atomic="true">Демо интерфейса. VPN выключен. Реальное подключение не запускалось.</p>
+        </div>
+      </section>
+
+      <section class="product-details" id="benefits" aria-labelledby="details-heading">
+        <div class="section-shell details-layout">
+          <div class="details-lead" data-reveal>
+            <p class="eyebrow"><span class="eyebrow-mark"></span> ПРОДУКТОВЫЙ ФОКУС</p>
+            <h2 id="details-heading">Всё важное<br /><span>собрано рядом.</span></h2>
+            <p>Главный экран приложения связывает управление подключением с выбором доступного сервера.</p>
+          </div>
+          <div class="detail-list">
+            <article class="detail-row" data-reveal><span class="detail-number">01</span><div><h3>Состояние подключения</h3><p>Выключено, подключение или запущено — статус виден на главном экране.</p></div><span class="detail-symbol" aria-hidden="true">↗</span></article>
+            <article class="detail-row" data-reveal><span class="detail-number">02</span><div><h3>Выбор сервера</h3><p>Можно доверить выбор автоматике или открыть список доступных вариантов.</p></div><span class="detail-symbol" aria-hidden="true">⌖</span></article>
+            <article class="detail-row" data-reveal><span class="detail-number">03</span><div><h3>Статус аккаунта</h3><p>Разделы подписки и аккаунта находятся внутри приложения.</p></div><span class="detail-symbol" aria-hidden="true">◎</span></article>
           </div>
         </div>
       </section>
 
-      <section
-        id="benefits"
-        class="product-highlights"
-        aria-labelledby="benefits-heading"
-      >
-        <div class="section-shell highlights-shell">
-          <div class="highlights-heading" data-reveal>
-            <h2 id="benefits-heading">
-              Понятно с первого <span>взгляда.</span>
-            </h2>
-            <p>Ключевые экраны приложения соответствуют текущему интерфейсу.</p>
+      <section class="android-section" id="android" aria-labelledby="android-heading">
+        <div class="android-backdrop" aria-hidden="true"></div>
+        <div class="section-shell android-layout">
+          <div class="android-copy" data-reveal>
+            <p class="eyebrow"><span class="eyebrow-mark"></span> ANDROID</p>
+            <h2 id="android-heading">Приложение<br /><span>ещё готовится.</span></h2>
+            <p>Публичная версия пока не выпущена. Мы добавим официальный способ установки, когда появится проверенный релиз.</p>
+            <div class="release-state"><span class="release-state-dot"></span><span><strong>Публичная загрузка недоступна</strong><small>Текущая тестовая APK-сборка не предназначена для распространения.</small></span></div>
+            <button class="button button-disabled android-download" type="button" disabled aria-describedby="release-detail">Скачать для Android <span aria-hidden="true">↓</span></button>
+            <p class="release-note" id="release-detail">Ссылка станет активной после публикации официальной версии.</p>
           </div>
-          <div class="feature-cards">
-            <article class="feature-card feature-card-connection" data-reveal>
-              <div class="feature-visual connection-visual" aria-hidden="true">
-                <div class="mini-power-ring">
-                  <img
-                    src="assets/brand/bymevpn-shield.png"
-                    width="70"
-                    height="70"
-                    alt=""
-                  />
-                </div>
-                <span class="mini-state-dot"></span>
-                <span class="mini-status">VPN выключен</span>
-                <span class="mini-caption">Ваше подключение</span>
-              </div>
-              <div class="feature-card-copy">
-                <span class="feature-number">01 / 03</span>
-                <h3>Один понятный экран</h3>
-                <p>Статус VPN и выбранный сервер собраны рядом на главной.</p>
-              </div>
-            </article>
-            <article class="feature-card feature-card-servers" data-reveal>
-              <div class="feature-visual server-visual" aria-hidden="true">
-                <span class="mini-caption">Серверы</span>
-                <strong>Выберите страну<br />или доверьтесь автоматике.</strong>
-                <div class="mini-auto-row">
-                  <span>◎</span
-                  ><span><small>Рекомендуем</small><b>Автоматически</b></span
-                  ><i>→</i>
-                </div>
-                <p>Доступные варианты поступают от сервиса.</p>
-              </div>
-              <div class="feature-card-copy">
-                <span class="feature-number">02 / 03</span>
-                <h3>Свобода выбора</h3>
-                <p>
-                  Выберите страну вручную или оставьте автоматический выбор.
-                </p>
-              </div>
-            </article>
-            <article class="feature-card feature-card-settings" data-reveal>
-              <div class="feature-visual settings-visual" aria-hidden="true">
-                <span class="mini-caption">Настройки</span>
-                <strong>Основные параметры</strong>
-                <div class="mini-setting-row">
-                  <span class="mini-setting-icon"
-                    ><svg viewBox="0 0 24 24" aria-hidden="true">
-                      <circle cx="12" cy="12" r="9"></circle>
-                      <path
-                        d="M3.5 12h17M12 3c2.2 2.4 3.2 5.4 3.2 9S14.2 18.6 12 21c-2.2-2.4-3.2-5.4-3.2-9S9.8 5.4 12 3Z"
-                      ></path></svg></span
-                  ><span><small>Язык приложения</small><b>Русский</b></span
-                  ><i>›</i>
-                </div>
-                <div class="mini-setting-row mini-setting-row-muted">
-                  <span class="mini-setting-icon"
-                    ><svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M4 7h16M4 17h16"></path>
-                      <circle cx="9" cy="7" r="2.2"></circle>
-                      <circle cx="15" cy="17" r="2.2"></circle></svg></span
-                  ><span
-                    ><small>Основные настройки</small><b>По умолчанию</b></span
-                  ><i>›</i>
-                </div>
-              </div>
-              <div class="feature-card-copy">
-                <span class="feature-number">03 / 03</span>
-                <h3>Настройки без сложностей</h3>
-                <p>Нужные параметры собраны в отдельном разделе приложения.</p>
-              </div>
-            </article>
+          <div class="android-mark" aria-hidden="true" data-reveal>
+            <div class="mark-ring mark-ring-one"></div><div class="mark-ring mark-ring-two"></div>
+            <img src="assets/brand/bymevpn-shield.png" width="150" height="150" alt="" />
+            <span class="mark-label">IN DEVELOPMENT<br />ANDROID APP</span>
           </div>
         </div>
       </section>
 
-      <section
-        id="how"
-        class="section how-section"
-        aria-labelledby="how-heading"
-      >
+      <section class="how-section" id="how" aria-labelledby="how-heading">
         <div class="section-shell how-layout">
-          <div class="section-intro" data-reveal>
-            <h2 id="how-heading">Начните с <span>официального бота.</span></h2>
-            <p>
-              Посмотрите доступные для вашей учётной записи способы и условия до
-              подтверждения.
-            </p>
-            <a
-              class="button button-primary"
-              href="https://t.me/ByMeVPNbot"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Открыть Telegram-бота <span aria-hidden="true">↗</span></a
-            >
+          <div class="how-intro" data-reveal>
+            <p class="eyebrow"><span class="eyebrow-mark"></span> ЧТО ДАЛЬШЕ</p>
+            <h2 id="how-heading">Пока приложение<br /><span>в тестировании.</span></h2>
+            <p>Официальный Telegram-бот подскажет доступные способы подключения и условия для аккаунта.</p>
+            <a class="button button-secondary" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Открыть Telegram-бота <span aria-hidden="true">↗</span></a>
           </div>
-          <ol class="steps">
-            <li data-reveal>
-              <span class="step-number">01</span>
-              <div>
-                <h3>Откройте бота</h3>
-                <p>Перейдите в официальный Telegram-бот ByMeVPN.</p>
-              </div>
-            </li>
-            <li data-reveal>
-              <span class="step-number">02</span>
-              <div>
-                <h3>Выберите способ</h3>
-                <p>Проверьте доступные варианты для своей учётной записи.</p>
-              </div>
-            </li>
-            <li data-reveal>
-              <span class="step-number">03</span>
-              <div>
-                <h3>Следуйте инструкции</h3>
-                <p>Подключите устройство по показанным шагам.</p>
-              </div>
-            </li>
+          <ol class="how-steps">
+            <li data-reveal><span>01</span><div><h3>Открой официальный бот</h3><p>Проверь, какие способы подключения доступны для аккаунта.</p></div></li>
+            <li data-reveal><span>02</span><div><h3>Проверь условия заранее</h3><p>Сверь полный срок и сумму в предложении до подтверждения.</p></div></li>
+            <li data-reveal><span>03</span><div><h3>Следуй подсказкам</h3><p>Используй инструкции, которые бот показывает для выбранного варианта.</p></div></li>
           </ol>
         </div>
       </section>
 
-      <section
-        id="android"
-        class="android-release"
-        aria-labelledby="android-heading"
-      >
-        <div class="section-shell android-shell">
-          <div class="android-intro" data-reveal>
-            <h2 id="android-heading">
-              Android.<br /><span>В тестировании.</span>
-            </h2>
-            <p>
-              Приложение проходит тестирование. Как только появится публичная
-              сборка, здесь будет официальный способ установки.
-            </p>
-          </div>
-          <div
-            class="android-download-card"
-            data-release-state="unavailable"
-            data-play-url=""
-            data-apk-url=""
-            data-version=""
-            data-apk-sha256=""
-            data-reveal
-          >
-            <div class="release-card-top">
-              <span class="release-mark" aria-hidden="true"
-                ><img
-                  src="assets/brand/bymevpn-shield.png"
-                  width="40"
-                  height="40"
-                  alt="" /></span
-              ><span class="release-status"
-                ><span id="release-status-text"
-                  >Публичная загрузка пока закрыта</span
-                ></span
-              >
-            </div>
-            <div class="release-card-main">
-              <div>
-                <p class="mini-caption">Приложение ByMeVPN</p>
-                <h3>Скачать приложение</h3>
-                <p>
-                  Официальная ссылка появится здесь после выхода публичного
-                  релиза.
-                </p>
-              </div>
-              <div class="release-unavailable" aria-disabled="true">
-                <span class="release-download-icon" aria-hidden="true">↓</span
-                ><span
-                  ><strong>Пока недоступно</strong
-                  ><small>Android-приложение в тестировании</small></span
-                >
-              </div>
-              <div class="release-links" id="android-release-links" hidden>
-                <a
-                  class="release-link"
-                  id="android-play-link"
-                  href=""
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  hidden
-                  ><span class="release-link-icon" aria-hidden="true">↗</span
-                  ><span
-                    ><strong>Google Play</strong
-                    ><small>Официальная версия</small></span
-                  ></a
-                >
-                <a
-                  class="release-link"
-                  id="android-apk-link"
-                  href=""
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  hidden
-                  ><span class="release-link-icon" aria-hidden="true">↓</span
-                  ><span
-                    ><strong>Скачать APK</strong
-                    ><small>Прямая загрузка</small></span
-                  ></a
-                >
-                <p
-                  class="release-version"
-                  id="android-release-version"
-                  hidden
-                ></p>
-                <p
-                  class="release-checksum"
-                  id="android-release-checksum"
-                  hidden
-                ></p>
-              </div>
-            </div>
-            <div class="release-card-bottom">
-              <a
-                class="button button-release"
-                href="https://t.me/ByMeVPNbot"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Продолжить в Telegram <span aria-hidden="true">↗</span></a
-              ><span id="android-distribution-note"
-                >Ссылка на установку появится после релиза</span
-              >
-            </div>
-          </div>
+      <section class="terms-section" id="plans" aria-labelledby="terms-heading">
+        <div class="section-shell terms-layout" data-reveal>
+          <div><p class="eyebrow"><span class="eyebrow-mark"></span> УСЛОВИЯ ДО ПОДТВЕРЖДЕНИЯ</p><h2 id="terms-heading">Сначала проверь.<br /><span>Потом решай.</span></h2></div>
+          <div class="terms-copy"><p>Условия могут зависеть от аккаунта. Перед подтверждением проверь в предложении бота срок, полную сумму, лимит устройств и доступный способ оплаты.</p><p>Если предложение включает автопродление, проверь период следующего списания и указанный способ отмены.</p><a class="inline-link" href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Посмотреть актуальные условия <span aria-hidden="true">↗</span></a></div>
         </div>
       </section>
 
-      <section
-        id="plans"
-        class="section terms-section"
-        aria-labelledby="plans-heading"
-      >
-        <div class="section-shell terms-layout">
-          <div class="terms-copy" data-reveal>
-            <h2 id="plans-heading">Условия видны <span>заранее.</span></h2>
-            <p>
-              Перед подтверждением проверьте в предложении бота срок доступа,
-              лимит устройств и полную сумму. Если есть автопродление, проверьте
-              сумму, период следующих списаний и указанный способ отмены.
-            </p>
-            <a
-              class="text-link"
-              href="https://t.me/ByMeVPNbot"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Проверить условия в боте <span aria-hidden="true">↗</span></a
-            >
-          </div>
-          <ol class="terms-checklist" aria-label="Что проверить до оплаты">
-            <li>
-              <span>01</span>
-              <div>
-                <strong>Срок доступа</strong>
-                <p>Убедитесь, что выбранный период вам подходит.</p>
-              </div>
-            </li>
-            <li>
-              <span>02</span>
-              <div>
-                <strong>Полная сумма</strong>
-                <p>Сверьте стоимость до подтверждения.</p>
-              </div>
-            </li>
-            <li>
-              <span>03</span>
-              <div>
-                <strong>Условия продления</strong>
-                <p>Проверьте период списаний и способ отмены.</p>
-              </div>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <section
-        id="faq"
-        class="section faq-section"
-        aria-labelledby="faq-heading"
-      >
+      <section class="faq-section" id="faq" aria-labelledby="faq-heading">
         <div class="section-shell faq-layout">
-          <div class="section-intro" data-reveal>
-            <h2 id="faq-heading">Коротко <span>о главном.</span></h2>
-            <p>Не нашли ответа? Напишите в поддержку.</p>
-            <a
-              class="text-link"
-              href="https://t.me/ByMeVPNSupportBot"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Связаться с поддержкой <span aria-hidden="true">↗</span></a
-            >
+          <div class="faq-intro" data-reveal><p class="eyebrow"><span class="eyebrow-mark"></span> КОРОТКО О ГЛАВНОМ</p><h2 id="faq-heading">Остались<br /><span>вопросы?</span></h2><p>Напиши в поддержку ByMeVPN.</p><a class="inline-link" href="https://t.me/ByMeVPNSupportBot" target="_blank" rel="noopener noreferrer">Связаться с поддержкой <span aria-hidden="true">↗</span></a></div>
+          <div class="faq-list" data-reveal>
+            <details><summary>Приложение уже доступно? <span aria-hidden="true">+</span></summary><p>Публичный Android-релиз пока не выпущен. Экран выше — демонстрация интерфейса, без реального подключения.</p></details>
+            <details><summary>Где скачать приложение? <span aria-hidden="true">+</span></summary><p>Когда появится проверенная публичная сборка, официальный способ установки будет доступен на этой странице.</p></details>
+            <details><summary>Демо на сайте подключает VPN? <span aria-hidden="true">+</span></summary><p>Нет. Переключение состояний меняет только отображение интерфейса. Сетевой туннель не запускается.</p></details>
+            <details><summary>Где посмотреть стоимость и срок? <span aria-hidden="true">+</span></summary><p>Актуальные условия для аккаунта показаны в предложении официального бота до подтверждения.</p></details>
+            <details><summary>Как выбрать сервер? <span aria-hidden="true">+</span></summary><p>В приложении можно открыть выбор сервера. Доступные варианты зависят от аккаунта и ответа сервиса.</p></details>
+            <details><summary>Где получить помощь? <span aria-hidden="true">+</span></summary><p>Напиши в поддержку ByMeVPN в Telegram.</p></details>
           </div>
-          <div class="faq-list">
-            <details data-reveal>
-              <summary>Где посмотреть актуальную цену?</summary>
-              <p>
-                Откройте официальный Telegram-бот: сумма, срок и доступный
-                вариант показываются в текущем предложении до оплаты.
-              </p>
-            </details>
-            <details data-reveal>
-              <summary>Есть ли пробный период?</summary>
-              <p>
-                Проверьте предложение для своей учётной записи в боте. Наличие и
-                условия пробного периода могут различаться.
-              </p>
-            </details>
-            <details data-reveal>
-              <summary>Где скачать Android-приложение?</summary>
-              <p>
-                Публичный релиз ещё не открыт. Когда появится официальная
-                сборка, ссылка на установку будет размещена на этой странице.
-              </p>
-            </details>
-            <details data-reveal>
-              <summary>Сайт подключает VPN?</summary>
-              <p>
-                Нет. Экран выше показывает макет интерфейса. Реальное соединение
-                запускается только в клиенте.
-              </p>
-            </details>
-            <details data-reveal>
-              <summary>Как выбрать сервер?</summary>
-              <p>
-                В приложении можно выбрать страну или использовать
-                автоматический выбор. Доступные варианты поступают от сервиса.
-              </p>
-            </details>
-            <details data-reveal>
-              <summary>Где получить помощь?</summary>
-              <p>Напишите в поддержку ByMeVPN в Telegram.</p>
-            </details>
-          </div>
-        </div>
-      </section>
-
-      <section class="final-cta" aria-labelledby="cta-heading">
-        <div class="section-shell final-cta-content" data-reveal>
-          <h2 id="cta-heading">
-            Твой следующий<br /><span>шаг уже в сети.</span>
-          </h2>
-          <p>Откройте бота, чтобы увидеть доступные варианты подключения.</p>
-          <a
-            class="button button-secondary"
-            href="https://t.me/ByMeVPNbot"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Перейти в Telegram <span aria-hidden="true">↗</span></a
-          >
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="section-shell footer-content">
-        <a href="#top" class="footer-brand"
-          ><img
-            width="30"
-            height="30"
-            src="assets/brand/bymevpn-shield.png"
-            alt=""
-          /><span>ByMe<span>VPN</span></span></a
-        >
-        <span class="footer-note">Скорость. Свобода. Простота.</span>
-        <div class="footer-links">
-          <a
-            href="https://t.me/ByMeVPNbot"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Telegram-бот</a
-          ><a
-            href="https://t.me/ByMeVPNSupportBot"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Поддержка</a
-          >
-        </div>
-        <small>© <span id="year">2026</span> ByMeVPN</small>
+      <div class="section-shell footer-top">
+        <a class="brand footer-brand" href="#top" aria-label="ByMeVPN — наверх"><img src="assets/brand/bymevpn-shield.png" width="34" height="34" alt="" /><span>ByMe<span class="brand-accent">VPN</span></span></a>
+        <p>Интерфейс приложения — в центре внимания.</p>
+        <nav aria-label="Ссылки в подвале"><a href="https://t.me/ByMeVPNbot" target="_blank" rel="noopener noreferrer">Telegram-бот <span aria-hidden="true">↗</span></a><a href="https://t.me/ByMeVPNSupportBot" target="_blank" rel="noopener noreferrer">Поддержка <span aria-hidden="true">↗</span></a></nav>
       </div>
+      <div class="section-shell footer-bottom"><span>© <span id="year">2026</span> ByMeVPN</span><span>Демо сайта не запускает VPN</span></div>
     </footer>
   </body>
 </html>

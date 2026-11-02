@@ -21,3 +21,18 @@ Date: 2026-11-01. One bounded independent pass against the EGM feature-spec and 
 | C2 | The spec did not clearly preserve the original `#benefits` anchor or specify tests/targets. | Fixed with explicit anchor mapping, scoped file list, and behavioral checks. |
 
 No finding was left contested. The review did not verify production pricing, trial, cancellation, app release or VPN egress; the website copy avoids making those claims.
+
+## Pass 2 — product-story v3
+
+**Date:** 2026-11-02. Three focused reviewers checked the redesigned direction against Android source facts, product boundaries and implementation readiness. The new implementation brief is `docs/designs/bymevpn-product-story.md`; the previous section remains as the record of PR #2.
+
+| Finding | Disposition |
+| --- | --- |
+| The first frame gave oversized copy more weight than the app. | Accepted: reduced the headline scale and moved the device earlier. Chromium measurements show a 340 px device centered in the 1440×900 first frame, with the release status and CTA visible. |
+| The mock’s server label and bottom navigation did not match the Android source. | Fixed: home starts at «Сервер не выбран», automatic selection appears only in the server sheet, and tabs read «Главная / Настройки / Аккаунт». |
+| A prototype variant used a selector that could not match its root element. | Fixed: the studio variant styles its root directly. Variant C remains rejected because it obscures the screen. |
+| The demo needed distinct server-sheet navigation, keyboard behavior and reduced-motion criteria. | Fixed: the sheet opens/closes, Escape returns focus, explicit actions update the live region, scroll-driven changes remain quiet, and reduced motion removes transitions. |
+| Release language must distinguish an unpublished debug artifact from a public Android release. | Fixed: the page states that no public Android release exists; both download controls are disabled and no Telegram or debug APK link stands in for a download. |
+| Acceptance evidence and viewport coverage were not tied to the implementation. | Fixed: contract tests, a nine-size Chromium matrix, state screenshots and a motion recording are saved with the branch. |
+
+No finding is contested. The visual QA confirmed no horizontal overflow, browser errors or external requests at the checked viewports. It does not claim that the Android tunnel connects or that a public release exists.
