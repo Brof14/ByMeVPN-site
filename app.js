@@ -50,27 +50,38 @@ if (menuToggle && menu) {
   window.matchMedia("(min-width: 761px)").addEventListener?.("change", () => setMenuOpen(false));
 }
 
-if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement) {
+if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement && scenes.length) {
   const stateText = {
     off: "VPN выключен",
     connecting: "Подключение…",
     connected: "VPN запущен",
   };
   let connectionState = "off";
+  let activeScene = "off";
   let serverSheetOpen = false;
   let selectedServerName = "Сервер не выбран";
-  let connectionTimer;
+  let connectionTimer = 0;
+  let frame = 0;
   let previousFocus = null;
+  let serverReturnScene = "off";
 
   const announce = (message) => {
     demoAnnouncement.textContent = `Демо интерфейса: ${message} Реальное подключение не запускалось.`;
   };
 
-  const activeScene = () => serverSheetOpen ? "servers" : connectionState;
+  const cancelConnectionTimer = () => {
+    const wasConnecting = Boolean(connectionTimer) && connectionState === "connecting";
+    window.clearTimeout(connectionTimer);
+    connectionTimer = 0;
+    if (wasConnecting) {
+      connectionState = "off";
+      render();
+    }
+  };
 
-  const render = ({ announcement = "", updateScene = true } = {}) => {
-    const scene = activeScene();
-    demoScreen.dataset.state = scene;
+  const render = (announcement = "") => {
+    const state = serverSheetOpen ? "servers" : connectionState;
+    demoScreen.dataset.state = state;
     demoState.textContent = stateText[connectionState];
     demoHint.textContent = connectionState === "off"
       ? "Нажмите, чтобы подключиться"
@@ -85,110 +96,116 @@ if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement) {
     if (serverOpen) serverOpen.setAttribute("aria-expanded", String(serverSheetOpen));
     if (selectedServer) selectedServer.textContent = selectedServerName;
     if (autoServer) autoServer.setAttribute("aria-pressed", String(selectedServerName === "Автоматически"));
-
-    if (updateScene) {
-      sceneButtons.forEach((button) => {
-        button.setAttribute("aria-pressed", String(button.dataset.demoScene === scene));
-      });
-      scenes.forEach((item) => item.classList.toggle("is-current", item.dataset.scene === scene));
-    }
+    sceneButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.demoScene === activeScene));
+    });
+    scenes.forEach((item) => {
+      item.classList.toggle("is-current", item.dataset.scene === activeScene);
+    });
     if (announcement) announce(announcement);
   };
 
-  const setConnectionState = (state, { announcement = "", updateScene = true } = {}) => {
-    window.clearTimeout(connectionTimer);
-    connectionState = state;
-    render({ announcement, updateScene });
+  const scrollToScene = (sceneId) => {
+    const target = scenes.find((scene) => scene.dataset.scene === sceneId);
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - (window.innerHeight - target.offsetHeight) / 2;
+    window.scrollTo({ top: Math.max(0, top), behavior: "instant" });
   };
 
-  const openServers = ({ announcement = "", updateScene = true, focus = false } = {}) => {
-    window.clearTimeout(connectionTimer);
-    previousFocus = document.activeElement;
-    serverSheetOpen = true;
-    render({ announcement, updateScene });
-    if (focus) serverClose?.focus();
+  const activateScene = (sceneId, { scroll = false, announcement = "" } = {}) => {
+    if (!scenes.some((scene) => scene.dataset.scene === sceneId)) return;
+    cancelConnectionTimer();
+    activeScene = sceneId;
+    serverSheetOpen = sceneId === "servers";
+    if (sceneId === "servers") serverReturnScene = connectionState;
+    else connectionState = sceneId;
+    render(announcement);
+    if (scroll) scrollToScene(sceneId);
   };
 
-  const closeServers = ({ announcement = "", updateScene = true, restoreFocus = false } = {}) => {
-    serverSheetOpen = false;
-    render({ announcement, updateScene });
-    if (restoreFocus && previousFocus instanceof HTMLElement) previousFocus.focus();
+  const syncSceneToScroll = () => {
+    frame = 0;
+    const track = document.getElementById("story-track");
+    if (!track) return;
+    const trackRect = track.getBoundingClientRect();
+    if (trackRect.bottom <= 0 || trackRect.top >= window.innerHeight) return;
+    const focusY = window.innerHeight * 0.5;
+    const nearest = scenes.reduce((best, scene) => {
+      const rect = scene.getBoundingClientRect();
+      const distance = Math.abs((rect.top + rect.bottom) / 2 - focusY);
+      return distance < best.distance ? { scene, distance } : best;
+    }, { scene: scenes[0], distance: Number.POSITIVE_INFINITY }).scene;
+    if (nearest.dataset.scene !== activeScene) activateScene(nearest.dataset.scene);
   };
+
+  const scheduleSceneSync = () => {
+    if (!frame) frame = window.requestAnimationFrame(syncSceneToScroll);
+  };
+
+  window.addEventListener("scroll", scheduleSceneSync, { passive: true });
+  window.addEventListener("resize", scheduleSceneSync, { passive: true });
+  window.addEventListener("wheel", cancelConnectionTimer, { passive: true });
+  window.addEventListener("touchstart", cancelConnectionTimer, { passive: true });
+  document.addEventListener("keydown", (event) => {
+    if (["PageDown", "PageUp", "Home", "End", "ArrowDown", "ArrowUp", " "].includes(event.key)) {
+      cancelConnectionTimer();
+    }
+    if (event.key === "Escape" && serverSheetOpen) {
+      activateScene(serverReturnScene, { scroll: true, announcement: "Выбор сервера закрыт." });
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    }
+  });
 
   demoToggle.addEventListener("click", () => {
     if (connectionState === "connected" || connectionState === "connecting") {
-      closeServers({ updateScene: false });
-      setConnectionState("off", { announcement: "VPN выключен." });
+      activateScene("off", { scroll: true, announcement: "VPN выключен." });
       return;
     }
-    closeServers({ updateScene: false });
-    setConnectionState("connecting", { announcement: "Показано состояние подключения." });
+    activateScene("connecting", { scroll: true, announcement: "Показано состояние подключения." });
     connectionTimer = window.setTimeout(() => {
-      connectionState = "connected";
-      render({ announcement: "VPN запущен. Это только демонстрация." });
+      connectionTimer = 0;
+      activateScene("connected", { scroll: true, announcement: "VPN запущен. Это только демонстрация." });
     }, 720);
   });
 
   serverOpen?.addEventListener("click", () => {
-    openServers({ announcement: "Открыт выбор сервера.", focus: true });
+    previousFocus = document.activeElement;
+    serverReturnScene = activeScene === "servers" ? connectionState : activeScene;
+    activateScene("servers", { scroll: true, announcement: "Открыт выбор сервера." });
+    serverClose?.focus();
   });
   serverClose?.addEventListener("click", () => {
-    closeServers({ announcement: "Выбор сервера закрыт.", restoreFocus: true });
+    activateScene(serverReturnScene, { scroll: true, announcement: "Выбор сервера закрыт." });
+    if (previousFocus instanceof HTMLElement) previousFocus.focus();
   });
   autoServer?.addEventListener("click", () => {
     selectedServerName = "Автоматически";
-    closeServers({ announcement: "Выбран автоматический сервер.", restoreFocus: true });
+    activateScene(serverReturnScene, { scroll: true, announcement: "Выбран автоматический сервер." });
+    if (previousFocus instanceof HTMLElement) previousFocus.focus();
   });
 
   sceneButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const requested = button.dataset.demoScene;
-      if (requested === "servers") {
-        openServers({ announcement: "Показан выбор сервера." });
-      } else {
-        closeServers({ updateScene: false });
-        setConnectionState(requested, {
-          announcement: `Показано состояние «${stateText[requested]}».`,
-        });
-      }
-      document.querySelector(`[data-scene="${requested}"]`)
-        ?.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "center" });
+      activateScene(requested, {
+        scroll: true,
+        announcement: `Показана сцена «${button.textContent.trim().replace(/^\d+\s*/, "") }».`,
+      });
     });
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && serverSheetOpen) {
-      closeServers({ announcement: "Выбор сервера закрыт.", restoreFocus: true });
-    }
-  });
-
-  const sceneObserver = new IntersectionObserver((entries) => {
-    const visible = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!visible) return;
-    const scene = visible.target.dataset.scene;
-    if (scene === "servers") {
-      serverSheetOpen = true;
-    } else {
-      serverSheetOpen = false;
-      connectionState = scene;
-    }
-    render({ announcement: "" });
-  }, { rootMargin: "-35% 0px -35% 0px", threshold: [0.05, 0.25, 0.5] });
-  scenes.forEach((scene) => sceneObserver.observe(scene));
   render();
+  scheduleSceneSync();
 }
 
 if (revealItems.length && "IntersectionObserver" in window && !reducedMotion.matches) {
   const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      entry.target.classList.add("is-revealed");
+      entry.target.classList.add("is-visible");
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.12 });
   revealItems.forEach((item) => revealObserver.observe(item));
-} else {
-  revealItems.forEach((item) => item.classList.add("is-revealed"));
+  document.documentElement.classList.add("reveal-enabled");
 }
