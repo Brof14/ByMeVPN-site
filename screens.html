@@ -154,7 +154,7 @@
   }
   const container=document.getElementById('screens');
   container.innerHTML=data.map(([id,label,kind,group])=>
-    '<article class="tile" data-group="'+group+'"><div class="tile-kicker"><b>'+id+' / 16</b><span>'+label+'</span></div><div class="mock-phone"><div class="statusbar"><span>9:41</span><span>▰ ▰ ▣ 100%</span></div><div class="mock-top">'+(kind==='welcome'?'':id<='07'?shield:'<span class="arrow-back">←</span>')+'<span class="brand-text">'+(kind==='welcome'?'ByMe<span>VPN</span>':id<='07'?'ByMe<span>VPN</span>':label)+'</span><span class="right-help">?</span></div><div class="mock-body">'+details(kind)+'</div>'+nav+'</div></article>').join('');
+    '<article class="tile" data-group="'+group+'"><div class="tile-kicker"><b>'+id+' / 16</b><span>'+label+'</span></div><div class="mock-phone"><div class="statusbar"><span>9:41</span><span>▰ ▰ ▣ 100%</span></div><div class="mock-top">'+(kind==='welcome'?'':id<='07'?shield:'<span class="arrow-back">←</span>')+'<span class="brand-text">'+(kind==='welcome'?'ByMe<span>VPN</span>':id<='07'?'ByMe<span>VPN</span>':label)+'</span><span class="right-help">?</span></div><div class="mock-body">'+details(kind)+'</div>'+(['welcome','signup','signin','trial','pricing'].includes(kind)?'':nav)+'</div></article>').join('');
   document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{
     const active=btn.dataset.filter;
     document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
