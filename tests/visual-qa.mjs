@@ -99,7 +99,10 @@ try {
 
     // Conversion + root CSS smoke checks: interactive, visible actions before scrolling.
     const primaryAction = page.locator(".hero .button-primary");
-    assert.equal(await primaryAction.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    assert.equal(await primaryAction.getAttribute("href"), "#product");
+    const heroAccess = page.locator(".hero .hero-secondary");
+    assert.equal(await heroAccess.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    assert.ok(await heroAccess.isVisible(), `${viewport.name}: live connection link is hidden`);
     assert.ok(await primaryAction.isVisible(), `${viewport.name}: hero CTA is not visible`);
     const heroActionRect = await primaryAction.boundingBox();
     assert.ok(heroActionRect && heroActionRect.y < viewport.height,
