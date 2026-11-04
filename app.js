@@ -86,8 +86,8 @@ if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement && sce
     demoHint.textContent = connectionState === "off"
       ? "Нажмите, чтобы подключиться"
       : connectionState === "connecting"
-        ? "Устанавливаем туннель"
-        : "Соединение с сервером проверено";
+        ? "Демонстрация подключения"
+        : "Демонстрация активного состояния";
     demoToggle.setAttribute("aria-pressed", String(connectionState === "connected"));
     demoToggle.setAttribute("aria-label", connectionState === "connected"
       ? "Завершить демонстрацию подключения"
