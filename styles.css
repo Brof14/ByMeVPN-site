@@ -541,6 +541,16 @@ summary:focus-visible {
   line-height: 1.1;
 }
 
+.button-bot {
+  color: #092532;
+  background: linear-gradient(115deg, #69d3bc, #64c0d4);
+  text-decoration: none;
+  box-shadow: 0 12px 36px rgba(52, 164, 166, .12);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.button-bot:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(52, 164, 166, .22); }
+.button-bot span { font-size: 16px; }
+
 .button-disabled {
   border-color: var(--tone-670fc06f);
   background: var(--tone-1add704a);
