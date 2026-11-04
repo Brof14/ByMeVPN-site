@@ -2734,3 +2734,39 @@ summary:focus-visible {
   .site-nav { gap: 14px; font-size: 12px; }
   .nav-android { padding-inline: 13px; }
 }
+
+/* The older polygon frame visually competed with the phone. Replace it with quiet light. */
+.hero::before {
+  inset: 13% 8% -12%;
+  border: 0;
+  border-radius: 50%;
+  clip-path: none;
+  background: radial-gradient(ellipse at 50% 57%, rgba(82, 119, 235, .22) 0%, rgba(68, 97, 174, .10) 34%, transparent 67%);
+  box-shadow: none;
+  pointer-events: none;
+}
+.hero-frame { display: none; }
+.hero-grid {
+  opacity: .09;
+  background-size: 92px 92px;
+  mask-image: linear-gradient(to bottom, transparent 6%, #000 38%, #000 67%, transparent 94%);
+}
+.hero-product::before {
+  position: absolute;
+  z-index: 0;
+  top: 6%;
+  right: 12%;
+  bottom: 8%;
+  left: 12%;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(89, 132, 246, .16), transparent 64%);
+  filter: blur(22px);
+  pointer-events: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hero-device { transition: transform 600ms cubic-bezier(.2,.7,.2,1); }
+  .hero-product:hover .hero-device {
+    transform: translateX(-50%) rotateY(-2deg) rotateZ(-.2deg) translateY(-3px);
+  }
+}
