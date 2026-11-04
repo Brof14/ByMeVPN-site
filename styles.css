@@ -2640,3 +2640,31 @@ summary:focus-visible {
     transform: none;
   }
 }
+
+/* V2 ecosystem: clear statuses, no invented download links */
+.platforms-section { padding: 108px 0; border-block: 1px solid var(--line); background: linear-gradient(130deg, #0a1522, #101d2b 66%, #0a1420); }
+.platforms-layout { display: grid; grid-template-columns: minmax(0, .87fr) minmax(0, 1.13fr); gap: clamp(30px, 5vw, 86px); align-items: start; }
+.platforms-eyebrow { display: inline-block; color: var(--mint); font-size: 11px; font-weight: 700; letter-spacing: .16em; margin-bottom: 20px; }
+.platforms-intro h2 { font-size: clamp(36px, 4vw, 59px); letter-spacing: -.06em; line-height: 1.1; margin: 0 0 20px; font-weight: 680; }
+.platforms-intro h2 span { color: var(--mint); }
+.platforms-intro p { max-width: 435px; font-size: 14px; line-height: 1.9; color: var(--muted); }
+.platforms-list { border-top: 1px solid var(--line); }
+.platforms-row { display: flex; align-items: center; gap: 20px; padding: 24px 2px; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; }
+.platforms-row.is-live:hover { background: rgba(105, 211, 188, .035); }
+.platforms-os { display: grid; place-items: center; width: 43px; height: 43px; flex: 0 0 43px; border: 1px solid rgba(105, 211, 188, .20); border-radius: 12px; color: var(--mint); font-size: 23px; }
+.platforms-copy { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.platforms-copy strong { font-size: 16px; font-weight: 660; letter-spacing: -.025em; }
+.platforms-copy small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.platforms-status { white-space: nowrap; font-size: 10px; border: 1px solid rgba(137, 172, 190, .22); border-radius: 99px; padding: 7px 10px; color: #a4b6c2; margin-left: auto; }
+.platforms-status.live { border-color: rgba(105, 211, 188, .46); color: var(--mint); background: rgba(105, 211, 188, .065); }
+@media (max-width: 870px) {
+  .platforms-section { padding: 75px 0; }
+  .platforms-layout { grid-template-columns: 1fr; gap: 30px; }
+}
+@media (max-width: 540px) {
+  .platforms-row { gap: 11px; padding: 18px 0; }
+  .platforms-os { width: 36px; height: 36px; flex-basis: 36px; font-size: 19px; }
+  .platforms-copy strong { font-size: 14px; }
+  .platforms-copy small { font-size: 10px; }
+  .platforms-status { font-size: 9px; padding: 5px 8px; }
+}
