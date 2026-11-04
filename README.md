@@ -1,10 +1,10 @@
 # ByMeVPN Website
 
-Responsive Russian marketing and onboarding site for ByMeVPN. The primary action opens the official Telegram bot. The Android product showcase is a local-only interactive preview; no VPN connection is started on the website and no public Android APK is advertised.
+Responsive Russian marketing and onboarding site for ByMeVPN. The primary action explores the interactive Android product preview; a prominent secondary action and the navigation open the official Telegram bot for currently available onboarding. The website never starts a VPN connection and does not advertise an unreleased Android APK.
 
 ## Project files
 
-- `index.html` — conversion-first hero, official Telegram onboarding, Android demo, release status, terms and FAQ.
+- `index.html` — Android-first hero, prominent functional preview and Telegram onboarding CTAs, interactive demo, release status, terms and FAQ.
 - `styles.css` — design tokens, responsive layout, scene transitions, reduced-motion and focus styles.
 - `app.js` — mobile navigation, four demo scenes, server-selection sheet and local UI state only.
 - `docs/designs/bymevpn-product-story.md` — original v3 product-scene design decisions (historical reference).
