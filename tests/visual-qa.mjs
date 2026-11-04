@@ -97,6 +97,36 @@ try {
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto(baseUrl, { waitUntil: "networkidle" });
 
+    // Conversion + root CSS smoke checks: interactive, visible actions before scrolling.
+    const primaryAction = page.locator(".hero .button-primary");
+    assert.equal(await primaryAction.getAttribute("href"), "#product");
+    const heroAccess = page.locator(".hero .hero-secondary");
+    assert.equal(await heroAccess.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    assert.ok(await heroAccess.isVisible(), `${viewport.name}: live connection link is hidden`);
+    assert.ok(await primaryAction.isVisible(), `${viewport.name}: hero CTA is not visible`);
+    const heroActionRect = await primaryAction.boundingBox();
+    assert.ok(heroActionRect && heroActionRect.y < viewport.height,
+      `${viewport.name}: first action requires scrolling past the first viewport`);
+
+    const rootMinWidth = await page.evaluate(() => getComputedStyle(document.documentElement).minWidth);
+    assert.equal(rootMinWidth, "320px",
+      `${viewport.name}: root CSS has been nested or its global html styles are missing`);
+
+    const navAction = page.locator(".site-nav .nav-cta");
+    assert.equal(await navAction.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    if (viewport.width <= 760) {
+      const menuButton = page.locator(".menu-toggle");
+      assert.equal(await menuButton.getAttribute("aria-expanded"), "false");
+      await menuButton.click();
+      assert.equal(await menuButton.getAttribute("aria-expanded"), "true");
+      await navAction.waitFor({ state: "visible", timeoutMs: 3000 });
+      assert.ok(await navAction.isVisible(), `${viewport.name}: opened menu hides the CTA`);
+      await menuButton.press("Escape");
+      assert.equal(await menuButton.getAttribute("aria-expanded"), "false");
+    } else {
+      assert.ok(await navAction.isVisible(), `${viewport.name}: header CTA is missing`);
+    }
+
     const revealElements = page.locator("[data-reveal]");
     const revealCount = await revealElements.count();
     assert.equal(revealCount, 14, `${viewport.name}: expected fourteen reveal elements`);
@@ -131,12 +161,31 @@ try {
           copyOpacity: Number.parseFloat(getComputedStyle(copy).opacity),
           copyInViewport: copyRect.bottom > 0 && copyRect.top < innerHeight,
           screenVisible: screenRect.bottom > 0 && screenRect.top < innerHeight,
+          screenBottom: Math.round(screenRect.bottom),
+          mobileCaption: (() => {
+            const caption = document.querySelector(".mobile-scene-caption");
+            if (!caption) return null;
+            const rect = caption.getBoundingClientRect();
+            return { visible: getComputedStyle(caption).display !== "none",
+              top: Math.round(rect.top), bottom: Math.round(rect.bottom),
+              text: caption.textContent.trim() };
+          })(),
           screenState: document.getElementById("demo-screen").dataset.state,
         };
       });
       assert.equal(sceneLayout.row, String(index + 1), `${viewport.name}: ${sceneId} occupies grid row ${sceneLayout.row}`);
-      assert.ok(sceneLayout.copyOpacity >= 0.99, `${viewport.name}: active ${sceneId} copy opacity ${sceneLayout.copyOpacity}`);
-      assert.ok(sceneLayout.copyInViewport, `${viewport.name}: ${sceneId} copy left the viewport`);
+      if (viewport.width <= 760) {
+        assert.ok(sceneLayout.mobileCaption?.visible, `${viewport.name}: mobile caption is hidden`);
+        assert.ok(sceneLayout.mobileCaption.top >= sceneLayout.screenBottom + 8,
+          `${viewport.name}: ${sceneId} caption overlaps phone: ${JSON.stringify(sceneLayout)}`);
+        assert.ok(sceneLayout.mobileCaption.bottom <= viewport.height - 60,
+          `${viewport.name}: ${sceneId} caption overlaps bottom controls: ${JSON.stringify(sceneLayout)}`);
+        assert.ok(sceneLayout.mobileCaption.text.length >= 25,
+          `${viewport.name}: ${sceneId} caption is empty`);
+      } else {
+        assert.ok(sceneLayout.copyOpacity >= 0.99, `${viewport.name}: active ${sceneId} copy opacity ${sceneLayout.copyOpacity}`);
+        assert.ok(sceneLayout.copyInViewport, `${viewport.name}: ${sceneId} copy left the viewport`);
+      }
       assert.ok(sceneLayout.screenVisible, `${viewport.name}: phone screen left the viewport during ${sceneId}`);
       assert.equal(sceneLayout.screenState, sceneId, `${viewport.name}: screen and story diverged at ${sceneId}`);
       sceneRows.push(sceneLayout);

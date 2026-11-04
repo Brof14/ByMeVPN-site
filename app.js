@@ -8,6 +8,9 @@ const demoToggle = document.getElementById("demo-toggle");
 const demoState = document.getElementById("demo-state-visible");
 const demoHint = document.getElementById("demo-hint");
 const demoAnnouncement = document.getElementById("demo-announcement");
+const mobileSceneStep = document.getElementById("mobile-scene-step");
+const mobileSceneTitle = document.getElementById("mobile-scene-title");
+const mobileSceneDescription = document.getElementById("mobile-scene-description");
 const serverOpen = document.getElementById("server-open");
 const serverSheet = document.getElementById("server-sheet");
 const serverClose = document.getElementById("server-close");
@@ -86,8 +89,8 @@ if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement && sce
     demoHint.textContent = connectionState === "off"
       ? "Нажмите, чтобы подключиться"
       : connectionState === "connecting"
-        ? "Устанавливаем туннель"
-        : "Соединение с сервером проверено";
+        ? "Демонстрация подключения"
+        : "Демонстрация активного состояния";
     demoToggle.setAttribute("aria-pressed", String(connectionState === "connected"));
     demoToggle.setAttribute("aria-label", connectionState === "connected"
       ? "Завершить демонстрацию подключения"
@@ -102,6 +105,16 @@ if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement && sce
     scenes.forEach((item) => {
       item.classList.toggle("is-current", item.dataset.scene === activeScene);
     });
+    // Mirror the active scene beneath the mobile phone rather than overlaying copy on it.
+    if (mobileSceneStep && mobileSceneTitle && mobileSceneDescription) {
+      const source = scenes.find((item) => item.dataset.scene === activeScene);
+      if (source) {
+        const sourceTitle = source.querySelector(".scene-copy h3");
+        mobileSceneStep.textContent = source.querySelector(".scene-index")?.textContent ?? "";
+        if (sourceTitle) mobileSceneTitle.replaceChildren(...[...sourceTitle.childNodes].map((node) => node.cloneNode(true)));
+        mobileSceneDescription.textContent = source.querySelector(".scene-copy p")?.textContent ?? "";
+      }
+    }
     if (announcement) announce(announcement);
   };
 
@@ -194,6 +207,7 @@ if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement && sce
     });
   });
 
+  document.documentElement.classList.add("demo-enhanced");
   render();
   scheduleSceneSync();
 }

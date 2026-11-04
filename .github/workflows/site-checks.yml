@@ -32,3 +32,11 @@ jobs:
           npx playwright-core install --with-deps chromium
       - name: Run real-browser visual regression checks
         run: npm run test:browser
+      - name: Publish visual QA screenshots and videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bymevpn-visual-qa
+          path: outputs/bymevpn-recovery/visual/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -84,10 +84,10 @@ class SiteContractTests(unittest.TestCase):
         self.assertNotIn('class="plan"', HTML)
 
     def test_android_release_is_honest_and_disabled(self):
-        self.assertIn("Публичная версия пока не выпущена", HTML)
+        self.assertIn("Публичной Android-сборки пока нет", HTML)
         self.assertIn("Публичная загрузка недоступна", HTML)
         download_buttons = [b for b in self.doc.buttons if "button-disabled" in b.get("class", "")]
-        self.assertEqual(len(download_buttons), 2)
+        self.assertEqual(len(download_buttons), 1)
         self.assertTrue(all("disabled" in button for button in download_buttons))
         self.assertFalse(any("download" in link.get("href", "").lower() for link in self.doc.links))
         self.assertFalse(any(".apk" in link.get("href", "").lower() for link in self.doc.links))
@@ -152,10 +152,10 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn('querySelector(".menu-toggle")', JS)
 
     def test_faq_and_purchase_disclosure_remain(self):
-        self.assertEqual(self.doc.details_count, 6)
+        self.assertEqual(self.doc.details_count, 7)
         self.assertIn("полную сумму", HTML.lower())
         self.assertIn("автопродление", HTML.lower())
-        self.assertIn("указанный способ отмены", HTML.lower())
+        self.assertIn("способ отмены", HTML.lower())
 
     def test_responsive_motion_and_focus_styles_exist(self):
         for fragment in (
@@ -166,6 +166,27 @@ class SiteContractTests(unittest.TestCase):
             self.assertIn(fragment, CSS)
         for width in (360, 390, 768, 1280, 1440, 1920):
             self.assertIn(str(width), (ROOT / "docs/designs/bymevpn-product-story.md").read_text(encoding="utf-8"))
+
+    def test_css_root_closed_and_balanced(self):
+        # A missing :root brace once nested the entire stylesheet under :root.
+        self.assertEqual(CSS.count("{"), CSS.count("}"), "CSS block delimiters are unbalanced")
+        self.assertRegex(CSS, r"--tone-0729ae0e:[^;]+;\s*\}\s*\*,")
+        self.assertIn(".site-nav .nav-cta", CSS)
+        self.assertIn(".product-action", CSS)
+        self.assertIn(".mobile-scene-caption", CSS)
+        self.assertIn("demo-enhanced", JS)
+
+    def test_primary_onboarding_is_working_and_honest(self):
+        self.assertIn('class="button button-primary" href="#product"', HTML)
+        self.assertIn('class="nav-cta" href="https://t.me/ByMeVPNbot"', HTML)
+        self.assertIn("Изучить приложение", HTML)
+        self.assertIn("Подключиться сейчас", HTML)
+        self.assertIn('class="hero-secondary" href="https://t.me/ByMeVPNbot"', HTML)
+        self.assertIn('rel="noopener noreferrer"', HTML)
+        self.assertIn('rel="canonical"', HTML)
+        self.assertEqual(HTML.count("Скачать для Android"), 1)
+        self.assertIn("Демонстрация активного состояния", JS)
+        self.assertNotIn("Устанавливаем туннель", JS)
 
     def test_no_placeholder_links_or_stale_download_logic(self):
         for link in self.doc.links:
