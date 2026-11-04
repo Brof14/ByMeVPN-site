@@ -34,7 +34,7 @@ try {
       const nav = document.querySelector('.nav-wrap').getBoundingClientRect();
       const brand = document.querySelector('.brand').getBoundingClientRect();
       const phone = document.querySelector('.hero-phone').getBoundingClientRect();
-      const shell = document.querySelector('.hero-phone .phone-shell').getBoundingClientRect();
+      const shell = document.querySelector('.hero-phone.phone-shell').getBoundingClientRect();
       const hero = document.querySelector('.hero').getBoundingClientRect();
       return {
         navDisplay: css('.nav-wrap').display,
@@ -44,7 +44,7 @@ try {
         heroHeight: hero.height,
         phoneWidth: phone.width,
         phoneHeight: phone.height,
-        shellRadius: parseFloat(css('.hero-phone .phone-shell').borderTopLeftRadius),
+        shellRadius: parseFloat(css('.hero-phone.phone-shell').borderTopLeftRadius),
         phonePosition: css('.hero-phone').position,
         stylesheetLoaded: [...document.styleSheets].some(sheet => sheet.href?.includes('styles.css') && (() => { try { return sheet.cssRules.length > 100 } catch { return false } })())
       };
