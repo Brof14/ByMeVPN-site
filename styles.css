@@ -2764,8 +2764,8 @@ summary:focus-visible {
     padding-top: 14px;
   }
   .story-device-stage .phone-device {
-    width: 218px;
-    height: 446px;
+    width: 232px;
+    height: 482px;
   }
   .demo-enhanced .mobile-scene-caption {
     display: block;
@@ -2802,8 +2802,23 @@ summary:focus-visible {
 }
 @media (max-width: 760px) and (max-height: 760px) {
   .story-device-stage { min-height: 0; padding-top: 6px; height: calc(100svh - 120px); }
-  .story-device-stage .phone-device { width: 190px; height: 392px; }
+  .story-device-stage .phone-device {
+    width: 232px;
+    height: 482px;
+    scale: .78;
+    transform-origin: top center;
+    margin-bottom: -106px;
+  }
   .mobile-scene-caption { margin-top: 8px; }
   .mobile-scene-caption h3 { font-size: 23px; }
   .mobile-scene-caption p { font-size: 10px; line-height: 1.35; }
+}
+
+@media (max-width: 350px) and (min-height: 761px) {
+  .story-device-stage .phone-device {
+    scale: .90;
+    transform-origin: top center;
+    margin-bottom: -45px;
+  }
+  .mobile-scene-caption h3 { font-size: 25px; }
 }
