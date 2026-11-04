@@ -27,6 +27,38 @@ try {
     const out=resolve(dir,v.n);mkdirSync(out,{recursive:true});
     await page.screenshot({path:resolve(out,'hero.png')});
     assert.ok(await page.locator('.hero h1').isVisible());
+    // Regression: user screenshots showed navigation as concatenated links and an unframed phone.
+    // Checking visibility alone would not detect an unloaded/mismatched stylesheet.
+    const layout = await page.evaluate(() => {
+      const css = selector => getComputedStyle(document.querySelector(selector));
+      const nav = document.querySelector('.nav-wrap').getBoundingClientRect();
+      const brand = document.querySelector('.brand').getBoundingClientRect();
+      const phone = document.querySelector('.hero-phone').getBoundingClientRect();
+      const shell = document.querySelector('.hero-phone .phone-shell').getBoundingClientRect();
+      const hero = document.querySelector('.hero').getBoundingClientRect();
+      return {
+        navDisplay: css('.nav-wrap').display,
+        brandDisplay: css('.brand').display,
+        navHeight: nav.height,
+        brandLeft: brand.left,
+        heroHeight: hero.height,
+        phoneWidth: phone.width,
+        phoneHeight: phone.height,
+        shellRadius: parseFloat(css('.hero-phone .phone-shell').borderTopLeftRadius),
+        phonePosition: css('.hero-phone').position,
+        stylesheetLoaded: [...document.styleSheets].some(sheet => sheet.href?.includes('styles.css') && (() => { try { return sheet.cssRules.length > 100 } catch { return false } })())
+      };
+    });
+    assert.equal(layout.navDisplay,'flex',`${v.n}: navigation CSS missing`);
+    assert.ok(layout.brandDisplay.includes('flex'),`${v.n}: brand CSS missing`);
+    assert.ok(layout.navHeight>=60,`${v.n}: collapsed header`);
+    assert.ok(layout.phoneWidth>=200 && layout.phoneWidth<=350,`${v.n}: phone frame missing`);
+    assert.ok(layout.phoneHeight>=400,`${v.n}: phone height collapsed`);
+    assert.ok(layout.shellRadius>=30,`${v.n}: phone shell styling missing`);
+    assert.equal(layout.phonePosition,'absolute',`${v.n}: phone out of layout`);
+    assert.ok(layout.stylesheetLoaded,`${v.n}: full stylesheet failed to load`);
+    console.log(v.n,'layout',JSON.stringify(layout));
+
     assert.equal(await page.locator('.hero-actions .button-primary').getAttribute('href'),'#download');
     assert.ok(await page.locator('.download-disabled').isDisabled());
     const positions=[];
