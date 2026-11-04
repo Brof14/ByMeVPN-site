@@ -161,12 +161,31 @@ try {
           copyOpacity: Number.parseFloat(getComputedStyle(copy).opacity),
           copyInViewport: copyRect.bottom > 0 && copyRect.top < innerHeight,
           screenVisible: screenRect.bottom > 0 && screenRect.top < innerHeight,
+          screenBottom: Math.round(screenRect.bottom),
+          mobileCaption: (() => {
+            const caption = document.querySelector(".mobile-scene-caption");
+            if (!caption) return null;
+            const rect = caption.getBoundingClientRect();
+            return { visible: getComputedStyle(caption).display !== "none",
+              top: Math.round(rect.top), bottom: Math.round(rect.bottom),
+              text: caption.textContent.trim() };
+          })(),
           screenState: document.getElementById("demo-screen").dataset.state,
         };
       });
       assert.equal(sceneLayout.row, String(index + 1), `${viewport.name}: ${sceneId} occupies grid row ${sceneLayout.row}`);
-      assert.ok(sceneLayout.copyOpacity >= 0.99, `${viewport.name}: active ${sceneId} copy opacity ${sceneLayout.copyOpacity}`);
-      assert.ok(sceneLayout.copyInViewport, `${viewport.name}: ${sceneId} copy left the viewport`);
+      if (viewport.width <= 760) {
+        assert.ok(sceneLayout.mobileCaption?.visible, `${viewport.name}: mobile caption is hidden`);
+        assert.ok(sceneLayout.mobileCaption.top >= sceneLayout.screenBottom + 8,
+          `${viewport.name}: ${sceneId} caption overlaps phone: ${JSON.stringify(sceneLayout)}`);
+        assert.ok(sceneLayout.mobileCaption.bottom <= viewport.height - 60,
+          `${viewport.name}: ${sceneId} caption overlaps bottom controls: ${JSON.stringify(sceneLayout)}`);
+        assert.ok(sceneLayout.mobileCaption.text.length >= 25,
+          `${viewport.name}: ${sceneId} caption is empty`);
+      } else {
+        assert.ok(sceneLayout.copyOpacity >= 0.99, `${viewport.name}: active ${sceneId} copy opacity ${sceneLayout.copyOpacity}`);
+        assert.ok(sceneLayout.copyInViewport, `${viewport.name}: ${sceneId} copy left the viewport`);
+      }
       assert.ok(sceneLayout.screenVisible, `${viewport.name}: phone screen left the viewport during ${sceneId}`);
       assert.equal(sceneLayout.screenState, sceneId, `${viewport.name}: screen and story diverged at ${sceneId}`);
       sceneRows.push(sceneLayout);
