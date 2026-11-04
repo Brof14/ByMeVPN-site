@@ -172,12 +172,14 @@ class SiteContractTests(unittest.TestCase):
         self.assertEqual(CSS.count("{"), CSS.count("}"), "CSS block delimiters are unbalanced")
         self.assertRegex(CSS, r"--tone-0729ae0e:[^;]+;\s*\}\s*\*,")
         self.assertIn(".site-nav .nav-cta", CSS)
-        self.assertIn(".journey-strip", CSS)
+        self.assertIn(".product-action", CSS)
 
     def test_primary_onboarding_is_working_and_honest(self):
-        self.assertIn('class="button button-primary" href="https://t.me/ByMeVPNbot"', HTML)
+        self.assertIn('class="button button-primary" href="#product"', HTML)
         self.assertIn('class="nav-cta" href="https://t.me/ByMeVPNbot"', HTML)
-        self.assertIn("Открыть ByMeVPN в Telegram", HTML)
+        self.assertIn("Изучить приложение", HTML)
+        self.assertIn("Подключиться сейчас", HTML)
+        self.assertIn('class="hero-secondary" href="https://t.me/ByMeVPNbot"', HTML)
         self.assertIn('rel="noopener noreferrer"', HTML)
         self.assertIn('rel="canonical"', HTML)
         self.assertEqual(HTML.count("Скачать для Android"), 1)
