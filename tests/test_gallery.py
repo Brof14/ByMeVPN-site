@@ -12,6 +12,11 @@ class GalleryContractTests(unittest.TestCase):
     def test_gallery_is_reachable_from_home(self):
         self.assertGreaterEqual(INDEX.count('href="screens.html"'), 2)
 
+    def test_marketing_cta_uses_real_bot(self):
+        self.assertIn('class="button button-bot"', INDEX)
+        self.assertIn('href="https://t.me/ByMeVPNbot"', INDEX)
+        self.assertIn('class="button button-disabled"', INDEX)
+
     def test_all_sixteen_screens_are_declared(self):
         rows = re.findall(r"\['(\d{2})','[^']+','[^']+','(?:connection|account)'\]", GALLERY)
         self.assertEqual(rows, [f"{index:02d}" for index in range(1, 17)])
