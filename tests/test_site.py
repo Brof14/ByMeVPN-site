@@ -173,6 +173,8 @@ class SiteContractTests(unittest.TestCase):
         self.assertRegex(CSS, r"--tone-0729ae0e:[^;]+;\s*\}\s*\*,")
         self.assertIn(".site-nav .nav-cta", CSS)
         self.assertIn(".product-action", CSS)
+        self.assertIn(".mobile-scene-caption", CSS)
+        self.assertIn("demo-enhanced", JS)
 
     def test_primary_onboarding_is_working_and_honest(self):
         self.assertIn('class="button button-primary" href="#product"', HTML)
