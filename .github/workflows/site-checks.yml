@@ -32,3 +32,12 @@ jobs:
           npx playwright-core install --with-deps chromium
       - name: Run real-browser visual regression checks
         run: npm run test:browser
+      - name: Verify and screenshot full gallery
+        run: node tests/gallery-qa.mjs
+      - name: Upload gallery QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bymevpn-gallery-qa
+          path: outputs/gallery-qa/*.png
+          if-no-files-found: ignore
