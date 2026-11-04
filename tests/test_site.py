@@ -91,6 +91,7 @@ class SiteContractTests(unittest.TestCase):
         self.assertTrue(all("disabled" in button for button in download_buttons))
         self.assertIn('class="button button-primary"', HTML)
         self.assertIn("Начать через Telegram", HTML)
+        self.assertIn('class="hero-power" href="#product"', HTML)
         self.assertIn('href="https://t.me/ByMeVPNbot"', HTML)
         self.assertFalse(any("download" in link.get("href", "").lower() for link in self.doc.links))
         self.assertFalse(any(".apk" in link.get("href", "").lower() for link in self.doc.links))

@@ -103,6 +103,7 @@ try {
     const primaryCta = page.locator(".hero-actions .button-primary");
     assert.equal(await primaryCta.count(), 1);
     assert.equal(await primaryCta.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    assert.equal(await page.locator(".hero-power").getAttribute("href"), "#product");
     assert.ok(await primaryCta.isVisible(), `${viewport.name}: Telegram CTA is hidden`);
     assert.ok(await page.locator(".android-download").isDisabled(), `${viewport.name}: unsupported Android release is enabled`);
     assert.equal(await page.locator("#start .trust-item").count(), 3);
