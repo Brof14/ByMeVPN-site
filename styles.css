@@ -2752,3 +2752,58 @@ summary:focus-visible {
 /* The main CTA must retain dark, readable text on hover (higher specificity than nav links). */
 .site-nav > a.nav-cta:hover,
 .site-nav > a.nav-cta:focus-visible { color: var(--ink); }
+
+/* Mobile showcase: the copy is in a dedicated sticky caption BELOW the phone.
+   This prevents overlays and ensures text isn't covered by scene controls. */
+.mobile-scene-caption { display: none; }
+@media (max-width: 760px) {
+  .story-device-stage {
+    height: calc(100svh - 120px);
+    min-height: 650px;
+    justify-content: flex-start;
+    padding-top: 14px;
+  }
+  .story-device-stage .phone-device {
+    width: 218px;
+    height: 446px;
+  }
+  .mobile-scene-caption {
+    display: block;
+    width: min(calc(100% - 2 * var(--gutter)), 460px);
+    margin-top: 17px;
+    text-align: left;
+  }
+  .mobile-scene-step {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 620;
+  }
+  .mobile-scene-caption h3 {
+    margin: 7px 0 0;
+    color: var(--text);
+    font-size: clamp(27px, 7.5vw, 33px);
+    font-weight: 650;
+    line-height: 1.03;
+    letter-spacing: -.062em;
+  }
+  .mobile-scene-caption h3 span { color: var(--mint); }
+  .mobile-scene-caption p {
+    max-width: 360px;
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .demo-enhanced .story-scenes .scene-copy {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .story-controls { bottom: 9px; }
+}
+@media (max-width: 760px) and (max-height: 760px) {
+  .story-device-stage { min-height: 0; padding-top: 6px; height: calc(100svh - 120px); }
+  .story-device-stage .phone-device { width: 190px; height: 392px; }
+  .mobile-scene-caption { margin-top: 8px; }
+  .mobile-scene-caption h3 { font-size: 23px; }
+  .mobile-scene-caption p { font-size: 10px; line-height: 1.35; }
+}
