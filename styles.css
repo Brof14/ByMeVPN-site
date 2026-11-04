@@ -2728,3 +2728,9 @@ summary:focus-visible {
   .hero-lead { font-size: 14px; }
   .hero-actions .button { min-width: 0; max-width: 100%; }
 }
+
+/* Compact navigation at the tablet-to-desktop boundary. */
+@media (min-width: 761px) and (max-width: 960px) {
+  .site-nav { gap: 14px; font-size: 12px; }
+  .nav-android { padding-inline: 13px; }
+}

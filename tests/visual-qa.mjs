@@ -14,6 +14,7 @@ const viewports = [
 ];
 const sections = [
   ["hero", "section.hero"],
+  ["highlights", "#start"],
   ["product", "#product"],
   ["features", "#benefits"],
   ["android", "#android"],
@@ -96,6 +97,32 @@ try {
     const pageErrors = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto(baseUrl, { waitUntil: "networkidle" });
+
+    // Product-first acceptance: a working primary journey, no fake Android release,
+    // readable content and functional basic interactions at each breakpoint.
+    const primaryCta = page.locator(".hero-actions .button-primary");
+    assert.equal(await primaryCta.count(), 1);
+    assert.equal(await primaryCta.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    assert.ok(await primaryCta.isVisible(), `${viewport.name}: Telegram CTA is hidden`);
+    assert.ok(await page.locator(".android-download").isDisabled(), `${viewport.name}: unsupported Android release is enabled`);
+    assert.equal(await page.locator("#start .trust-item").count(), 3);
+    const sizes = await page.evaluate(() => ({
+      hero: Number.parseFloat(getComputedStyle(document.querySelector(".hero-lead")).fontSize),
+      faq: Number.parseFloat(getComputedStyle(document.querySelector(".faq-list summary")).fontSize),
+    }));
+    assert.ok(sizes.hero >= 14 && sizes.faq >= 14, `${viewport.name}: undersized body typography ${JSON.stringify(sizes)}`);
+    const firstFaq = page.locator(".faq-list details").first();
+    await firstFaq.locator("summary").click();
+    assert.ok(await firstFaq.evaluate((node) => node.open), `${viewport.name}: FAQ did not expand`);
+    await firstFaq.locator("summary").click();
+    assert.ok(!(await firstFaq.evaluate((node) => node.open)), `${viewport.name}: FAQ did not collapse`);
+    if (viewport.width <= 760) {
+      const toggle = page.locator(".menu-toggle");
+      await toggle.click();
+      assert.equal(await toggle.getAttribute("aria-expanded"), "true");
+      await page.keyboard.press("Escape");
+      assert.equal(await toggle.getAttribute("aria-expanded"), "false");
+    }
 
     const revealElements = page.locator("[data-reveal]");
     const revealCount = await revealElements.count();
