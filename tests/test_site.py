@@ -170,7 +170,7 @@ class SiteContractTests(unittest.TestCase):
     def test_css_root_closed_and_balanced(self):
         # A missing :root brace once nested the entire stylesheet under :root.
         self.assertEqual(CSS.count("{"), CSS.count("}"), "CSS block delimiters are unbalanced")
-        self.assertRegex(CSS, r"--tone-0729ae0e:[^;]+;\\s*\\}\\s*\\*,")
+        self.assertRegex(CSS, r"--tone-0729ae0e:[^;]+;\s*\}\s*\*,")
         self.assertIn(".site-nav .nav-cta", CSS)
         self.assertIn(".journey-strip", CSS)
 
@@ -180,7 +180,7 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("Открыть ByMeVPN в Telegram", HTML)
         self.assertIn('rel="noopener noreferrer"', HTML)
         self.assertIn('rel="canonical"', HTML)
-        self.assertNotIn('class="button button-disabled"\\n              type="button"\\n              disabled', HTML)
+        self.assertEqual(HTML.count("Скачать для Android"), 1)
         self.assertIn("Демонстрация активного состояния", JS)
         self.assertNotIn("Устанавливаем туннель", JS)
 
