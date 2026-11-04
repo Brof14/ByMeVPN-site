@@ -116,6 +116,7 @@ try {
       assert.equal(await menuButton.getAttribute("aria-expanded"), "false");
       await menuButton.click();
       assert.equal(await menuButton.getAttribute("aria-expanded"), "true");
+      await navAction.waitFor({ state: "visible", timeoutMs: 3000 });
       assert.ok(await navAction.isVisible(), `${viewport.name}: opened menu hides the CTA`);
       await menuButton.press("Escape");
       assert.equal(await menuButton.getAttribute("aria-expanded"), "false");
