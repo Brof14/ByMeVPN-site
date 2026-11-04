@@ -87,8 +87,11 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("Публичная версия пока не выпущена", HTML)
         self.assertIn("Публичная загрузка недоступна", HTML)
         download_buttons = [b for b in self.doc.buttons if "button-disabled" in b.get("class", "")]
-        self.assertEqual(len(download_buttons), 2)
+        self.assertEqual(len(download_buttons), 1)
         self.assertTrue(all("disabled" in button for button in download_buttons))
+        self.assertIn('class="button button-primary"', HTML)
+        self.assertIn("Начать через Telegram", HTML)
+        self.assertIn('href="https://t.me/ByMeVPNbot"', HTML)
         self.assertFalse(any("download" in link.get("href", "").lower() for link in self.doc.links))
         self.assertFalse(any(".apk" in link.get("href", "").lower() for link in self.doc.links))
         self.assertNotIn("play.google.com", HTML)
@@ -171,6 +174,9 @@ class SiteContractTests(unittest.TestCase):
         for link in self.doc.links:
             self.assertNotEqual(link.get("href"), "#")
             self.assertFalse(link.get("href", "").startswith("javascript:"))
+        self.assertNotIn("Соединение с сервером проверено", JS)
+        self.assertIn('<link rel="canonical" href="https://bymevpn-site.duckdns.org/"', HTML)
+        self.assertIn('class="trust-strip"', HTML)
         self.assertNotIn("androidReleaseCard", JS)
         self.assertNotIn("trustedApkUrl", JS)
 

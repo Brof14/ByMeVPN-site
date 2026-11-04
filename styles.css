@@ -25,8 +25,8 @@
   --surface: #121c2b;
   --surface-raised: #172536;
   --line: rgba(172, 196, 204, 0.15);
-  --mint: #69d3bc;
-  --mint-bright: #8be6cd;
+  --mint: #80aaff;
+  --mint-bright: #c0d5ff;
   --text: #eef4f4;
   --muted: #9cacbd;
   --soft: #728697;
@@ -42,8 +42,8 @@
   --tone-62aefe9d: rgba(178,201,211,0.08);
   --tone-dbe6a516: rgba(9,15,29,0.86);
   --tone-d5857263: #c1ccd1;
-  --tone-f99a3e38: rgba(105,211,188,0.38);
-  --tone-61573b93: rgba(105,211,188,0.1);
+  --tone-f99a3e38: rgba(128,170,255,0.38);
+  --tone-61573b93: rgba(128,170,255,0.1);
   --tone-c3b82a84: #b9ffe9;
   --tone-e8fc9521: rgba(15,27,40,0.8);
   --tone-559b0875: rgba(38,119,106,0.2);
@@ -59,14 +59,14 @@
   --tone-dafafb42: rgba(148,196,190,0.07);
   --tone-b30c7237: rgba(120,193,180,0.15);
   --tone-95f1dfb9: #aab8c3;
-  --tone-670fc06f: rgba(105,211,188,0.25);
-  --tone-1add704a: rgba(105,211,188,0.12);
+  --tone-670fc06f: rgba(128,170,255,0.25);
+  --tone-1add704a: rgba(128,170,255,0.12);
   --tone-52ce4bc0: #a9c5c1;
   --tone-83bada64: rgba(125,222,198,0.28);
   --tone-5e0cbf4e: #8899a6;
-  --tone-094933e7: rgba(108,219,189,0.02);
-  --tone-3d0ce693: rgba(105,211,188,0.28);
-  --tone-eebfcbce: rgba(105,211,188,0.5);
+  --tone-094933e7: rgba(128,170,255,0.02);
+  --tone-3d0ce693: rgba(128,170,255,0.28);
+  --tone-eebfcbce: rgba(128,170,255,0.5);
   --tone-aab95323: rgba(228,249,242,0.35);
   --tone-0f46b783: #59676e;
   --tone-96c4d558: #131e29;
@@ -84,15 +84,15 @@
   --tone-85fbb6a7: rgba(46,115,105,0.1);
   --tone-bd7873bf: #e3eceb;
   --tone-a8f93526: #78999a;
-  --tone-f0e5c4d5: rgba(105,211,188,0.22);
-  --tone-601a76f0: rgba(105,211,188,0.06);
-  --tone-c86b1da2: rgba(105,211,188,0.005);
-  --tone-ad70d5ef: rgba(105,211,188,0.025);
+  --tone-f0e5c4d5: rgba(128,170,255,0.22);
+  --tone-601a76f0: rgba(128,170,255,0.06);
+  --tone-c86b1da2: rgba(128,170,255,0.005);
+  --tone-ad70d5ef: rgba(128,170,255,0.025);
   --tone-10f759a7: rgba(51,172,146,0.06);
   --tone-51f3de62: rgba(87,145,138,0.4);
   --tone-053cf58d: #203b43;
   --tone-01767c65: #111c29;
-  --tone-a7fc5e60: rgba(91,223,189,0.38);
+  --tone-a7fc5e60: rgba(128,170,255,0.38);
   --tone-9b93422d: #f0f5f3;
   --tone-fde1d291: #91a2ae;
   --tone-10bcd659: #253642;
@@ -101,8 +101,8 @@
   --tone-6dfcc248: #a3b3bd;
   --tone-cddfa448: rgba(229,198,141,0.1);
   --tone-7dc2db94: #d8bd8a;
-  --tone-30608cf2: rgba(88,213,180,0.2);
-  --tone-77f94a50: rgba(105,211,188,0.85);
+  --tone-30608cf2: rgba(128,170,255,0.2);
+  --tone-77f94a50: rgba(128,170,255,0.85);
   --tone-e87e54ee: #80919d;
   --tone-a5053d16: #0a111c;
   --tone-10659f8a: #0d1723;
@@ -112,20 +112,20 @@
   --tone-2453d2d5: rgba(122,191,178,0.17);
   --tone-f7f91459: rgba(0,0,0,0.52);
   --tone-4c46ca18: rgba(0,0,0,0.5);
-  --tone-9f373d79: rgba(105,211,188,0.13);
+  --tone-9f373d79: rgba(128,170,255,0.13);
   --tone-9155fa97: rgba(71,132,121,0.12);
-  --tone-70241cb4: rgba(105,211,188,0.65);
-  --tone-75940c73: rgba(105,211,188,0.035);
+  --tone-70241cb4: rgba(128,170,255,0.65);
+  --tone-75940c73: rgba(128,170,255,0.035);
   --tone-0329d3c6: rgba(53,172,146,0.12);
-  --tone-3134c29a: rgba(105,211,188,0.08);
+  --tone-3134c29a: rgba(128,170,255,0.08);
   --tone-19a3e743: rgba(155,179,190,0.12);
   --tone-225b3be5: #8395a4;
   --tone-f5818dc3: #8099a0;
   --tone-bbd1974d: rgba(229,198,141,0.11);
   --tone-2c4c5d62: #e2c68f;
-  --tone-7c00b0c0: rgba(105,211,188,0.72);
-  --tone-61103223: rgba(105,211,188,0.07);
-  --tone-c55e8460: rgba(105,211,188,0.74);
+  --tone-7c00b0c0: rgba(128,170,255,0.72);
+  --tone-61103223: rgba(128,170,255,0.07);
+  --tone-c55e8460: rgba(128,170,255,0.74);
   --tone-d3022b85: #244840;
   --tone-f8f5a959: #14252b;
   --tone-916e07cf: rgba(126,169,173,0.15);
@@ -136,9 +136,9 @@
   --tone-26525eb3: #1b2a3b;
   --tone-da128141: #d7e2e1;
   --tone-746f2547: #96a7b3;
-  --tone-14de42fa: rgba(105,211,188,0.43);
+  --tone-14de42fa: rgba(128,170,255,0.43);
   --tone-306c12ec: #1a2b38;
-  --tone-ef8f75c0: rgba(105,211,188,0.14);
+  --tone-ef8f75c0: rgba(128,170,255,0.14);
   --tone-e97b60df: #95a7b1;
   --tone-0b471b0e: #91a5ae;
   --tone-b1c0976f: #8396a3;
@@ -150,7 +150,7 @@
   --tone-ff6c09f9: #345f58;
   --tone-54786b04: rgba(168,194,203,0.08);
   --tone-27f96578: #94a5b2;
-  --tone-9141f012: rgba(105,211,188,0.16);
+  --tone-9141f012: rgba(128,170,255,0.16);
   --tone-23db5c73: rgba(44,117,110,0.16);
   --tone-cb3bad15: rgba(18,33,46,0.6);
   --tone-198946eb: rgba(165,190,197,0.13);
@@ -159,7 +159,7 @@
   --tone-7c45ffca: #98a9b4;
   --tone-2b540adf: rgba(80,201,173,0.34);
   --tone-4b8be654: #78919e;
-  --tone-35a94c8e: rgba(105,211,188,0.46);
+  --tone-35a94c8e: rgba(128,170,255,0.46);
   --tone-a23653f4: #96a7b2;
   --tone-4db4f345: #101b28;
   --tone-fc8a8b67: #0c1521;
@@ -2629,4 +2629,102 @@ summary:focus-visible {
     opacity: 1;
     transform: none;
   }
+}
+
+/* 2026-11-04 product-first refinement: meaningful CTA, legible mobile UI, calmer blue identity. */
+.button-primary {
+  position: relative;
+  min-height: 52px;
+  padding-inline: 26px;
+  border-color: rgba(201, 221, 255, .55);
+  background: linear-gradient(135deg, #cfdeff 0%, #8eb5ff 48%, #78a1ff 100%);
+  box-shadow: 0 12px 34px rgba(72, 112, 238, .22), inset 0 1px rgba(255, 255, 255, .72);
+  color: #081226;
+  font-size: 14px;
+  transition: box-shadow 200ms ease, transform 200ms ease, filter 200ms ease;
+}
+.button-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow: 0 17px 40px rgba(72, 112, 238, .31);
+}
+.button-primary:active { transform: translateY(0); }
+.button-primary:focus-visible { outline-color: #fff; }
+.nav-android {
+  border-color: rgba(128, 170, 255, .48);
+  background: rgba(128, 170, 255, .11);
+  color: #d7e4ff;
+}
+.nav-android:hover { background: rgba(128, 170, 255, .2); color: #fff; }
+.hero {
+  background:
+    radial-gradient(ellipse at 50% 78%, rgba(77, 110, 219, .17), transparent 40%),
+    radial-gradient(ellipse at 52% 26%, rgba(42, 66, 138, .13), transparent 55%),
+    linear-gradient(180deg, #090f1d 0%, #0a1326 47%, #090f1d 100%);
+}
+.hero h1 { font-size: clamp(58px, 7vw, 100px); letter-spacing: -.083em; }
+.hero-lead { max-width: 625px; font-size: clamp(16px, 1.35vw, 18px); line-height: 1.6; }
+.hero-actions { gap: 24px; margin-top: 26px; }
+.hero-secondary { font-size: 14px; }
+.release-note { line-height: 1.55; }
+.release-note a { color: var(--mint-bright); text-decoration: underline; text-underline-offset: 3px; }
+.trust-strip {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(149, 177, 230, .12);
+  border-bottom: 1px solid rgba(149, 177, 230, .12);
+  background: linear-gradient(180deg, #0c1528, #0a1222);
+}
+.trust-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.trust-item { min-width: 0; padding: 36px clamp(20px, 3.2vw, 50px) 38px; }
+.trust-item:first-child { padding-left: 0; }
+.trust-item + .trust-item { border-left: 1px solid rgba(149, 177, 230, .12); }
+.trust-index {
+  display: inline-block;
+  color: #99baff;
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: .13em;
+}
+.trust-item h2 {
+  margin: 12px 0 8px;
+  color: #f1f5ff;
+  font-size: clamp(17px, 1.6vw, 23px);
+  font-weight: 650;
+  letter-spacing: -.045em;
+}
+.trust-item p {
+  max-width: 360px;
+  margin: 0;
+  color: #adbad0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.trust-item a { color: #bdd2ff; text-decoration: underline; text-underline-offset: 3px; }
+.trust-item a:hover { color: #fff; }
+.detail-row p, .how-steps p, .terms-copy > p, .faq-list details p {
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.65;
+}
+.faq-list summary { font-size: clamp(15px, 1.3vw, 18px); }
+@media (max-width: 760px) {
+  .trust-grid { grid-template-columns: 1fr; }
+  .trust-item, .trust-item:first-child { padding: 24px 0; }
+  .trust-item + .trust-item { border-left: 0; border-top: 1px solid rgba(149,177,230,.12); }
+  .trust-item h2 { font-size: 19px; }
+  .hero h1 { font-size: clamp(43px, 10.2vw, 70px); letter-spacing: -.074em; }
+  .hero-lead { max-width: 440px; font-size: 15px; }
+  .hero-secondary { font-size: 13px; }
+  .button-primary { min-height: 50px; font-size: 13px; }
+  .story-heading > p:last-child, .details-lead > p:last-child,
+  .android-copy > p:not(.eyebrow, .release-note), .how-intro > p:not(.eyebrow),
+  .faq-intro > p:not(.eyebrow) { font-size: 15px; line-height: 1.6; }
+  .detail-row p, .how-steps p, .terms-copy > p, .faq-list details p { font-size: 14px; }
+  .faq-list summary { font-size: 15px; }
+  .footer-top nav, .footer-bottom { font-size: 12px; }
+}
+@media (max-width: 350px) {
+  .hero h1 { font-size: 41px; }
+  .hero-lead { font-size: 14px; }
+  .hero-actions .button { min-width: 0; max-width: 100%; }
 }

@@ -1,13 +1,14 @@
 # ByMeVPN Website
 
-Premium, responsive Russian product site for the ByMeVPN Android app. The Android interface is the main visual focus; its interactive states are a local-only demo and never start a VPN connection.
+Responsive Russian landing page for ByMeVPN. The primary action opens the official Telegram bot so visitors can review currently available connection options. The Android interface is a local-only visual demo; it never starts a VPN connection. Public Android downloads remain disabled until a verified release.
 
 ## Project files
 
 - `index.html` — page structure, Russian copy, Android demo, release status, onboarding and FAQ.
 - `styles.css` — design tokens, responsive layout, scene transitions, reduced-motion and focus styles.
 - `app.js` — mobile navigation, four demo scenes, server-selection sheet and local UI state only.
-- `docs/designs/bymevpn-product-story.md` — implemented v3 design decisions and acceptance criteria.
+- `docs/designs/bymevpn-product-story.md` — v3 product showcase design and acceptance criteria.
+- `docs/AUDIT_2026-11-04.md` — refreshed audit, severity, changes and open verification limits.
 - `docs/research/reference-audit-2026-11-02.md` — browser review of original and local reference sites.
 - `tests/test_site.py` — dependency-free static contract checks.
 - `outputs/bymevpn-v3/visual/` — browser screenshots, viewport report and motion recording.

@@ -87,7 +87,7 @@ if (demoScreen && demoToggle && demoState && demoHint && demoAnnouncement && sce
       ? "Нажмите, чтобы подключиться"
       : connectionState === "connecting"
         ? "Устанавливаем туннель"
-        : "Соединение с сервером проверено";
+        : "Демонстрация подключения — без VPN-соединения";
     demoToggle.setAttribute("aria-pressed", String(connectionState === "connected"));
     demoToggle.setAttribute("aria-label", connectionState === "connected"
       ? "Завершить демонстрацию подключения"
