@@ -97,6 +97,32 @@ try {
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto(baseUrl, { waitUntil: "networkidle" });
 
+    // Conversion + root CSS smoke checks: interactive, visible actions before scrolling.
+    const primaryAction = page.locator(".hero .button-primary");
+    assert.equal(await primaryAction.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    assert.ok(await primaryAction.isVisible(), `${viewport.name}: hero CTA is not visible`);
+    const heroActionRect = await primaryAction.boundingBox();
+    assert.ok(heroActionRect && heroActionRect.y < viewport.height,
+      `${viewport.name}: first action requires scrolling past the first viewport`);
+
+    const rootMinWidth = await page.evaluate(() => getComputedStyle(document.documentElement).minWidth);
+    assert.equal(rootMinWidth, "320px",
+      `${viewport.name}: root CSS has been nested or its global html styles are missing`);
+
+    const navAction = page.locator(".site-nav .nav-cta");
+    assert.equal(await navAction.getAttribute("href"), "https://t.me/ByMeVPNbot");
+    if (viewport.width <= 760) {
+      const menuButton = page.locator(".menu-toggle");
+      assert.equal(await menuButton.getAttribute("aria-expanded"), "false");
+      await menuButton.click();
+      assert.equal(await menuButton.getAttribute("aria-expanded"), "true");
+      assert.ok(await navAction.isVisible(), `${viewport.name}: opened menu hides the CTA`);
+      await menuButton.press("Escape");
+      assert.equal(await menuButton.getAttribute("aria-expanded"), "false");
+    } else {
+      assert.ok(await navAction.isVisible(), `${viewport.name}: header CTA is missing`);
+    }
+
     const revealElements = page.locator("[data-reveal]");
     const revealCount = await revealElements.count();
     assert.equal(revealCount, 14, `${viewport.name}: expected fourteen reveal elements`);
