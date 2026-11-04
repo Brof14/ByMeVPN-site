@@ -2782,3 +2782,7 @@ summary:focus-visible {
   .hero-copy .release-note { max-width: 330px; font-size: 10px; }
   .journey-strip strong { font-size: 13px; }
 }
+
+/* The main CTA must retain dark, readable text on hover (higher specificity than nav links). */
+.site-nav > a.nav-cta:hover,
+.site-nav > a.nav-cta:focus-visible { color: var(--ink); }
