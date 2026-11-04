@@ -1,34 +1,34 @@
 name: Site checks
 on:
   push:
-    branches: ["main", "design/**"]
+    branches: [main, 'design/**']
   pull_request:
-    paths:
-      - "index.html"
-      - "styles.css"
-      - "app.js"
-      - "tests/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/site-checks.yml"
+    paths: [index.html, styles.css, app.js, 'tests/**', package.json, package-lock.json, '.github/workflows/site-checks.yml']
 jobs:
-  static-contract:
+  quality:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Validate source contracts
+      - name: Verify markup and conversion contracts
         run: python3 -m unittest discover -s tests -v
-      - name: Check JavaScript syntax
+      - name: Verify JavaScript syntax
         run: node --check app.js
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Install browser runtime
+      - name: Install Chromium for visual tests
         run: |
           npm ci
           npx playwright-core install --with-deps chromium
-      - name: Run real-browser visual regression checks
+      - name: Browser QA and screenshots
         run: npm run test:browser
+      - name: Upload browser captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: immersive-showcase-browser-screenshots
+          path: outputs/immersive-showcase/visual/
+          if-no-files-found: ignore
