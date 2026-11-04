@@ -2711,36 +2711,6 @@ summary:focus-visible {
 .hero-caption { color: #91aab6; }
 .hero-device .hero-device-hint { color: #9cacbd; }
 
-.journey-strip {
-  border-top: 1px solid rgba(172,196,204,.1);
-  border-bottom: 1px solid rgba(172,196,204,.12);
-  background: #0d1724;
-}
-.journey-strip-inner {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) 24px minmax(0,1fr) 24px minmax(0,1fr);
-  align-items: center;
-  gap: 10px;
-  padding-block: 24px;
-}
-.journey-strip-inner > div {
-  display: grid;
-  grid-template-columns: 32px minmax(0,1fr);
-  column-gap: 13px;
-  align-items: center;
-}
-.journey-number {
-  grid-row: 1 / span 2;
-  align-self: center;
-  color: var(--mint);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .03em;
-}
-.journey-strip strong { font-size: 14px; font-weight: 690; color: #eef4f4; }
-.journey-strip small { margin-top: 2px; font-size: 11px; color: var(--muted); }
-.journey-separator { color: rgba(105,211,188,.46); text-align: center; }
-
 .product-action {
   display: flex;
   align-items: center;
@@ -2770,9 +2740,6 @@ summary:focus-visible {
   .hero-eyebrow { font-size: 8.5px; letter-spacing: .07em; }
   .hero-actions { gap: 10px; }
   .hero-secondary { font-size: 11px; }
-  .journey-strip-inner { gap: 14px; grid-template-columns: 1fr; padding-block: 20px; }
-  .journey-strip-inner > div { grid-template-columns: 30px 1fr; }
-  .journey-separator { display: none; }
   .product-action { align-items: flex-start; flex-direction: column; padding-top: 30px; margin-top: 22px; }
 }
 @media (max-width: 540px) {
@@ -2780,7 +2747,6 @@ summary:focus-visible {
   .hero-lead { font-size: 13px; }
   .hero-actions .button-primary { width: min(100%, 330px); min-height: 51px; }
   .hero-copy .release-note { max-width: 330px; font-size: 10px; }
-  .journey-strip strong { font-size: 13px; }
 }
 
 /* The main CTA must retain dark, readable text on hover (higher specificity than nav links). */
