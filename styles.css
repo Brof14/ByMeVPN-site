@@ -2767,7 +2767,7 @@ summary:focus-visible {
     width: 218px;
     height: 446px;
   }
-  .mobile-scene-caption {
+  .demo-enhanced .mobile-scene-caption {
     display: block;
     width: min(calc(100% - 2 * var(--gutter)), 460px);
     margin-top: 17px;
