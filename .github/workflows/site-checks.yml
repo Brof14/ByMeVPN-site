@@ -22,7 +22,7 @@ jobs:
       - name: Install Chromium for visual tests
         run: |
           npm ci
-          npx playwright-core install --with-deps chromium
+          npx playwright-core install chromium
       - name: Browser QA and screenshots
         run: npm run test:browser
       - name: Upload browser captures
