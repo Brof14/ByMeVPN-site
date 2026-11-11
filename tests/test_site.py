@@ -39,16 +39,30 @@ class SiteTests(unittest.TestCase):
             if a.get('target')=='_blank':
                 self.assertIn('noopener',a.get('rel',''))
                 self.assertIn('noreferrer',a.get('rel',''))
-    def test_android_first_no_fake_apk(self):
-        self.assertIn('Скачать для Android',HTML)
-        self.assertIn('href="#download"',HTML)
-        self.assertIn('disabled aria-describedby="release-explainer"',HTML)
-        self.assertNotIn('href="https://t.me/ByMeVPNbot" class="button button-primary"',HTML)
-        self.assertNotIn('href="https://t.me/ByMeVPNbot"',HTML.split('id="download"')[0])
-        self.assertNotIn('.apk"',HTML)
-    def test_no_fabricated_claims(self):
-        for term in ['100% аноним','no-logs','99.99%','10 Гбит/с','3 дня бесплатно']:
-            self.assertNotIn(term.lower(),HTML.lower())
+    def test_primary_cta_opens_real_onboarding_not_unreleased_apk(self):
+        self.assertIn('https://t.me/ByMeVPN_bot?start=src_website', HTML)
+        self.assertIn('Попробовать бесплатно', HTML)
+        self.assertIn('Получить 3 дня бесплатно', HTML)
+        self.assertIn('Публичный APK ещё готовится', HTML)
+        self.assertNotIn('href="downloads/', HTML)
+        self.assertNotIn('.apk"', HTML)
+
+    def test_honest_trial_terms_and_no_fabricated_claims(self):
+        self.assertIn('3 бесплатных дней без карты', HTML)
+        self.assertIn('Бесплатный пробный доступ доступен новым пользователям один раз', HTML)
+        self.assertIn('Покупка подписки — только по вашему решению', HTML)
+        for term in ['100% аноним', 'no-logs', '99.99%', '10 Гбит/с']:
+            self.assertNotIn(term.lower(), HTML.lower())
+
+    def test_tracked_cta_is_accessible_and_secure(self):
+        tracked = [a for a in self.dom.links
+                   if a.get('href') == 'https://t.me/ByMeVPN_bot?start=src_website']
+        self.assertGreaterEqual(len(tracked), 4)
+        self.assertTrue(all(a.get('target') == '_blank' for a in tracked))
+        self.assertIn('id="offers"', HTML)
+        self.assertIn('aria-label="Как подключиться"', HTML)
+        self.assertIn('.plans-steps', CSS)
+
     def test_demo_is_local_and_interactive(self):
         self.assertIn('id="demo-switch"',HTML)
         self.assertIn('id="demo-status-text"',HTML)
@@ -70,7 +84,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('focus-visible',CSS)
         self.assertIn('Escape',JS)
     def test_sections(self):
-        for id_ in ['main','experience','features','download','questions']:
+        for id_ in ['main','experience','features','offers','download','questions']:
             self.assertIn(id_,self.dom.ids)
         self.assertGreaterEqual(HTML.count('<section'),6)
 

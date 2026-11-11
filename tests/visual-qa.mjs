@@ -59,10 +59,15 @@ try {
     assert.ok(layout.stylesheetLoaded,`${v.n}: full stylesheet failed to load`);
     console.log(v.n,'layout',JSON.stringify(layout));
 
-    assert.equal(await page.locator('.hero-actions .button-primary').getAttribute('href'),'#download');
-    assert.ok(await page.locator('.download-disabled').isDisabled());
+    assert.equal(await page.locator('.hero-actions .button-primary').getAttribute('href'),
+      'https://t.me/ByMeVPN_bot?start=src_website');
+    assert.equal(await page.locator('.plans-cta').getAttribute('href'),
+      'https://t.me/ByMeVPN_bot?start=src_website');
+    assert.equal(await page.locator('.download-actions .button-primary').getAttribute('href'),
+      'https://t.me/ByMeVPN_bot?start=src_website');
+    assert.equal(await page.locator('a[href$=".apk"]').count(),0);
     const positions=[];
-    for(const [name,sel] of [['experience','#experience'],['features','#features'],['download','#download'],['faq','#questions']]){
+    for(const [name,sel] of [['offers','#offers'],['experience','#experience'],['features','#features'],['download','#download'],['faq','#questions']]){
       const element=page.locator(sel);await element.scrollIntoViewIfNeeded();await page.waitForTimeout(250);
       assert.ok(await element.isVisible(),`${v.n}: ${name} invisible`);
       const opacity=await element.evaluate(node=>parseFloat(getComputedStyle(node).opacity));
