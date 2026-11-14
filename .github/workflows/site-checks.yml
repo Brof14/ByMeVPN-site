@@ -11,7 +11,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Verify markup and conversion contracts
+      - name: Verify markup, pricing and conversion contracts
         run: python3 -m unittest discover -s tests -v
       - name: Verify JavaScript syntax
         run: node --check app.js
@@ -19,16 +19,16 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Install Chromium for visual tests
+      - name: Install Chromium
         run: |
           npm ci
-          npx playwright-core install chromium
-      - name: Browser QA and screenshots
+          npx playwright-core install --with-deps chromium
+      - name: Run responsive browser QA
         run: npm run test:browser
-      - name: Upload browser captures
+      - name: Upload visual evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: immersive-showcase-browser-screenshots
-          path: outputs/immersive-showcase/visual/
+          name: bymevpn-final-website-visuals
+          path: outputs/final-site-20261114/
           if-no-files-found: ignore

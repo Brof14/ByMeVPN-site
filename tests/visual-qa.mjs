@@ -1,99 +1,142 @@
-import assert from 'node:assert/strict';
-import { createServer } from 'node:http';
-import { readFileSync, mkdirSync } from 'node:fs';
-import { extname, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright-core';
+import assert from "node:assert/strict";
+import { createServer } from "node:http";
+import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { extname, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+import { chromium } from "playwright-core";
 
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const dir = resolve(root, 'outputs/immersive-showcase/visual');
-const mime = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2'};
-const server = createServer((req,res)=>{
-  const raw = decodeURIComponent(new URL(req.url,'http://localhost').pathname);
-  const target=resolve(root, `.${raw==='/'?'/index.html':raw}`);
-  if(!target.startsWith(root+sep)){res.writeHead(403).end();return;}
-  try{const body=readFileSync(target);res.writeHead(200,{'content-type':mime[extname(target)]||'application/octet-stream'}).end(body)}
-  catch{res.writeHead(404).end('Not found')}
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const evidenceDir = resolve(root, "outputs/final-site-20261114");
+const mime = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2" };
+const server = createServer((request, response) => {
+  const raw = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+  const path = resolve(root, "." + (raw === "/" ? "/index.html" : raw));
+  if (!path.startsWith(root + sep)) return response.writeHead(403).end();
+  try { response.writeHead(200, { "content-type": mime[extname(path)] ?? "application/octet-stream" }).end(readFileSync(path)); }
+  catch { response.writeHead(404).end("Not found"); }
 });
-await new Promise(resolveListen=>server.listen(0,'127.0.0.1',resolveListen));
-const url=`http://127.0.0.1:${server.address().port}/`;
-const browser=await chromium.launch({headless:true});
-let passed=0;
-try {
-  for(const v of [{n:'mobile-390',w:390,h:844},{n:'tablet-768',w:768,h:1024},{n:'desktop-1440',w:1440,h:900}]){
-    const context=await browser.newContext({viewport:{width:v.w,height:v.h},reducedMotion:'no-preference'});
-    const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(url,{waitUntil:'networkidle'});
-    const out=resolve(dir,v.n);mkdirSync(out,{recursive:true});
-    await page.screenshot({path:resolve(out,'hero.png')});
-    assert.ok(await page.locator('.hero h1').isVisible());
-    // Regression: user screenshots showed navigation as concatenated links and an unframed phone.
-    // Checking visibility alone would not detect an unloaded/mismatched stylesheet.
-    const layout = await page.evaluate(() => {
-      const css = selector => getComputedStyle(document.querySelector(selector));
-      const nav = document.querySelector('.nav-wrap').getBoundingClientRect();
-      const brand = document.querySelector('.brand').getBoundingClientRect();
-      const phone = document.querySelector('.hero-phone').getBoundingClientRect();
-      const shell = document.querySelector('.hero-phone.phone-shell').getBoundingClientRect();
-      const hero = document.querySelector('.hero').getBoundingClientRect();
-      return {
-        navDisplay: css('.nav-wrap').display,
-        brandDisplay: css('.brand').display,
-        navHeight: nav.height,
-        brandLeft: brand.left,
-        heroHeight: hero.height,
-        phoneWidth: phone.width,
-        phoneHeight: phone.height,
-        shellRadius: parseFloat(css('.hero-phone.phone-shell').borderTopLeftRadius),
-        phonePosition: css('.hero-phone').position,
-        stylesheetLoaded: [...document.styleSheets].some(sheet => sheet.href?.includes('styles.css') && (() => { try { return sheet.cssRules.length > 100 } catch { return false } })())
-      };
-    });
-    assert.equal(layout.navDisplay,'flex',`${v.n}: navigation CSS missing`);
-    assert.ok(layout.brandDisplay.includes('flex'),`${v.n}: brand CSS missing`);
-    assert.ok(layout.navHeight>=60,`${v.n}: collapsed header`);
-    assert.ok(layout.phoneWidth>=200 && layout.phoneWidth<=350,`${v.n}: phone frame missing`);
-    assert.ok(layout.phoneHeight>=400,`${v.n}: phone height collapsed`);
-    assert.ok(layout.shellRadius>=30,`${v.n}: phone shell styling missing`);
-    assert.equal(layout.phonePosition,'absolute',`${v.n}: phone out of layout`);
-    assert.ok(layout.stylesheetLoaded,`${v.n}: full stylesheet failed to load`);
-    console.log(v.n,'layout',JSON.stringify(layout));
+await new Promise(resolveListen => server.listen(0, "127.0.0.1", resolveListen));
+const origin = "http://127.0.0.1:" + server.address().port;
+const browser = await chromium.launch({ headless: true });
+const report = { date: new Date().toISOString(), viewports: [], reducedMotion: null };
+const sizes = [
+  { name: "mobile-320", width: 320, height: 740 },
+  { name: "mobile-390", width: 390, height: 844 },
+  { name: "tablet-768", width: 768, height: 1024 },
+  { name: "desktop-1440", width: 1440, height: 900 },
+  { name: "desktop-1920", width: 1920, height: 1080 },
+];
 
-    assert.equal(await page.locator('.hero-actions .button-primary').getAttribute('href'),
-      'https://t.me/ByMeVPN_bot?start=src_website');
-    assert.equal(await page.locator('.plans-cta').getAttribute('href'),
-      'https://t.me/ByMeVPN_bot?start=src_website');
-    assert.equal(await page.locator('.download-actions .button-primary').getAttribute('href'),
-      'https://t.me/ByMeVPN_bot?start=src_website');
-    assert.equal(await page.locator('a[href$=".apk"]').count(),0);
-    const positions=[];
-    for(const [name,sel] of [['offers','#offers'],['experience','#experience'],['features','#features'],['download','#download'],['faq','#questions']]){
-      const element=page.locator(sel);await element.scrollIntoViewIfNeeded();await page.waitForTimeout(250);
-      assert.ok(await element.isVisible(),`${v.n}: ${name} invisible`);
-      const opacity=await element.evaluate(node=>parseFloat(getComputedStyle(node).opacity));
-      assert.ok(opacity>.95,`${v.n}: ${name} opacity ${opacity}`);
-      await page.screenshot({path:resolve(out,`${name}.png`)});
-      positions.push({name,y:await element.evaluate(node=>Math.round(node.getBoundingClientRect().top))});
+try {
+  for (const v of sizes) {
+    const ctx = await browser.newContext({ viewport: { width: v.width, height: v.height }, reducedMotion: "no-preference" });
+    const page = await ctx.newPage();
+    const errors = [];
+    const external = [];
+    page.on("pageerror", err => errors.push(err.message));
+    page.on("request", request => {
+      if (!request.url().startsWith(origin + "/")) external.push(request.url());
+    });
+    await page.goto(origin + "/", { waitUntil: "networkidle" });
+    const out = resolve(evidenceDir, v.name);
+    mkdirSync(out, { recursive: true });
+
+    const headline = page.locator(".hero h1");
+    assert.ok(await headline.isVisible(), v.name + ": missing hero");
+    const nav = await page.evaluate(() => ({
+      header: getComputedStyle(document.querySelector(".site-header")).position,
+      stylesheetLoaded: [...document.styleSheets].some(s => s.href?.includes("styles.css") && (() => { try { return s.cssRules.length > 50; } catch { return false; } })()),
+      heroFontSize: parseFloat(getComputedStyle(document.querySelector(".hero h1")).fontSize),
+      ctaHeight: document.querySelector(".hero-actions .btn-primary").getBoundingClientRect().height,
+      heroDeviceWidth: document.querySelector(".hero-device").getBoundingClientRect().width,
+      top: document.querySelector(".hero").getBoundingClientRect().top,
+    }));
+    assert.equal(nav.header, "sticky");
+    assert.ok(nav.stylesheetLoaded, v.name + ": CSS did not load");
+    assert.ok(nav.ctaHeight >= 44, v.name + ": CTA below mobile target size");
+    assert.ok(nav.heroFontSize >= 39, v.name + ": heading not prominent");
+    assert.ok(nav.heroDeviceWidth >= 200, v.name + ": hero product missing");
+    assert.equal(await page.locator(".hero-actions .btn-primary").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
+    await page.screenshot({ path: resolve(out, "hero.png") });
+
+    const sections = ["#features", "#experience", "#pricing", "#how", "#download", "#faq", ".closing"];
+    for (const selector of sections) {
+      const node = page.locator(selector);
+      await node.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(75);
+      assert.ok(await node.isVisible(), v.name + " invisible " + selector);
+      assert.ok(await node.evaluate(el => el.getBoundingClientRect().height > 100), v.name + " collapsed " + selector);
+      await page.screenshot({ path: resolve(out, selector.replace(/[.#]/g, "") + ".png") });
     }
-    await page.locator('#demo-switch').click();
-    await page.waitForTimeout(1250);
-    assert.equal(await page.locator('#demo-status-text').innerText(),'VPN запущен');
-    await page.screenshot({path:resolve(out,'connected.png')});
-    await page.locator('#demo-switch').click();
-    assert.equal(await page.locator('#demo-status-text').innerText(),'VPN выключен');
-    if(v.w<=700){await page.locator('.mobile-menu-button').click();assert.ok(await page.locator('.mobile-nav').isVisible());await page.keyboard.press('Escape');assert.ok(await page.locator('.mobile-nav').isHidden())}
-    const metrics=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,hiddenContent:[...document.querySelectorAll('main [data-reveal]')].filter(n=>parseFloat(getComputedStyle(n).opacity)===0).length,sections:[...document.querySelectorAll('main section')].map(x=>({top:Math.round(x.offsetTop),height:Math.round(x.offsetHeight)}))}));
-    assert.ok(metrics.documentWidth<=metrics.width+2,`${v.n}: horizontal overflow`);
-    assert.equal(metrics.hiddenContent,0,`${v.n}: unrevealed content hidden`);
-    assert.deepEqual(errors,[],`${v.n}: uncaught errors`);
-    console.log(v.n,JSON.stringify({metrics,positions,errors}));passed++;
-    await context.close();
+
+    // Real pricing selector: both monthly equivalent and upfront total update.
+    const first = page.locator('.plan[data-months="3"]');
+    assert.equal((await first.locator(".plan-price").innerText()).trim(), "79");
+    assert.match(await first.locator(".plan-total strong").innerText(), /316/);
+    await page.locator('[data-tier="10"]').click();
+    assert.equal(await page.locator('[data-tier="10"]').getAttribute("aria-pressed"), "true");
+    assert.equal((await first.locator(".plan-price").innerText()).trim(), "119");
+    assert.match(await first.locator(".plan-total strong").innerText(), /476/);
+    await page.locator('[data-tier="5"]').click();
+    assert.equal((await first.locator(".plan-price").innerText()).trim(), "99");
+    assert.match(await first.locator(".plan-total strong").innerText(), /396/);
+    await page.locator('[data-tier="2"]').click();
+
+    // Demo must be visibly interactive but completely isolated from VPN/network.
+    await page.locator('[data-demo-state="connecting"]').click();
+    assert.equal(await page.locator("#demo-status-text").innerText(), "Подключение…");
+    await page.locator('[data-demo-state="on"]').click();
+    assert.equal(await page.locator("#demo-status-text").innerText(), "VPN запущен");
+    assert.equal(await page.locator("#demo-switch").getAttribute("aria-pressed"), "true");
+    await page.screenshot({ path: resolve(out, "demo-connected.png") });
+    await page.locator("#demo-switch").click();
+    assert.equal(await page.locator("#demo-status-text").innerText(), "VPN выключен");
+
+    const faq = page.locator(".faq-items details").first();
+    await faq.locator("summary").click();
+    assert.ok(await faq.evaluate(node => node.open), v.name + ": FAQ failed to open");
+    await faq.locator("summary").click();
+    assert.ok(!(await faq.evaluate(node => node.open)), v.name + ": FAQ failed to close");
+
+    if (v.width <= 700) {
+      const toggle = page.locator(".menu-toggle");
+      await toggle.click();
+      assert.equal(await toggle.getAttribute("aria-expanded"), "true");
+      assert.ok(await page.locator("#mobile-nav").isVisible());
+      await page.keyboard.press("Escape");
+      assert.equal(await toggle.getAttribute("aria-expanded"), "false");
+      assert.ok(await page.locator("#mobile-nav").isHidden());
+    }
+    const metrics = await page.evaluate(() => ({
+      width: innerWidth,
+      htmlScrollWidth: document.documentElement.scrollWidth,
+      bodyScrollWidth: document.body.scrollWidth,
+      hiddenSections: [...document.querySelectorAll("main section")].filter(el => {
+        const s = getComputedStyle(el); return s.display === "none" || s.visibility === "hidden" || parseFloat(s.opacity) === 0;
+      }).length,
+      menuVisible: getComputedStyle(document.querySelector(".menu-toggle")).display !== "none",
+    }));
+    assert.ok(metrics.htmlScrollWidth <= metrics.width + 1, v.name + " horizontal overflow: " + JSON.stringify(metrics));
+    assert.ok(metrics.bodyScrollWidth <= metrics.width + 1, v.name + " body overflow: " + JSON.stringify(metrics));
+    assert.equal(metrics.hiddenSections, 0, v.name + ": hidden content");
+    assert.deepEqual(errors, [], v.name + ": JavaScript errors");
+    assert.deepEqual(external, [], v.name + ": unexpected third-party requests");
+    report.viewports.push({ ...v, nav, metrics, errors, externalRequests: external });
+    await ctx.close();
+    console.log(v.name + ": responsive layout, CTA, pricing, demo, FAQ and navigation passed");
   }
-  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
-  const page=await context.newPage();await page.goto(url,{waitUntil:'load'});
-  assert.ok(await page.locator('#experience').isVisible());
-  const anim=await page.locator('.hero-copy').evaluate(el=>getComputedStyle(el).animationDuration);
-  assert.ok(parseFloat(anim)<=0.01,`reduced-motion animation duration: ${anim}`);
-  await context.close();
-  console.log(`Browser QA passed: ${passed} viewports plus reduced motion`);
-} finally {await browser.close();server.close();}
+
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.goto(origin + "/", { waitUntil: "load" });
+  const motion = await page.locator(".demo-power").evaluate(node => getComputedStyle(node).animationDuration);
+  assert.ok(parseFloat(motion) <= .01 || motion === "0s", "reduced motion ineffective: " + motion);
+  report.reducedMotion = motion;
+  await ctx.close();
+  mkdirSync(evidenceDir, { recursive: true });
+  writeFileSync(resolve(evidenceDir, "qa-report.json"), JSON.stringify(report, null, 2));
+  console.log("Browser QA passed all 5 viewports and reduced motion");
+} finally {
+  await browser.close();
+  await new Promise(resolveClose => server.close(resolveClose));
+}

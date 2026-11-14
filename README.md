@@ -1,39 +1,39 @@
-# ByMeVPN Website
+# ByMeVPN — public website
 
-Responsive Russian landing page for ByMeVPN. The primary action opens the official Telegram bot with a source-tagged start link (`src_website`) to activate the verified free 3-day trial without a card. The bot provides the connection guide and live prices; this static landing does not attempt payments or VPN tunnel creation. The Android interface is a local-only visual demo; it never starts a VPN connection. Public Android downloads remain disabled until a verified release.
+Product-first, static and responsive ByMeVPN landing page. Built as plain HTML, CSS and JavaScript without a frontend framework, trackers, remote fonts or browser network APIs.
 
-## Project files
+## Production user journey
 
-- `index.html` — site structure, Russian copy, transparent trial offer, direct Telegram onboarding, Android demo and release status.
-- `styles.css` — design tokens, responsive layout, scene transitions, reduced-motion and focus styles.
-- `app.js` — mobile navigation, four demo scenes, server-selection sheet and local UI state only.
-- `docs/designs/bymevpn-product-story.md` — v3 product showcase design and acceptance criteria.
-- `docs/AUDIT_2026-11-04.md` — refreshed audit, severity, changes and open verification limits.
-- `docs/research/reference-audit-2026-11-02.md` — browser review of original and local reference sites.
-- `tests/test_site.py` — dependency-free static contract checks.
-- `outputs/bymevpn-v3/visual/` — browser screenshots, viewport report and motion recording.
-- `.github/workflows/site-checks.yml` — pull-request and push checks.
-- `CNAME` — existing custom domain configuration, unchanged.
+- The primary CTA opens the official Telegram bot: https://t.me/ByMeVPN_bot?start=src_website.
+- Eligible visitors can activate the documented three-day trial without a card.
+- The interactive phone is a **visual demo only** and cannot establish a VPN connection.
+- Prices are copied from bot source \`constants.py\`, not fetched from a payments API. The final confirmation and payment terms are those displayed in the live bot. Every included month is charged, including the additional months shown in 3+1, 6+2 and 12+3 offers.
+- Public Android APK availability has not been verified; no download link is advertised. The site offers compatible-client instructions in the bot.
+- Support link: https://t.me/ByMeVPNSupportBot.
 
-## Local preview and checks
+## Code
 
-Run from the repository root:
+- \`index.html\`: semantic structure, copy, marketing information, SSR-friendly markup and local illustrative product screens.
+- \`styles.css\`: design tokens, native responsive CSS, device mockups, accessible states and reduced-motion behavior.
+- \`app.js\`: mobile navigation, offline demo state machine and tariff calculations.
+- \`tests/test_site.py\`: dependency-free structural, security and claim checks.
+- \`tests/visual-qa.mjs\`: Chromium tests across 320, 390, 768, 1440 and 1920 pixels, local screenshot evidence.
+- \`docs/AUDIT_2026-11-14.md\`: evidence-based audit and release criteria.
 
-```powershell
-python -m http.server 8000
-```
+## QA
 
-Open `http://localhost:8000`.
-
-```powershell
-py -m unittest discover -s tests -v
+\`\`\`sh
+python3 -m unittest discover -s tests -v
 node --check app.js
-```
+npm ci
+npx playwright-core install chromium
+npm run test:browser
+\`\`\`
 
-## Product and release boundaries
+GitHub Actions runs the same checks and uploads browser screenshots for PR review.
 
-- This landing does not publish an unverified Android APK; visitors are directed to the bot for currently available installation methods. The Android demo is still a local-only visual concept.
-- The website demo only changes visible UI states. It does not connect to a VPN or make network calls.
-- Server options, account access and terms can depend on the service response and account. The page does not invent server locations, prices, trials or network-performance claims.
-- Telegram links send customers to the official bot for real trial activation. They are not presented as an APK download.
-- This PR does not change the Android application, backend, bot, payments, VPN infrastructure, custom-domain configuration or deployment.
+## Scope and safety
+
+The site intentionally does not implement billing, subscriptions, account login, VPN tunnels or administrative workflows. No unconfirmed server geographies, public applications, guaranteed speeds, independent no-logs audits, uptime statistics or customer counts are claimed.
+
+Before changing the published monthly prices, verify the current production bot and backend. Confirm signed public application releases, update manifests and supported platforms before enabling direct downloads.
