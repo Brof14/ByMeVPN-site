@@ -75,8 +75,8 @@ class SiteTests(unittest.TestCase):
         self.assertIn("id=\"demo-screen\"", HTML)
         self.assertIn("id=\"demo-live\"", HTML)
         self.assertIn("role=\"status\"", HTML)
-        self.assertEqual(len([b for b in self.dom.buttons if b.get("data-screen")]), 5)
-        for name in ("off", "on", "servers", "account", "settings"):
+        self.assertEqual(len([b for b in self.dom.buttons if b.get("data-screen")]), 6)
+        for name in ("off", "on", "servers", "account", "settings", "pricing"):
             self.assertIn(f'data-screen="{name}"', HTML)
             self.assertIn(f'assets/app/{("home-" + name) if name in ("off", "on") else name}.png', JS)
 
