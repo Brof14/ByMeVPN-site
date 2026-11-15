@@ -1,42 +1,37 @@
-# ByMeVPN — Product website
+# ByMeVPN — public website
 
-An original, app-led, editorial VPN site using the **actual ByMeVPN Android V2 design reference screens**, not a fabricated UI. Core design direction: the product-dominant staging and typographic discipline seen on [Cash App](https://cash.app/). Cash App logos, photographs, screen assets and copy are **not** reused.
+Standalone, responsive, product-led landing page for ByMeVPN. Uses a clean editorial introduction and a high-contrast application presentation inspired by the **design principles** of [Cash App](https://cash.app/). This is an original ByMeVPN design, **not** a copy of Cash App's branding, assets or exact markup.
 
-## Visual identity
+## Product presentation
 
-- Palette from Android `AppColors`: mint **#69D3BC**, deep canvas **#090F1D**, surface **#121C2B**; sky/electric blue is secondary.
-- A light editorial intro followed by one full-bleed dark product theater with the oversized app image.
-- Distinct chapters: mint app gallery, blue server composition, graphite account chapter, compact white editorial pricing table, blue onboarding, mint referral billboard.
-- No random feature cards, floating stats, testimonials, fabricated review scores or technical guarantees.
+- The home hero is a genuine V2 ByMeVPN Android design screenshot staged large in a black product display. The gallery switches between five ByMeVPN design screens: connection, servers, account, settings and tariff selection.
+- Other chapters explain server selection, subscription status, up to ten devices, pricing, onboarding and referrals. Headlines are concrete rather than abstract advertising slogans.
+- Native ByMeVPN APK availability has **not** been established. The screenshots are *design references from the Android repository*, not independently validated released-app captures. Their example server geographies, expiry dates and VPN statuses are disclosed as illustrative.
+- The actual VPN setup and purchase flow starts in the official Telegram bot: https://t.me/ByMeVPN_bot?start=src_website
 
-## Source attribution and limitations
+## Pricing integrity
 
-Screens in `assets/app/` are copied from `Brof14/ByMeVPN-app/public/assets/aistudio/` and are **V2 design mockups**, not externally validated captures of a released build. Values printed inside the screenshots (such as connected status, server location, remaining days and auto-renewal) are example content. The site repeatedly discloses this and does not establish a VPN connection.
+The 2026-11-15 snapshot of `Brof14/ByMeVPN_bot/constants.py` specifies:
 
-The Android repository README explicitly says production signing, API, payment and tunnel lifecycle checks are still in development. Consequently this marketing site directs visitors to the official bot for the currently supported connection flow rather than offering an unverifiable APK. Native-app screenshots are a concept preview, not a download promise.
+- 3-day free trial; +15-day referral bonus after first start via personal link.
+- 2 / 5 / 10 device tiers.
+- 89 / 79 / 69 / 59 ₽ monthly equivalents for 1 / 3+1 / 6+2 / 12+3 month offers, with +20 ₽ per month for five devices and +40 ₽ per month for ten.
+- All included months are charged: term lengths 1 / 4 / 8 / 15 months and full prepaid totals are shown separately.
 
-Bot constants inspected on 2026-11-15:
-- Free trial 3 days; first bot-start referral bonus 15 days.
-- 2/5/10 device limits.
-- Monthly equivalents for 2 devices: 89 / 79 / 69 / 59 RUB for 1 / 3+1 / 6+2 / 12+3-month plans.
-- +20 RUB per month for 5 devices; +40 RUB per month for 10.
-- All displayed months are paid; upfront totals (including extra months) appear in the pricing table.
-- The bot is the authority for real-time eligibility, renewals and checkout quotes.
+These figures are a static snapshot, **not** a live checkout quote. Confirm current payment and automatic-renewal terms in the bot before purchasing.
 
-The primary action throughout the site is `https://t.me/ByMeVPN_bot?start=src_website`.
+## Implementation
 
-## Technical stack
+Pure static HTML + CSS + JavaScript, local Inter font files, local project-origin images and no external runtime network dependencies or tracking scripts.
 
-Plain static HTML, CSS and JavaScript. No libraries for runtime UI, remote font or analytics tracker, no account credentials, cookies, fake checkout or VPN networking in the page.
+- `index.html` — semantic content, SEO and screen images.
+- `styles.css` — brand system, mobile/desktop presentation, reduced motion.
+- `app.js` — local screen switcher, accessible menu and pricing calculation.
+- `tests/test_site.py` — claims, markup, pricing, image and security contracts.
+- `tests/visual-qa.mjs` — Playwright Chromium test at 320/390/768/1440/1920 px; stores section and desktop/mobile full-page screenshots in CI.
+- `docs/AUDIT_2026-11-15_REBUILD.md` — design baseline, research and limitations.
 
-- `index.html` — semantic product story, local screenshots and all external URLs.
-- `styles.css` — editorial layout with device-specific breakpoints (320–1920 px) and reduced-motion fallback.
-- `app.js` — screen selector, mobile menu and transparent billing calculator.
-- `tests/test_site.py` — semantic/claims/accessibility/source-data contracts.
-- `tests/visual-qa.mjs` — Chromium screenshots, interaction and responsiveness QA.
-- `docs/AUDIT_2026-11-15_THEATER.md` — rationale and verification scope.
-
-## Verify
+## Test
 
 ```sh
 python3 -m unittest discover -s tests -v
@@ -46,4 +41,4 @@ npx playwright-core install chromium
 npm run test:browser
 ```
 
-Screenshot artifacts are attached to the **Site checks** GitHub Actions run. A passing suite proves only the tested frontend interactions; independent production-domain, Lighthouse/Core Web Vitals, screen-reader, app distribution, real VPN and billing testing remain separate.
+CI tests frontend behavior and captures visual evidence. It does **not** validate server connectivity, actual app release quality, payment gateway behavior, Core Web Vitals or real user conversion. Those require independent production tests.

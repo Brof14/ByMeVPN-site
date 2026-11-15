@@ -6,144 +6,162 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const captures = resolve(root, "outputs/product-theater-20261115/visual");
-const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2", ".xml": "application/xml" };
-const server = createServer((req, res) => {
-  const target = decodeURIComponent(new URL(req.url, "http://127.0.0.1").pathname);
-  const file = resolve(root, "." + (target === "/" ? "/index.html" : target));
-  if (!file.startsWith(root + sep)) return res.writeHead(403).end();
-  try { res.writeHead(200, { "content-type": types[extname(file)] || "application/octet-stream" }).end(readFileSync(file)); }
-  catch { res.writeHead(404).end("Not found"); }
+const output = resolve(root, "outputs/cash-app-rebuild-20261115/visual");
+const mime = {".html":"text/html",".css":"text/css",".js":"text/javascript",".png":"image/png",".webp":"image/webp",".woff2":"font/woff2",".svg":"image/svg+xml"};
+const server = createServer((request, response) => {
+  const url = new URL(request.url, "http://127.0.0.1");
+  const pathname = decodeURIComponent(url.pathname);
+  const file = resolve(root, "." + (pathname === "/" ? "/index.html" : pathname));
+  if (!file.startsWith(root + sep)) return response.writeHead(403).end();
+  try { response.writeHead(200, {"content-type":mime[extname(file)] || "application/octet-stream"}).end(readFileSync(file)); }
+  catch { response.writeHead(404).end("Not found"); }
 });
 await new Promise(resolveListen => server.listen(0, "127.0.0.1", resolveListen));
 const origin = "http://127.0.0.1:" + server.address().port;
-const browser = await chromium.launch({ headless: true });
-const report = { testedAt: new Date().toISOString(), viewports: [], reducedMotion: null };
-
-const dimensions = [
-  ["mobile-320", 320, 740],
-  ["mobile-390", 390, 844],
-  ["tablet-768", 768, 1024],
-  ["desktop-1440", 1440, 900],
-  ["desktop-1920", 1920, 1080],
+const browser = await chromium.launch({headless:true});
+const results = {testedAt:new Date().toISOString(),viewports:[],reducedMotion:false};
+const viewports = [
+  {name:"mobile-320",width:320,height:740},
+  {name:"mobile-390",width:390,height:844},
+  {name:"tablet-768",width:768,height:1024},
+  {name:"desktop-1440",width:1440,height:900},
+  {name:"desktop-1920",width:1920,height:1080}
 ];
 
 try {
-  for (const [name, width, height] of dimensions) {
-    const context = await browser.newContext({ viewport: { width, height }, reducedMotion: "no-preference" });
+  for (const v of viewports) {
+    const context = await browser.newContext({viewport:{width:v.width,height:v.height},reducedMotion:"no-preference"});
     const page = await context.newPage();
-    const errors = [];
-    const outgoing = [];
+    const errors = [], outgoing = [], failed = [];
     page.on("pageerror", error => errors.push(error.message));
-    page.on("request", request => { if (!request.url().startsWith(origin + "/")) outgoing.push(request.url()); });
-    await page.goto(origin, { waitUntil: "networkidle" });
-    const out = resolve(captures, name);
-    mkdirSync(out, { recursive: true });
+    page.on("request", request => {if (!request.url().startsWith(origin + "/")) outgoing.push(request.url());});
+    page.on("requestfailed", request => failed.push(request.url() + ": " + request.failure()?.errorText));
+    await page.goto(origin + "/", {waitUntil:"networkidle"});
+    const folder = resolve(output,v.name);
+    mkdirSync(folder,{recursive:true});
 
-    const layout = await page.evaluate(() => {
-      const box = sel => document.querySelector(sel).getBoundingClientRect();
-      const css = sel => getComputedStyle(document.querySelector(sel));
+    const hero = await page.evaluate(() => {
+      const box = query => document.querySelector(query).getBoundingClientRect();
+      const css = query => getComputedStyle(document.querySelector(query));
       return {
-        header: css(".header").position,
-        font: parseFloat(css(".hero h1").fontSize),
-        cta: box(".hero-aside .pill-button").height,
-        phoneWidth: box(".hero-phone").width,
-        phoneHeight: box(".hero-phone").height,
-        cssLoaded: [...document.styleSheets].some(sheet => sheet.href?.includes("styles.css") && (() => { try { return sheet.cssRules.length > 80; } catch { return false; } })()),
-        heroBackground: css(".hero").backgroundColor,
+        headerPosition:css(".site-header").position,
+        titleSize:parseFloat(css(".hero-intro h1").fontSize),
+        stageTop:box(".hero-display").top,
+        stageHeight:box(".hero-display").height,
+        imageTop:box(".preview-phone").top,
+        imageWidth:box(".preview-phone").width,
+        primaryHeight:box(".hero-intro-side .button").height,
+        stylesheet:[...document.styleSheets].some(sheet => sheet.href?.includes("styles.css") && (() => {try{return sheet.cssRules.length>90;}catch{return false;}})()),
+        imageReady:document.querySelector("#demo-screen").naturalWidth>0,
       };
     });
-    assert.equal(layout.header, "sticky", name + ": header not sticky");
-    assert.ok(layout.cssLoaded, name + ": stylesheet missing");
-    assert.ok(layout.font >= 45, name + ": headline too small");
-    assert.ok(layout.cta >= 44, name + ": CTA too small");
-    assert.ok(layout.phoneWidth >= 180 && layout.phoneHeight >= 400, name + ": product mockup absent");
-    assert.equal(await page.locator(".hero-aside .pill-button").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
-    assert.ok(layout.heroBackground !== "rgba(0, 0, 0, 0)", name + ": mint canvas missing");
-    const heroCrop = await page.evaluate(() => ({ stageTop: document.querySelector(".hero-canvas").getBoundingClientRect().top, phoneTop: document.querySelector(".hero-phone").getBoundingClientRect().top }));
-    assert.ok(heroCrop.phoneTop >= heroCrop.stageTop - 3, name + ": app header is cropped above product stage");
-    await page.screenshot({ path: resolve(out, "hero.png") });
+    assert.equal(hero.headerPosition,"sticky",v.name+": header missing");
+    assert.ok(hero.stylesheet,v.name+": styles not loaded");
+    assert.ok(hero.imageReady,v.name+": hero screenshot missing");
+    assert.ok(hero.titleSize>=40,v.name+": title too small");
+    assert.ok(hero.stageHeight>=500,v.name+": product stage too short");
+    assert.ok(hero.stageTop<=(v.width<=740?475:355),v.name+": product appears too low: "+hero.stageTop);
+    assert.ok(hero.imageTop>=hero.stageTop-25,v.name+": product top cut off");
+    assert.ok(hero.imageWidth>=200,v.name+": product image too small");
+    assert.ok(hero.primaryHeight>=44,v.name+": CTA target too small");
+    assert.equal(await page.locator(".hero-intro-side .button").getAttribute("href"),"https://t.me/ByMeVPN_bot?start=src_website");
+    await page.screenshot({path:resolve(folder,"hero.png")});
 
     const sections = [
-      ["showcase", "#product"], ["servers", "#servers"], ["account", "#subscription"],
-      ["pricing", "#pricing"], ["how", "#how"],
-      ["referral", "#friends"], ["faq", "#questions"], ["closing", ".final-chapter"]
+      ["servers","#servers"],["account","#account"],["pricing","#pricing"],
+      ["devices","#devices"],["how","#how"],["referral",".referral-section"],
+      ["faq","#questions"],["closing",".closing"]
     ];
-    for (const [label, selector] of sections) {
-      const node = page.locator(selector);
-      await node.evaluate(el => window.scrollTo({ top: scrollY + el.getBoundingClientRect().top - 77, behavior: "instant" }));
-      assert.ok(await node.isVisible(), name + " invisible " + selector);
-      assert.ok(await node.evaluate(el => el.getBoundingClientRect().height > 120), name + " collapsed " + selector);
-      await page.screenshot({ path: resolve(out, label + ".png") });
+    for(const [name,selector] of sections){
+      const element = page.locator(selector);
+      await element.evaluate(node=>window.scrollTo({top:scrollY+node.getBoundingClientRect().top-70,behavior:"instant"}));
+      await page.waitForTimeout(90);
+      assert.ok(await element.isVisible(),v.name+": "+name+" not visible");
+      assert.ok(await element.evaluate(node=>node.getBoundingClientRect().height>150),v.name+": "+name+" collapsed");
+      await page.screenshot({path:resolve(folder,name+".png")});
     }
 
-    // Gallery uses genuine design PNGs and changes the real media, not a fake VPN status.
-    for (const screen of ["on", "servers", "account", "settings", "pricing", "off"]) {
-      await page.locator('.screen-selector button[data-screen="' + screen + '"]').click();
-      assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"), screen);
-      assert.equal(await page.locator('.screen-selector button[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
-      assert.equal(await page.locator("#demo-screen").getAttribute("src"), "assets/app/" + (screen === "off" ? "home-off" : screen === "on" ? "home-on" : screen) + ".png");
-      await page.locator("#demo-screen").evaluate(async img => { if (!img.complete) await new Promise(resolveImg => { img.addEventListener("load", resolveImg, { once: true }); img.addEventListener("error", resolveImg, { once: true }); }); });
-      assert.ok(await page.locator("#demo-screen").evaluate(img => img.naturalWidth > 0), name + " screenshot failed " + screen);
+    // Each gallery state must show a real, locally-sourced V2 design screenshot.
+    for(const [name,filename] of [["servers","servers"],["account","account"],["settings","settings"],["pricing","pricing"],["on","home-on"]]){
+      const button=page.locator('.display-tabs button[data-screen="'+name+'"]');
+      await button.click();
+      assert.equal(await button.getAttribute("aria-pressed"),"true");
+      assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"),name);
+      assert.equal(await page.locator("#demo-screen").getAttribute("src"),"assets/app/"+filename+".png");
+      assert.ok((await page.locator("#screen-title").innerText()).length>3,v.name+": missing gallery title");
+      await page.locator("#demo-screen").evaluate(async image=>{
+        if(!image.complete) await new Promise(resolveImage=>{
+          image.addEventListener("load",resolveImage,{once:true});
+          image.addEventListener("error",resolveImage,{once:true});
+        });
+      });
+      assert.ok(await page.locator("#demo-screen").evaluate(image=>image.naturalWidth>0),v.name+": missing image "+name);
     }
-    await page.locator('.screen-selector button[data-screen="on"]').click();
-    await page.screenshot({ path: resolve(out, "showcase-on.png") });
+    await page.locator('[data-screen="pricing"]').click();
+    await page.screenshot({path:resolve(folder,"gallery-pricing.png")});
+    await page.locator('[data-screen="on"]').click();
 
-    // The website should never misstate the cost for the complete 3+1-month term.
-    const card = page.locator('.plan[data-months="3"]');
-    assert.equal((await card.locator(".plan-price").innerText()).trim(), "79");
-    assert.match(await card.locator(".plan-total strong").innerText(), /316/);
-    await page.locator('[data-tier="10"]').click();
-    assert.equal((await card.locator(".plan-price").innerText()).trim(), "119");
-    assert.match(await card.locator(".plan-total strong").innerText(), /476/);
+    // Full prepaid totals, including "extra" months, need accurate arithmetic.
+    const card=page.locator('.plan[data-months="3"]');
+    assert.equal((await card.locator(".plan-price").innerText()).trim(),"79");
+    assert.match(await card.locator(".plan-total strong").innerText(),/316/);
     await page.locator('[data-tier="5"]').click();
-    assert.equal((await card.locator(".plan-price").innerText()).trim(), "99");
-    assert.match(await card.locator(".plan-total strong").innerText(), /396/);
+    assert.equal((await card.locator(".plan-price").innerText()).trim(),"99");
+    assert.match(await card.locator(".plan-total strong").innerText(),/396/);
+    await page.locator('[data-tier="10"]').click();
+    assert.equal((await card.locator(".plan-price").innerText()).trim(),"119");
+    assert.match(await card.locator(".plan-total strong").innerText(),/476/);
     await page.locator('[data-tier="2"]').click();
 
-    const faq = page.locator(".faq-list details").first();
+    const faq=page.locator(".faq-list details").first();
     await faq.locator("summary").click();
-    assert.ok(await faq.evaluate(node => node.open), name + ": FAQ open");
+    assert.ok(await faq.evaluate(node=>node.open),v.name+": FAQ failed to open");
     await faq.locator("summary").click();
-    assert.ok(!(await faq.evaluate(node => node.open)), name + ": FAQ close");
-    if (width <= 760) {
-      await page.locator(".menu-toggle").click();
-      assert.equal(await page.locator(".menu-toggle").getAttribute("aria-expanded"), "true");
+    assert.ok(!(await faq.evaluate(node=>node.open)),v.name+": FAQ failed to close");
+    if(v.width<=740){
+      const button=page.locator(".menu-toggle");
+      await button.click();
+      assert.equal(await button.getAttribute("aria-expanded"),"true");
       assert.ok(await page.locator("#mobile-nav").isVisible());
       await page.keyboard.press("Escape");
+      assert.equal(await button.getAttribute("aria-expanded"),"false");
       assert.ok(await page.locator("#mobile-nav").isHidden());
     }
-    const metrics = await page.evaluate(() => ({
-      width: innerWidth,
-      docWidth: document.documentElement.scrollWidth,
-      bodyWidth: document.body.scrollWidth,
-      badImages: [...document.querySelectorAll("img")].filter(img => !img.complete || img.naturalWidth <= 0).map(img => img.getAttribute("src")),
-      hiddenSections: [...document.querySelectorAll("main section")].filter(section => {
-        const style = getComputedStyle(section); return style.visibility === "hidden" || style.display === "none" || parseFloat(style.opacity) === 0;
-      }).length,
+    const geometry=await page.evaluate(()=>({
+      width:innerWidth,
+      htmlWidth:document.documentElement.scrollWidth,
+      bodyWidth:document.body.scrollWidth,
+      badImages:[...document.images].filter(img=>!img.complete||img.naturalWidth<=0).map(img=>img.src),
+      hiddenSections:[...document.querySelectorAll("main section")].filter(node=>{const s=getComputedStyle(node);return s.display==="none"||s.visibility==="hidden"||parseFloat(s.opacity)===0;}).length
     }));
-    assert.ok(metrics.docWidth <= metrics.width + 2, name + ": document overflow " + JSON.stringify(metrics));
-    assert.ok(metrics.bodyWidth <= metrics.width + 2, name + ": body overflow " + JSON.stringify(metrics));
-    assert.equal(metrics.hiddenSections, 0, name + ": hidden content");
-    assert.deepEqual(metrics.badImages, [], name + ": broken image");
-    assert.deepEqual(errors, [], name + ": JS errors");
-    assert.deepEqual(outgoing, [], name + ": unexpected external requests");
-    if (name === "mobile-390" || name === "desktop-1440") await page.screenshot({ path: resolve(out, "full-page.png"), fullPage: true });
-    report.viewports.push({ name, width, height, layout, metrics, errors, outgoing });
+    assert.ok(geometry.htmlWidth<=v.width+1,v.name+": horizontal scroll "+JSON.stringify(geometry));
+    assert.ok(geometry.bodyWidth<=v.width+1,v.name+": body overflow "+JSON.stringify(geometry));
+    assert.equal(geometry.hiddenSections,0,v.name+": hidden chapters");
+    assert.deepEqual(geometry.badImages,[],v.name+": broken local images");
+    assert.deepEqual(errors,[],v.name+": JavaScript errors");
+    assert.deepEqual(outgoing,[],v.name+": third-party network requests");
+    assert.deepEqual(failed,[],v.name+": failed requests");
+
+    if(v.name==="mobile-390"||v.name==="desktop-1440"){
+      await page.evaluate(()=>scrollTo({top:0,behavior:"instant"}));
+      await page.screenshot({path:resolve(folder,"full-page.png"),fullPage:true});
+    }
+    results.viewports.push({...v,hero,geometry,errors});
+    console.log(v.name+": app, sections, gallery, pricing, keyboard, FAQ and overflow verified");
     await context.close();
-    console.log(name + ": visuals, actual design screens, tier calculator, FAQ, keyboard and assets passed");
   }
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
-  const page = await context.newPage();
-  await page.goto(origin);
-  const duration = await page.locator(".hero-phone").first().evaluate(node => getComputedStyle(node).transitionDuration);
-  assert.ok(parseFloat(duration) <= 0.01, "Reduced motion not respected " + duration);
-  report.reducedMotion = duration;
+
+  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:"reduce"});
+  const page=await context.newPage();
+  await page.goto(origin+"/",{waitUntil:"load"});
+  const reduced=await page.evaluate(()=>getComputedStyle(document.documentElement).scrollBehavior);
+  assert.equal(reduced,"auto","reduced-motion scroll behavior");
+  results.reducedMotion=true;
   await context.close();
-  mkdirSync(captures, { recursive: true });
-  writeFileSync(resolve(captures, "qa-report.json"), JSON.stringify(report, null, 2));
-  console.log("Browser QA complete: 5 viewports and reduced motion.");
+  mkdirSync(output,{recursive:true});
+  writeFileSync(resolve(output,"qa-report.json"),JSON.stringify(results,null,2));
+  console.log("All five viewports and reduced motion passed");
 } finally {
   await browser.close();
-  await new Promise(resolveClose => server.close(resolveClose));
+  await new Promise(resolveClose=>server.close(resolveClose));
 }
