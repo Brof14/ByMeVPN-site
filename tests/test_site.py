@@ -78,7 +78,7 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(len([b for b in self.dom.buttons if b.get("data-screen")]), 5)
         for name in ("off", "on", "servers", "account", "settings"):
             self.assertIn(f'data-screen="{name}"', HTML)
-            self.assertIn(f'assets/app/{name}.png', JS)
+            self.assertIn(f'assets/app/{("home-" + name) if name in ("off", "on") else name}.png', JS)
 
     def test_trustworthy_pricing(self):
         self.assertIn("const periodMonths = Object.freeze({1: 1, 3: 4, 6: 8, 12: 15})", JS)
