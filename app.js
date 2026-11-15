@@ -76,7 +76,7 @@ const stage = document.getElementById("demo-stage");
 const image = document.getElementById("demo-screen");
 const description = document.getElementById("screen-description");
 const live = document.getElementById("demo-live");
-const buttons = [...document.querySelectorAll(".showcase-controls button[data-screen]")];
+const buttons = [...document.querySelectorAll(".screen-selector button[data-screen]")];
 const preloaded = new Set();
 function showScreen(name) {
   const item = screens[name];
