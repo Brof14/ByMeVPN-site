@@ -1,39 +1,53 @@
-# ByMeVPN — Website
+# ByMeVPN Website
 
-A light, product-led Russian marketing website for ByMeVPN, designed around a distinct cobalt-blue brand language, bold typography, vivid product scenes and clear commercial flow.
+Public website for ByMeVPN. A product-led, mobile-first marketing experience built as **static HTML, CSS and JavaScript**. No web login, payments or VPN tunnel are implemented.
 
-Design references: https://platipomiru.com/ (clean light fintech content, clear offers and onboarding) and https://cash.app/ (bold color blocking, visual scale and product-first storytelling). These are inspiration only: no competitor assets, logos or proprietary content are reused.
+## Design direction
 
-## Customer journey
+The main reference is [Cash App](https://cash.app/): a single saturated brand field, oversized type, large actual product previews, distinct scroll chapters and one main action per section. ByMeVPN uses its **own** mint / blue shield palette and the UI of its Android app, not Cash App's colors, assets or trademarks.
 
-- Main CTA: https://t.me/ByMeVPN_bot?start=src_website
-- Three-day free trial without a card, subject to the bot's eligibility rules.
-- Interactive device tiers (2 / 5 / 10 devices) and prepaid periods of 1 / 4 / 8 / 15 months, based on the documented bot tariff tables.
-- The static site lists monthly equivalent and the **full upfront total**, including all additional months. Production payment terms are determined by the official bot.
-- +15 days for an invited new user when they first start the bot via a referral link.
-- The visual app demo does not install or connect a VPN. Own Android, Windows and iOS apps are not advertised as production downloads without release verification.
+The product preview images are imported from:
+`Brof14/ByMeVPN-app/public/assets/aistudio/`
+
+- `04_home_off_86729ec7.png` → `assets/app/home-off.png`
+- `05_home_on_d4ef8e5c.png` → `assets/app/home-on.png`
+- `06_servers_4c67c8c0.png` → `assets/app/servers.png`
+- `08_pricing_8fe863b0.png` → `assets/app/pricing.png`
+- `10_account_active_66413e96.png` → `assets/app/account.png`
+- `11_settings_1428e5bc.png` → `assets/app/settings.png`
+
+**These are official repository design concepts, not independently verified production screenshots.** They may include example connection statuses, servers, subscription dates, auto-renew statuses and pricing. The site marks these values as illustrative. The marketing website's screen selector changes local images only; it does not connect a VPN or access user accounts.
+
+## Confirmed product data
+
+The price selector is a static copy of `Brof14/ByMeVPN_bot/constants.py` as inspected on 2026-11-15:
+
+- Trial period: 3 days, with no card according to the documented bot experience.
+- Invitation: +15 days when a referred new user starts the bot.
+- Device limits: 2 / 5 / 10.
+- Per-month base equivalents: 89 / 79 / 69 / 59 RUB for the 1 / 3+1 / 6+2 / 12+3 period names.
+- Extra per included month: +20 RUB for 5 devices, +40 RUB for 10.
+- Actual paid access: 1 / 4 / 8 / 15 months. All included months are charged and **the entire total is shown**.
+
+Rates and eligibility are not queried from a live payment API. The official bot is the source of truth before purchase. The public signed Android app is not independently verified as released; users are directed to compatible client instructions from the bot.
 
 ## Files
 
-- index.html — semantic landing, copy, original visual/product illustrations, canonical/OG metadata.
-- styles.css — desktop/mobile brand design, responsive compositions, accessible states, reduced motion.
-- app.js — accessible menu, visual demo state machine, device tier calculator; no external client API calls.
-- tests/test_site.py — static HTML and product contract checks.
-- tests/visual-qa.mjs — Chromium QA and screenshots for 320, 390, 768, 1440 and 1920px viewports.
-- docs/AUDIT_2026-11-15.md — review of previous issues, design decisions and limitations.
+- `index.html`: semantic marketing content and accurate product showcases.
+- `styles.css`: mint + graphite app identity, responsive layouts, clear focus/reduced motion.
+- `app.js`: mobile menu, local screenshot selector and transparent tariff calculator.
+- `tests/test_site.py`: claims, accessibility, asset and pricing contracts.
+- `tests/visual-qa.mjs`: Chromium verification at 320 / 390 / 768 / 1440 / 1920 px.
+- `docs/AUDIT_2026-11-15_PRODUCT.md`: full audit, reference comparison, acceptance limits.
 
-## QA
+## Run QA
 
-Run the following from the repository root:
+```bash
+python3 -m unittest discover -s tests -v
+node --check app.js
+npm ci
+npx playwright-core install chromium
+npm run test:browser
+```
 
-    python3 -m unittest discover -s tests -v
-    node --check app.js
-    npm ci
-    npx playwright-core install chromium
-    npm run test:browser
-
-GitHub Actions runs this suite and attaches viewport screenshots to the workflow result.
-
-## Scope and safety
-
-No external fonts, trackers, fake user counts, invented security audits, guaranteed performance numbers, public APK downloads, direct billing or real VPN tunnel are embedded in the page. The price table is a snapshot of source constants and is not a live payment quote. The bot remains the source of current checkout details.
+CI uploads browser screenshots and a JSON QA report for each viewport. A passing test suite confirms the checked frontend contracts, not actual connection availability, privacy claims, conversion outcomes or live payment processing.
