@@ -29,6 +29,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bymevpn-real-app-showcase-screenshots
-          path: outputs/app-showcase-20261115/visual/
+          name: bymevpn-product-theater-final-screens
+          path: outputs/product-theater-20261115/visual/
           if-no-files-found: ignore
