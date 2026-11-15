@@ -1,39 +1,39 @@
-# ByMeVPN — public website
+# ByMeVPN — Website
 
-Product-first, static and responsive ByMeVPN landing page. Built as plain HTML, CSS and JavaScript without a frontend framework, trackers, remote fonts or browser network APIs.
+A light, product-led Russian marketing website for ByMeVPN, designed around a distinct cobalt-blue brand language, bold typography, vivid product scenes and clear commercial flow.
 
-## Production user journey
+Design references: https://platipomiru.com/ (clean light fintech content, clear offers and onboarding) and https://cash.app/ (bold color blocking, visual scale and product-first storytelling). These are inspiration only: no competitor assets, logos or proprietary content are reused.
 
-- The primary CTA opens the official Telegram bot: https://t.me/ByMeVPN_bot?start=src_website.
-- Eligible visitors can activate the documented three-day trial without a card.
-- The interactive phone is a **visual demo only** and cannot establish a VPN connection.
-- Prices are copied from bot source \`constants.py\`, not fetched from a payments API. The final confirmation and payment terms are those displayed in the live bot. Every included month is charged, including the additional months shown in 3+1, 6+2 and 12+3 offers.
-- Public Android APK availability has not been verified; no download link is advertised. The site offers compatible-client instructions in the bot.
-- Support link: https://t.me/ByMeVPNSupportBot.
+## Customer journey
 
-## Code
+- Main CTA: https://t.me/ByMeVPN_bot?start=src_website
+- Three-day free trial without a card, subject to the bot's eligibility rules.
+- Interactive device tiers (2 / 5 / 10 devices) and prepaid periods of 1 / 4 / 8 / 15 months, based on the documented bot tariff tables.
+- The static site lists monthly equivalent and the **full upfront total**, including all additional months. Production payment terms are determined by the official bot.
+- +15 days for an invited new user when they first start the bot via a referral link.
+- The visual app demo does not install or connect a VPN. Own Android, Windows and iOS apps are not advertised as production downloads without release verification.
 
-- \`index.html\`: semantic structure, copy, marketing information, SSR-friendly markup and local illustrative product screens.
-- \`styles.css\`: design tokens, native responsive CSS, device mockups, accessible states and reduced-motion behavior.
-- \`app.js\`: mobile navigation, offline demo state machine and tariff calculations.
-- \`tests/test_site.py\`: dependency-free structural, security and claim checks.
-- \`tests/visual-qa.mjs\`: Chromium tests across 320, 390, 768, 1440 and 1920 pixels, local screenshot evidence.
-- \`docs/AUDIT_2026-11-14.md\`: evidence-based audit and release criteria.
+## Files
+
+- index.html — semantic landing, copy, original visual/product illustrations, canonical/OG metadata.
+- styles.css — desktop/mobile brand design, responsive compositions, accessible states, reduced motion.
+- app.js — accessible menu, visual demo state machine, device tier calculator; no external client API calls.
+- tests/test_site.py — static HTML and product contract checks.
+- tests/visual-qa.mjs — Chromium QA and screenshots for 320, 390, 768, 1440 and 1920px viewports.
+- docs/AUDIT_2026-11-15.md — review of previous issues, design decisions and limitations.
 
 ## QA
 
-\`\`\`sh
-python3 -m unittest discover -s tests -v
-node --check app.js
-npm ci
-npx playwright-core install chromium
-npm run test:browser
-\`\`\`
+Run the following from the repository root:
 
-GitHub Actions runs the same checks and uploads browser screenshots for PR review.
+    python3 -m unittest discover -s tests -v
+    node --check app.js
+    npm ci
+    npx playwright-core install chromium
+    npm run test:browser
+
+GitHub Actions runs this suite and attaches viewport screenshots to the workflow result.
 
 ## Scope and safety
 
-The site intentionally does not implement billing, subscriptions, account login, VPN tunnels or administrative workflows. No unconfirmed server geographies, public applications, guaranteed speeds, independent no-logs audits, uptime statistics or customer counts are claimed.
-
-Before changing the published monthly prices, verify the current production bot and backend. Confirm signed public application releases, update manifests and supported platforms before enabling direct downloads.
+No external fonts, trackers, fake user counts, invented security audits, guaranteed performance numbers, public APK downloads, direct billing or real VPN tunnel are embedded in the page. The price table is a snapshot of source constants and is not a live payment quote. The bot remains the source of current checkout details.
