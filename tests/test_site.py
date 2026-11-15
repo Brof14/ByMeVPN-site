@@ -1,126 +1,116 @@
-"""ByMeVPN public site: semantic, product-claim and conversion contracts."""
-import re
-import unittest
+"""Source contracts for the product-led ByMeVPN landing page."""
 from html.parser import HTMLParser
 from pathlib import Path
+import re
+import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 CSS = (ROOT / "styles.css").read_text(encoding="utf-8")
 JS = (ROOT / "app.js").read_text(encoding="utf-8")
 BOT = "https://t.me/ByMeVPN_bot?start=src_website"
-SUPPORT = "https://t.me/ByMeVPNSupportBot"
 
 
-class Parse(HTMLParser):
+class DOM(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.ids = []
-        self.links = []
-        self.images = []
-        self.buttons = []
-        self.headings = []
-        self.sections = []
+        self.ids, self.anchors, self.images, self.buttons, self.headings, self.sections = [], [], [], [], [], []
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         if a.get("id"): self.ids.append(a["id"])
-        if tag == "a": self.links.append(a)
+        if tag == "a": self.anchors.append(a)
         if tag == "img": self.images.append(a)
         if tag == "button": self.buttons.append(a)
         if tag in ("h1", "h2", "h3"): self.headings.append(tag)
         if tag == "section": self.sections.append(a)
 
 
-class SiteContractTests(unittest.TestCase):
+class SiteTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.page = Parse()
-        cls.page.feed(HTML)
+        cls.dom = DOM()
+        cls.dom.feed(HTML)
 
-    def test_unique_ids(self):
-        self.assertEqual(len(self.page.ids), len(set(self.page.ids)))
+    def test_single_h1_unique_ids(self):
+        self.assertEqual(self.dom.headings.count("h1"), 1)
+        self.assertEqual(len(self.dom.ids), len(set(self.dom.ids)))
 
-    def test_anchor_targets(self):
-        for a in self.page.links:
+    def test_semantic_navigation(self):
+        for a in self.dom.anchors:
             href = a.get("href", "")
             self.assertTrue(href and href != "#", a)
             self.assertFalse(href.lower().startswith("javascript:"))
-            if href.startswith("#"):
-                self.assertIn(href[1:], self.page.ids, href)
+            if href.startswith("#"): self.assertIn(href[1:], self.dom.ids)
+        for anchor in ("main", "app", "servers", "account", "settings", "prices", "how", "friends", "faq"):
+            self.assertIn(anchor, self.dom.ids)
+        self.assertGreaterEqual(len(self.dom.sections), 10)
 
-    def test_assets_exist_and_images_have_alt(self):
-        for img in self.page.images:
-            self.assertIn("alt", img)
-        assets = re.findall(r'(?:src|href)="(assets/[^"]+)"', HTML)
-        assets += re.findall(r'url\(["\']?(assets/[^"\')]+)', CSS)
-        for asset in assets:
-            self.assertTrue((ROOT / asset).is_file(), asset)
-        self.assertGreaterEqual(len(assets), 6)
+    def test_local_assets(self):
+        for img in self.dom.images: self.assertIn("alt", img)
+        paths = re.findall(r'(?:src|href)="(assets/[^"]+)"', HTML)
+        paths += re.findall(r'url\(["\']?(assets/[^"\')]+)', CSS)
+        for p in paths: self.assertTrue((ROOT / p).is_file(), p)
+        for name in ("home-off", "home-on", "servers", "account", "settings", "pricing"):
+            self.assertTrue((ROOT / f"assets/app/{name}.png").is_file(), name)
         self.assertNotIn("fonts.googleapis", HTML + CSS)
 
     def test_external_links_safe(self):
-        for a in self.page.links:
+        for a in self.dom.anchors:
             if a.get("target") == "_blank":
                 self.assertIn("noopener", a.get("rel", "").split())
                 self.assertIn("noreferrer", a.get("rel", "").split())
 
-    def test_clear_onboarding_and_support(self):
-        self.assertGreaterEqual(HTML.count(BOT), 8)
-        self.assertIn("Попробовать бесплатно", HTML)
+    def test_primary_action(self):
+        self.assertGreaterEqual(HTML.count(BOT), 7)
         self.assertIn("3 дня бесплатно", HTML)
-        self.assertIn("Без привязки карты", HTML)
-        self.assertIn(SUPPORT, HTML)
-        for anchor in ("benefits", "app", "prices", "steps", "platforms", "faq", "friends"):
-            self.assertIn(anchor, self.page.ids)
+        self.assertIn("Попробовать 3 дня бесплатно", HTML)
+        self.assertIn("https://t.me/ByMeVPNSupportBot", HTML)
 
-    def test_honest_tariff_math(self):
-        self.assertIn("Тарифы рассчитаны по опубликованной сетке бота", HTML)
-        self.assertIn("Все месяцы, включая дополнительные, оплачиваются", HTML)
-        self.assertIn("автопродления", HTML)
+    def test_source_app_design_assets_and_disclosure(self):
+        self.assertIn("дизайн-макеты", HTML.lower())
+        self.assertIn("демонстрационные данные", HTML.lower())
+        self.assertIn("Публичный подписанный релиз не подтверждён", HTML)
+        self.assertIn("VPN на сайте не запускается", JS)
+        self.assertIn("доступность отдельных переключателей зависит", HTML)
+        self.assertIn("id=\"demo-screen\"", HTML)
+        self.assertIn("id=\"demo-live\"", HTML)
+        self.assertIn("role=\"status\"", HTML)
+        self.assertEqual(len([b for b in self.dom.buttons if b.get("data-screen")]), 6)
+        for name in ("off", "on", "servers", "account", "settings", "pricing"):
+            self.assertIn(f'data-screen="{name}"', HTML)
+            self.assertIn(f'assets/app/{("home-" + name) if name in ("off", "on") else name}.png', JS)
+
+    def test_trustworthy_pricing(self):
         self.assertIn("const periodMonths = Object.freeze({1: 1, 3: 4, 6: 8, 12: 15})", JS)
         self.assertIn("const baseMonthlyRub = Object.freeze({1: 89, 3: 79, 6: 69, 12: 59})", JS)
         self.assertIn("const deviceSurchargeRub = Object.freeze({2: 0, 5: 20, 10: 40})", JS)
-        for term in ("1", "3", "6", "12"):
-            self.assertIn(f'data-months="{term}"', HTML)
-        for devices in ("2", "5", "10"):
-            self.assertIn(f'data-tier="{devices}"', HTML)
+        self.assertIn("Каждый месяц указанного срока, включая дополнительные месяцы", HTML)
+        self.assertIn("автопродление", HTML)
+        for tier in ("2", "5", "10"): self.assertIn(f'data-tier="{tier}"', HTML)
+        for month in ("1", "3", "6", "12"): self.assertIn(f'data-months="{month}"', HTML)
 
-    def test_no_unverified_releases_or_performance_claims(self):
-        for phrase in ("100% аноним", "99.99%", "no-logs", "10 Гбит/с",
-                       "гарантированно работает", "скачать APK", "более 1000 пользователей"):
-            self.assertNotIn(phrase.lower(), HTML.lower())
-        self.assertIn("публичную загрузку не обещаем", HTML)
-        self.assertNotIn(".apk", re.sub(r'[^"\']*(href|src)=', "", HTML))
-        self.assertIn("не VPN-подключение", HTML)
+    def test_no_fabricated_product_claims(self):
+        for text in ("no-logs", "100% аноним", "99.99%", "10 Гбит/с", "10000 пользователей",
+                     "скачать APK", "гарантировано", "подключение к реальному VPN"):
+            self.assertNotIn(text.lower(), HTML.lower())
+        self.assertNotIn("href=\"downloads/", HTML)
+        for forbidden in ("fetch(", "new WebSocket(", "XMLHttpRequest", "sendBeacon("):
+            self.assertNotIn(forbidden, JS)
 
-    def test_demo_local_and_disclosed(self):
-        self.assertIn('id="demo-stage"', HTML)
-        self.assertIn('id="demo-switch"', HTML)
-        self.assertIn('id="demo-live"', HTML)
-        for state in ("off", "connecting", "on"):
-            self.assertIn(f'data-demo-state="{state}"', HTML)
-        for state in ("VPN выключен", "Подключение…", "VPN запущен"):
-            self.assertIn(state, JS)
-        self.assertIn("VPN на сайте не подключается", HTML)
-        for api in ("fetch(", "new WebSocket(", "XMLHttpRequest", "sendBeacon("):
-            self.assertNotIn(api, JS)
-
-    def test_accessible_navigation(self):
-        self.assertEqual(self.page.headings.count("h1"), 1)
-        self.assertGreaterEqual(len(self.page.sections), 9)
+    def test_accessible_and_motion(self):
         self.assertIn('class="skip-link"', HTML)
         self.assertIn('aria-controls="mobile-nav"', HTML)
+        self.assertIn('aria-expanded="false"', HTML)
         self.assertIn('aria-pressed="false"', HTML)
-        self.assertIn('role="status"', HTML)
-        self.assertIn('prefers-reduced-motion', CSS)
-        self.assertIn(':focus-visible', CSS)
-        self.assertIn('event.key === "Escape"', JS)
-        self.assertFalse(any("disabled" in x for x in self.page.buttons))
+        self.assertIn("event.key === \"Escape\"", JS)
+        self.assertIn(":focus-visible", CSS)
+        self.assertIn("prefers-reduced-motion", CSS)
+        self.assertFalse(any("disabled" in button for button in self.dom.buttons))
 
     def test_seo(self):
-        for tag in ('<html lang="ru">', 'rel="canonical"', 'property="og:image"',
-                    '"@type":"WebSite"', '<title>ByMeVPN'):
-            self.assertIn(tag, HTML)
+        for item in ('<html lang="ru">', 'rel="canonical"', 'property="og:image"',
+                     '"@type":"WebSite"', '<title>ByMeVPN'):
+            self.assertIn(item, HTML)
 
 
 if __name__ == "__main__":
