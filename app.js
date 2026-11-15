@@ -1,16 +1,17 @@
 "use strict";
 
-const menuButton = document.querySelector(".menu-toggle");
-const mobileNav = document.getElementById("mobile-nav");
+// No tracking, payment, account or VPN network operations are performed on this website.
 const year = document.getElementById("year");
 if (year) year.textContent = String(new Date().getFullYear());
 
+const menuButton = document.querySelector(".menu-toggle");
+const mobileNav = document.getElementById("mobile-nav");
 if (menuButton && mobileNav) {
-  const closeMenu = (restoreFocus = false) => {
+  const closeMenu = (focus = false) => {
     menuButton.setAttribute("aria-expanded", "false");
     menuButton.setAttribute("aria-label", "Открыть меню");
     mobileNav.hidden = true;
-    if (restoreFocus) menuButton.focus();
+    if (focus) menuButton.focus();
   };
   menuButton.addEventListener("click", () => {
     const open = menuButton.getAttribute("aria-expanded") !== "true";
@@ -18,113 +19,109 @@ if (menuButton && mobileNav) {
     menuButton.setAttribute("aria-label", open ? "Закрыть меню" : "Открыть меню");
     mobileNav.hidden = !open;
   });
-  mobileNav.addEventListener("click", (event) => {
+  mobileNav.addEventListener("click", event => {
     if (event.target instanceof Element && event.target.closest("a")) closeMenu();
   });
-  document.addEventListener("keydown", (event) => {
+  document.addEventListener("keydown", event => {
     if (event.key === "Escape" && menuButton.getAttribute("aria-expanded") === "true") closeMenu(true);
   });
-  document.addEventListener("pointerdown", (event) => {
-    if (menuButton.getAttribute("aria-expanded") === "true" && event.target instanceof Node &&
-        !menuButton.contains(event.target) && !mobileNav.contains(event.target)) closeMenu();
+  document.addEventListener("pointerdown", event => {
+    if (event.target instanceof Node && !menuButton.contains(event.target) && !mobileNav.contains(event.target)) closeMenu();
   });
-  const query = window.matchMedia("(min-width: 701px)");
-  query.addEventListener?.("change", () => closeMenu());
+  window.matchMedia("(min-width: 761px)").addEventListener?.("change", () => closeMenu());
 }
 
+// Product UI demo. A visual-only state machine, never a VPN connection.
 const demoStage = document.getElementById("demo-stage");
 const demoSwitch = document.getElementById("demo-switch");
-const demoStatus = document.getElementById("demo-status-text");
-const demoTitle = document.getElementById("demo-title");
+const demoLabel = document.getElementById("demo-status-text");
+const demoHeading = document.getElementById("demo-heading");
 const demoDescription = document.getElementById("demo-description");
 const demoSupport = document.getElementById("demo-support");
 const demoLive = document.getElementById("demo-live");
-const demoButtons = [...document.querySelectorAll("[data-demo-state]")];
-const demoStates = Object.freeze({
+const demoControls = [...document.querySelectorAll("[data-demo-state]")];
+const states = Object.freeze({
   off: {
     label: "VPN выключен",
-    title: "Всё под твоим контролем.",
-    description: "Нажми на логотип на экране, чтобы увидеть демонстрацию подключения.",
-    support: "Нажмите, чтобы подключиться",
+    heading: "Ты управляешь подключением.",
+    description: "Нажми на большой логотип в телефоне, чтобы увидеть изменение состояния.",
+    support: "Нажми, чтобы подключиться",
   },
   connecting: {
     label: "Подключение…",
-    title: "Подключение видно сразу.",
-    description: "Демо показывает переход между состояниями — без реального VPN-туннеля.",
-    support: "Визуальная демонстрация подключения",
+    heading: "Каждый этап виден.",
+    description: "Макет показывает переход между состояниями подключения.",
+    support: "Демонстрация подключения",
   },
   on: {
     label: "VPN запущен",
-    title: "Никаких лишних действий.",
-    description: "Интерфейс показывает состояние VPN. На сайте это только макет, а не подключённая сеть.",
+    heading: "Всё на своём месте.",
+    description: "Интерфейс отображает состояние VPN. Это только демо, не подключение к серверу.",
     support: "Состояние показано в демо",
   },
 });
 let demoState = "off";
 let demoTimer = null;
-
-function cancelDemoTimer() {
+function cancelDemo() {
   if (demoTimer !== null) {
     window.clearTimeout(demoTimer);
     demoTimer = null;
   }
 }
 function setDemoState(next) {
-  if (!demoStage || !demoStates[next] || !demoSwitch || !demoStatus || !demoTitle || !demoDescription || !demoSupport) return;
+  if (!states[next] || !demoStage || !demoSwitch || !demoLabel || !demoHeading || !demoDescription || !demoSupport) return;
   demoState = next;
   demoStage.dataset.state = next;
-  demoStatus.textContent = demoStates[next].label;
-  demoTitle.textContent = demoStates[next].title;
-  demoDescription.textContent = demoStates[next].description;
-  demoSupport.textContent = demoStates[next].support;
+  demoLabel.textContent = states[next].label;
+  demoHeading.textContent = states[next].heading;
+  demoDescription.textContent = states[next].description;
+  demoSupport.textContent = states[next].support;
+  demoControls.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.demoState === next)));
   demoSwitch.setAttribute("aria-pressed", String(next === "on"));
-  demoSwitch.setAttribute("aria-label", next === "on" ? "Выключить демонстрацию подключения" : "Показать демонстрацию подключения");
-  demoButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.demoState === next)));
-  if (demoLive) demoLive.textContent = "Демонстрация: " + demoStates[next].label + ". VPN на сайте не подключается.";
+  demoSwitch.setAttribute("aria-label", next === "on" ? "Отключить демонстрацию" : "Показать демонстрацию подключения");
+  if (demoLive) demoLive.textContent = "Демонстрация: " + states[next].label + ". VPN не подключается.";
 }
 if (demoSwitch) {
   demoSwitch.addEventListener("click", () => {
-    cancelDemoTimer();
+    cancelDemo();
     if (demoState !== "off") return setDemoState("off");
     setDemoState("connecting");
-    demoTimer = window.setTimeout(() => {
-      demoTimer = null;
-      setDemoState("on");
-    }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 150 : 950);
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 120 : 900;
+    demoTimer = window.setTimeout(() => { demoTimer = null; setDemoState("on"); }, duration);
   });
-  demoButtons.forEach(button => button.addEventListener("click", () => {
-    cancelDemoTimer();
-    setDemoState(button.dataset.demoState);
-  }));
+  demoControls.forEach(button => {
+    button.addEventListener("click", () => {
+      cancelDemo();
+      setDemoState(button.dataset.demoState);
+    });
+  });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && demoState === "connecting") {
-      cancelDemoTimer();
+      cancelDemo();
       setDemoState("off");
     }
   });
-  window.addEventListener("pagehide", cancelDemoTimer);
+  window.addEventListener("pagehide", cancelDemo);
 }
 
-// Pricing is a static reflection of the documented bot tariff table, not a checkout.
-// Always show the total upfront charge; the bot remains the payment source of truth.
+// A static tariff preview from ByMeVPN_bot/constants.py; the bot controls the real checkout.
 const periodMonths = Object.freeze({1: 1, 3: 4, 6: 8, 12: 15});
 const baseMonthlyRub = Object.freeze({1: 89, 3: 79, 6: 69, 12: 59});
 const deviceSurchargeRub = Object.freeze({2: 0, 5: 20, 10: 40});
-const pricingCards = [...document.querySelectorAll(".plan[data-months]")];
+const cards = [...document.querySelectorAll(".plan[data-months]")];
 const tierButtons = [...document.querySelectorAll("[data-tier]")];
-const rub = new Intl.NumberFormat("ru-RU");
-function selectDeviceTier(tier) {
-  if (!Object.hasOwn(deviceSurchargeRub, tier)) return;
-  const extra = deviceSurchargeRub[tier];
-  tierButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.tier === String(tier))));
-  for (const card of pricingCards) {
-    const months = Number(card.dataset.months);
-    if (!Object.hasOwn(baseMonthlyRub, months)) continue;
-    const monthly = baseMonthlyRub[months] + extra;
-    const total = monthly * periodMonths[months];
-    card.querySelector(".plan-price").textContent = rub.format(monthly);
-    card.querySelector(".plan-total strong").textContent = rub.format(total) + " ₽";
+const formatRub = new Intl.NumberFormat("ru-RU");
+function setTier(devices) {
+  if (!Object.hasOwn(deviceSurchargeRub, devices)) return;
+  tierButtons.forEach(button => button.setAttribute("aria-pressed", String(Number(button.dataset.tier) === devices)));
+  for (const card of cards) {
+    const term = Number(card.dataset.months);
+    if (!Object.hasOwn(baseMonthlyRub, term)) continue;
+    const monthly = baseMonthlyRub[term] + deviceSurchargeRub[devices];
+    const upfront = monthly * periodMonths[term];
+    card.querySelector(".plan-price").textContent = formatRub.format(monthly);
+    card.querySelector(".plan-total strong").textContent = formatRub.format(upfront) + " ₽";
   }
 }
-tierButtons.forEach(button => button.addEventListener("click", () => selectDeviceTier(Number(button.dataset.tier))));
-selectDeviceTier(2);
+tierButtons.forEach(button => button.addEventListener("click", () => setTier(Number(button.dataset.tier))));
+setTier(2);

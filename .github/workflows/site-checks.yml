@@ -29,6 +29,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bymevpn-final-website-visuals
-          path: outputs/final-site-20261114/
+          name: bymevpn-bright-redesign-browser-qa
+          path: outputs/bright-20261115/visual/
           if-no-files-found: ignore
