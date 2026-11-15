@@ -41,7 +41,7 @@ class SiteTests(unittest.TestCase):
             self.assertTrue(href and href != "#", a)
             self.assertFalse(href.lower().startswith("javascript:"))
             if href.startswith("#"): self.assertIn(href[1:], self.dom.ids)
-        for anchor in ("main", "app", "servers", "account", "settings", "prices", "how", "friends", "faq"):
+        for anchor in ("main", "product", "servers", "subscription", "pricing", "how", "friends", "questions"):
             self.assertIn(anchor, self.dom.ids)
         self.assertGreaterEqual(len(self.dom.sections), 10)
 
