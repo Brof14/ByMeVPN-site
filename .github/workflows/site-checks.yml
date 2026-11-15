@@ -3,7 +3,7 @@ on:
   push:
     branches: [main, 'design/**']
   pull_request:
-    paths: [index.html, styles.css, app.js, 'tests/**', package.json, package-lock.json, '.github/workflows/site-checks.yml']
+    paths: [index.html, styles.css, tokens.css, base.css, app.js, 'tests/**', package.json, package-lock.json, '.github/workflows/site-checks.yml']
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -29,6 +29,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bymevpn-cash-inspired-final-visuals
-          path: outputs/cash-app-rebuild-20261115/visual/
+          name: bymevpn-redesign-visuals
+          path: outputs/bymevpn-site-redesign/visual/
           if-no-files-found: ignore

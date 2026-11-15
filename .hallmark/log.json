@@ -1,0 +1,29 @@
+[
+ {
+  "sections": [
+   "hero product screenshot",
+   "screen gallery",
+   "prepaid prices",
+   "setup steps",
+   "referral",
+   "FAQ",
+   "closing action",
+   "footer"
+  ],
+  "nav": "compact wordmark and direct links",
+  "depth": "full",
+  "prompt": "Fully redesign the Russian ByMeVPN marketing website as a product-first page that leads to the Telegram bot, with truthful product and tariff information.",
+  "fingerprint": "bymevpn-site-redesign-2026-11-15",
+  "axes": "light/grotesk-sans/chromatic-green",
+  "entry": "Telegram trial",
+  "footer": "direct support and section links",
+  "signature": "ByMeVPN dark interface set against warm paper",
+  "mode": "redesign",
+  "hero": "Stage with a real bot action",
+  "photos": [],
+  "theme": "Dose",
+  "shape": "Workbench",
+  "imagery": "local ByMeVPN Android V2 design mockups",
+  "date": "2026-11-15"
+ }
+]

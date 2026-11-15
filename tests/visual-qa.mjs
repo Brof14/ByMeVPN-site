@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const output = resolve(root, "outputs/cash-app-rebuild-20261115/visual");
+const output = resolve(root, "outputs/bymevpn-site-redesign/visual");
 const mime = {".html":"text/html",".css":"text/css",".js":"text/javascript",".png":"image/png",".webp":"image/webp",".woff2":"font/woff2",".svg":"image/svg+xml"};
 const server = createServer((request, response) => {
   const url = new URL(request.url, "http://127.0.0.1");
@@ -45,17 +45,17 @@ try {
       const css = query => getComputedStyle(document.querySelector(query));
       return {
         headerPosition:css(".site-header").position,
-        titleSize:parseFloat(css(".hero-intro h1").fontSize),
-        stageTop:box(".hero-display").top,
-        stageHeight:box(".hero-display").height,
-        imageTop:box(".preview-phone").top,
-        imageWidth:box(".preview-phone").width,
-        primaryHeight:box(".hero-intro-side .button").height,
+        titleSize:parseFloat(css(".hero h1").fontSize),
+        stageTop:box(".hero-product").top,
+        stageHeight:box(".hero-product").height,
+        imageTop:box(".product-screen img").top,
+        imageWidth:box(".product-screen img").width,
+        primaryHeight:box(".hero-copy .button").height,
         stylesheet:[...document.styleSheets].some(sheet => sheet.href?.includes("styles.css") && (() => {try{return sheet.cssRules.length>90;}catch{return false;}})()),
-        imageReady:document.querySelector("#demo-screen").naturalWidth>0,
+        imageReady:document.querySelector(".product-screen img").naturalWidth>0,
       };
     });
-    assert.equal(hero.headerPosition,"sticky",v.name+": header missing");
+    assert.equal(hero.headerPosition,"relative",v.name+": header position");
     assert.ok(hero.stylesheet,v.name+": styles not loaded");
     assert.ok(hero.imageReady,v.name+": hero screenshot missing");
     assert.ok(hero.titleSize>=40,v.name+": title too small");
@@ -64,13 +64,12 @@ try {
     assert.ok(hero.imageTop>=hero.stageTop-25,v.name+": product top cut off");
     assert.ok(hero.imageWidth>=200,v.name+": product image too small");
     assert.ok(hero.primaryHeight>=44,v.name+": CTA target too small");
-    assert.equal(await page.locator(".hero-intro-side .button").getAttribute("href"),"https://t.me/ByMeVPN_bot?start=src_website");
+    assert.equal(await page.locator(".hero-copy .button").getAttribute("href"),"https://t.me/ByMeVPN_bot?start=src_website");
     await page.screenshot({path:resolve(folder,"hero.png")});
 
     const sections = [
-      ["servers","#servers"],["account","#account"],["pricing","#pricing"],
-      ["devices","#devices"],["how","#how"],["referral",".referral-section"],
-      ["faq","#questions"],["closing",".closing"]
+      ["screens",".app-section"],["pricing","#pricing"],["how","#how"],
+      ["referral",".referral-section"],["faq","#questions"],["closing",".closing"]
     ];
     for(const [name,selector] of sections){
       const element = page.locator(selector);
@@ -81,8 +80,8 @@ try {
       await page.screenshot({path:resolve(folder,name+".png")});
     }
 
-    // Each gallery state must show a real, locally-sourced V2 design screenshot.
-    for(const [name,filename] of [["servers","servers"],["account","account"],["settings","settings"],["pricing","pricing"],["on","home-on"]]){
+    // Gallery states show locally sourced V2 design mockups, not a live tunnel.
+    for(const [name,filename] of [["servers","servers"],["account","account"],["settings","settings"],["pricing","pricing"],["off","home-off"]]){
       const button=page.locator('.display-tabs button[data-screen="'+name+'"]');
       await button.click();
       assert.equal(await button.getAttribute("aria-pressed"),"true");
@@ -99,7 +98,7 @@ try {
     }
     await page.locator('[data-screen="pricing"]').click();
     await page.screenshot({path:resolve(folder,"gallery-pricing.png")});
-    await page.locator('[data-screen="on"]').click();
+    await page.locator('[data-screen="off"]').click();
 
     // Full prepaid totals, including "extra" months, need accurate arithmetic.
     const card=page.locator('.plan[data-months="3"]');
