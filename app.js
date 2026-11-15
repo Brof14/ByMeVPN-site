@@ -1,6 +1,6 @@
 "use strict";
 
-// No tracking, payment, account or VPN network operations are performed on this website.
+// Marketing-site interactions only. No VPN, account, payment or tracking requests.
 const year = document.getElementById("year");
 if (year) year.textContent = String(new Date().getFullYear());
 
@@ -14,10 +14,10 @@ if (menuButton && mobileNav) {
     if (focus) menuButton.focus();
   };
   menuButton.addEventListener("click", () => {
-    const open = menuButton.getAttribute("aria-expanded") !== "true";
-    menuButton.setAttribute("aria-expanded", String(open));
-    menuButton.setAttribute("aria-label", open ? "Закрыть меню" : "Открыть меню");
-    mobileNav.hidden = !open;
+    const opened = menuButton.getAttribute("aria-expanded") !== "true";
+    menuButton.setAttribute("aria-expanded", String(opened));
+    menuButton.setAttribute("aria-label", opened ? "Закрыть меню" : "Открыть меню");
+    mobileNav.hidden = !opened;
   });
   mobileNav.addEventListener("click", event => {
     if (event.target instanceof Element && event.target.closest("a")) closeMenu();
@@ -31,97 +31,86 @@ if (menuButton && mobileNav) {
   window.matchMedia("(min-width: 761px)").addEventListener?.("change", () => closeMenu());
 }
 
-// Product UI demo. A visual-only state machine, never a VPN connection.
-const demoStage = document.getElementById("demo-stage");
-const demoSwitch = document.getElementById("demo-switch");
-const demoLabel = document.getElementById("demo-status-text");
-const demoHeading = document.getElementById("demo-heading");
-const demoDescription = document.getElementById("demo-description");
-const demoSupport = document.getElementById("demo-support");
-const demoLive = document.getElementById("demo-live");
-const demoControls = [...document.querySelectorAll("[data-demo-state]")];
-const states = Object.freeze({
+// Source material: 2026 app V2 design PNGs committed under assets/app.
+// Screens are *design references*; their data are example values, never account state.
+const screens = Object.freeze({
   off: {
-    label: "VPN выключен",
-    heading: "Ты управляешь подключением.",
-    description: "Нажми на большой логотип в телефоне, чтобы увидеть изменение состояния.",
-    support: "Нажми, чтобы подключиться",
-  },
-  connecting: {
-    label: "Подключение…",
-    heading: "Каждый этап виден.",
-    description: "Макет показывает переход между состояниями подключения.",
-    support: "Демонстрация подключения",
+    path: "assets/app/home-off.png",
+    title: "VPN выключен",
+    alt: "Дизайн-макет главного экрана ByMeVPN с выключенным VPN",
+    summary: "Кнопка подключения, текущий статус и информация о подписке — на одном экране.",
   },
   on: {
-    label: "VPN запущен",
-    heading: "Всё на своём месте.",
-    description: "Интерфейс отображает состояние VPN. Это только демо, не подключение к серверу.",
-    support: "Состояние показано в демо",
+    path: "assets/app/home-on.png",
+    title: "VPN подключён",
+    alt: "Дизайн-макет главного экрана ByMeVPN в состоянии подключённого VPN",
+    summary: "Пример того, как меняются кольцо и текст статуса при подключении. VPN на сайте не запускается.",
+  },
+  servers: {
+    path: "assets/app/servers.png",
+    title: "Выбор сервера",
+    alt: "Дизайн-макет списка серверов ByMeVPN с автоматическим выбором",
+    summary: "Автоматический выбор и список серверов. На изображении приведены демонстрационные узлы.",
+  },
+  account: {
+    path: "assets/app/account.png",
+    title: "Аккаунт",
+    alt: "Дизайн-макет аккаунта ByMeVPN со сроком подписки и устройствами",
+    summary: "Представление срока, устройств и продления. Числа на макете не связаны с реальным аккаунтом.",
+  },
+  settings: {
+    path: "assets/app/settings.png",
+    title: "Настройки",
+    alt: "Дизайн-макет настроек ByMeVPN",
+    summary: "Предусмотренные в дизайне настройки. Их фактическая доступность зависит от версии приложения.",
   },
 });
-let demoState = "off";
-let demoTimer = null;
-function cancelDemo() {
-  if (demoTimer !== null) {
-    window.clearTimeout(demoTimer);
-    demoTimer = null;
-  }
-}
-function setDemoState(next) {
-  if (!states[next] || !demoStage || !demoSwitch || !demoLabel || !demoHeading || !demoDescription || !demoSupport) return;
-  demoState = next;
-  demoStage.dataset.state = next;
-  demoLabel.textContent = states[next].label;
-  demoHeading.textContent = states[next].heading;
-  demoDescription.textContent = states[next].description;
-  demoSupport.textContent = states[next].support;
-  demoControls.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.demoState === next)));
-  demoSwitch.setAttribute("aria-pressed", String(next === "on"));
-  demoSwitch.setAttribute("aria-label", next === "on" ? "Отключить демонстрацию" : "Показать демонстрацию подключения");
-  if (demoLive) demoLive.textContent = "Демонстрация: " + states[next].label + ". VPN не подключается.";
-}
-if (demoSwitch) {
-  demoSwitch.addEventListener("click", () => {
-    cancelDemo();
-    if (demoState !== "off") return setDemoState("off");
-    setDemoState("connecting");
-    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 120 : 900;
-    demoTimer = window.setTimeout(() => { demoTimer = null; setDemoState("on"); }, duration);
-  });
-  demoControls.forEach(button => {
-    button.addEventListener("click", () => {
-      cancelDemo();
-      setDemoState(button.dataset.demoState);
-    });
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && demoState === "connecting") {
-      cancelDemo();
-      setDemoState("off");
-    }
-  });
-  window.addEventListener("pagehide", cancelDemo);
-}
 
-// A static tariff preview from ByMeVPN_bot/constants.py; the bot controls the real checkout.
+const stage = document.getElementById("demo-stage");
+const image = document.getElementById("demo-screen");
+const description = document.getElementById("screen-description");
+const live = document.getElementById("demo-live");
+const buttons = [...document.querySelectorAll("[data-screen]")];
+const preloaded = new Set();
+function showScreen(name) {
+  const item = screens[name];
+  if (!item || !image || !stage || !description) return;
+  image.src = item.path;
+  image.alt = item.alt;
+  stage.dataset.screen = name;
+  description.textContent = item.summary;
+  buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === name)));
+  if (live) live.textContent = "Показан дизайн-макет: " + item.title + ". Демонстрационные данные.";
+}
+buttons.forEach(button => {
+  button.addEventListener("click", () => showScreen(button.dataset.screen));
+  button.addEventListener("mouseenter", () => {
+    const item = screens[button.dataset.screen];
+    if (item && !preloaded.has(item.path)) {
+      const preload = new Image();
+      preload.src = item.path;
+      preloaded.add(item.path);
+    }
+  }, { once: true });
+});
+
+// Static presentation of documented bot price constants. Actual checkout is in the bot.
 const periodMonths = Object.freeze({1: 1, 3: 4, 6: 8, 12: 15});
 const baseMonthlyRub = Object.freeze({1: 89, 3: 79, 6: 69, 12: 59});
 const deviceSurchargeRub = Object.freeze({2: 0, 5: 20, 10: 40});
-const cards = [...document.querySelectorAll(".plan[data-months]")];
-const tierButtons = [...document.querySelectorAll("[data-tier]")];
-const formatRub = new Intl.NumberFormat("ru-RU");
+const plans = [...document.querySelectorAll(".plan[data-months]")];
+const tiers = [...document.querySelectorAll("[data-tier]")];
+const format = new Intl.NumberFormat("ru-RU");
 function setTier(devices) {
   if (!Object.hasOwn(deviceSurchargeRub, devices)) return;
-  tierButtons.forEach(button => button.setAttribute("aria-pressed", String(Number(button.dataset.tier) === devices)));
-  for (const card of cards) {
-    const term = Number(card.dataset.months);
-    if (!Object.hasOwn(baseMonthlyRub, term)) continue;
-    const monthly = baseMonthlyRub[term] + deviceSurchargeRub[devices];
-    const upfront = monthly * periodMonths[term];
-    card.querySelector(".plan-price").textContent = formatRub.format(monthly);
-    card.querySelector(".plan-total strong").textContent = formatRub.format(upfront) + " ₽";
+  tiers.forEach(button => button.setAttribute("aria-pressed", String(Number(button.dataset.tier) === devices)));
+  for (const card of plans) {
+    const months = Number(card.dataset.months);
+    if (!Object.hasOwn(baseMonthlyRub, months)) continue;
+    const monthly = baseMonthlyRub[months] + deviceSurchargeRub[devices];
+    card.querySelector(".plan-price").textContent = format.format(monthly);
+    card.querySelector(".plan-total strong").textContent = format.format(monthly * periodMonths[months]) + " ₽";
   }
 }
-tierButtons.forEach(button => button.addEventListener("click", () => setTier(Number(button.dataset.tier))));
+tiers.forEach(button => button.addEventListener("click", () => setTier(Number(button.dataset.tier))));
 setTier(2);
