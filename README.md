@@ -1,48 +1,44 @@
-# ByMeVPN Website
+# ByMeVPN — Product website
 
-Public website for ByMeVPN. A product-led, mobile-first marketing experience built as **static HTML, CSS and JavaScript**. No web login, payments or VPN tunnel are implemented.
+An original, app-led, editorial VPN site using the **actual ByMeVPN Android V2 design reference screens**, not a fabricated UI. Core design direction: the product-dominant staging and typographic discipline seen on [Cash App](https://cash.app/). Cash App logos, photographs, screen assets and copy are **not** reused.
 
-## Design direction
+## Visual identity
 
-The main reference is [Cash App](https://cash.app/): a single saturated brand field, oversized type, large actual product previews, distinct scroll chapters and one main action per section. ByMeVPN uses its **own** mint / blue shield palette and the UI of its Android app, not Cash App's colors, assets or trademarks.
+- Palette from Android `AppColors`: mint **#69D3BC**, deep canvas **#090F1D**, surface **#121C2B**; sky/electric blue is secondary.
+- A light editorial intro followed by one full-bleed dark product theater with the oversized app image.
+- Distinct chapters: mint app gallery, blue server composition, graphite account chapter, compact white editorial pricing table, blue onboarding, mint referral billboard.
+- No random feature cards, floating stats, testimonials, fabricated review scores or technical guarantees.
 
-The product preview images are imported from:
-`Brof14/ByMeVPN-app/public/assets/aistudio/`
+## Source attribution and limitations
 
-- `04_home_off_86729ec7.png` → `assets/app/home-off.png`
-- `05_home_on_d4ef8e5c.png` → `assets/app/home-on.png`
-- `06_servers_4c67c8c0.png` → `assets/app/servers.png`
-- `08_pricing_8fe863b0.png` → `assets/app/pricing.png`
-- `10_account_active_66413e96.png` → `assets/app/account.png`
-- `11_settings_1428e5bc.png` → `assets/app/settings.png`
+Screens in `assets/app/` are copied from `Brof14/ByMeVPN-app/public/assets/aistudio/` and are **V2 design mockups**, not externally validated captures of a released build. Values printed inside the screenshots (such as connected status, server location, remaining days and auto-renewal) are example content. The site repeatedly discloses this and does not establish a VPN connection.
 
-**These are official repository design concepts, not independently verified production screenshots.** They may include example connection statuses, servers, subscription dates, auto-renew statuses and pricing. The site marks these values as illustrative. The marketing website's screen selector changes local images only; it does not connect a VPN or access user accounts.
+The Android repository README explicitly says production signing, API, payment and tunnel lifecycle checks are still in development. Consequently this marketing site directs visitors to the official bot for the currently supported connection flow rather than offering an unverifiable APK. Native-app screenshots are a concept preview, not a download promise.
 
-## Confirmed product data
+Bot constants inspected on 2026-11-15:
+- Free trial 3 days; first bot-start referral bonus 15 days.
+- 2/5/10 device limits.
+- Monthly equivalents for 2 devices: 89 / 79 / 69 / 59 RUB for 1 / 3+1 / 6+2 / 12+3-month plans.
+- +20 RUB per month for 5 devices; +40 RUB per month for 10.
+- All displayed months are paid; upfront totals (including extra months) appear in the pricing table.
+- The bot is the authority for real-time eligibility, renewals and checkout quotes.
 
-The price selector is a static copy of `Brof14/ByMeVPN_bot/constants.py` as inspected on 2026-11-15:
+The primary action throughout the site is `https://t.me/ByMeVPN_bot?start=src_website`.
 
-- Trial period: 3 days, with no card according to the documented bot experience.
-- Invitation: +15 days when a referred new user starts the bot.
-- Device limits: 2 / 5 / 10.
-- Per-month base equivalents: 89 / 79 / 69 / 59 RUB for the 1 / 3+1 / 6+2 / 12+3 period names.
-- Extra per included month: +20 RUB for 5 devices, +40 RUB for 10.
-- Actual paid access: 1 / 4 / 8 / 15 months. All included months are charged and **the entire total is shown**.
+## Technical stack
 
-Rates and eligibility are not queried from a live payment API. The official bot is the source of truth before purchase. The public signed Android app is not independently verified as released; users are directed to compatible client instructions from the bot.
+Plain static HTML, CSS and JavaScript. No libraries for runtime UI, remote font or analytics tracker, no account credentials, cookies, fake checkout or VPN networking in the page.
 
-## Files
+- `index.html` — semantic product story, local screenshots and all external URLs.
+- `styles.css` — editorial layout with device-specific breakpoints (320–1920 px) and reduced-motion fallback.
+- `app.js` — screen selector, mobile menu and transparent billing calculator.
+- `tests/test_site.py` — semantic/claims/accessibility/source-data contracts.
+- `tests/visual-qa.mjs` — Chromium screenshots, interaction and responsiveness QA.
+- `docs/AUDIT_2026-11-15_THEATER.md` — rationale and verification scope.
 
-- `index.html`: semantic marketing content and accurate product showcases.
-- `styles.css`: mint + graphite app identity, responsive layouts, clear focus/reduced motion.
-- `app.js`: mobile menu, local screenshot selector and transparent tariff calculator.
-- `tests/test_site.py`: claims, accessibility, asset and pricing contracts.
-- `tests/visual-qa.mjs`: Chromium verification at 320 / 390 / 768 / 1440 / 1920 px.
-- `docs/AUDIT_2026-11-15_PRODUCT.md`: full audit, reference comparison, acceptance limits.
+## Verify
 
-## Run QA
-
-```bash
+```sh
 python3 -m unittest discover -s tests -v
 node --check app.js
 npm ci
@@ -50,4 +46,4 @@ npx playwright-core install chromium
 npm run test:browser
 ```
 
-CI uploads browser screenshots and a JSON QA report for each viewport. A passing test suite confirms the checked frontend contracts, not actual connection availability, privacy claims, conversion outcomes or live payment processing.
+Screenshot artifacts are attached to the **Site checks** GitHub Actions run. A passing suite proves only the tested frontend interactions; independent production-domain, Lighthouse/Core Web Vitals, screen-reader, app distribution, real VPN and billing testing remain separate.
