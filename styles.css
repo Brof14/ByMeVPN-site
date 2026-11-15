@@ -58,7 +58,7 @@ img{max-width:100%;height:auto;display:block}
 .display-copy{z-index:4;position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:37px 20px 36px clamp(28px,4vw,58px)}
 .display-eyebrow{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.15em;font-weight:710;color:#a1c9c0;margin-bottom:65px}
 .display-indicator{display:inline-block;width:8px;height:8px;background:#56e5b8;border-radius:50%;box-shadow:0 0 0 5px rgba(79,222,179,.08)}
-.display-copy h2{font-size:clamp(34px,4.2vw,60px);line-height:1.1;font-weight:580;letter-spacing:-.075em;margin:0 0 25px}
+.display-copy h2{font-size:clamp(34px,4.2vw,60px);line-height:1.1;font-weight:600;letter-spacing:-.075em;margin:0 0 25px}
 .display-tabs{display:flex;flex-wrap:wrap;gap:8px;max-width:475px}
 .display-tabs button{min-height:39px;border-radius:99px;border:1px solid #4e625e;background:transparent;padding:8px 13px;color:#b9cbc6;font-size:12px;font-weight:640;transition:background .17s,color .17s}
 .display-tabs button:hover{border-color:#93e5ca;color:#fff}
@@ -250,7 +250,7 @@ img{max-width:100%;height:auto;display:block}
  .hero-display{display:flex;flex-direction:column;height:680px}
  .display-copy{padding:27px 22px 8px}
  .display-eyebrow{font-size:10px;margin-bottom:10px}
- .display-copy h2{display:none}
+ .display-copy h2{display:block;font-size:28px;margin:6px 0 15px;line-height:1.12}
  .display-tabs{max-width:none;gap:5px;flex-wrap:wrap;overflow:visible;width:100%;padding:3px 0 8px;scrollbar-width:none}
  .display-tabs::-webkit-scrollbar{display:none}
  .display-tabs button{min-height:38px;flex:0 0 auto;white-space:nowrap}
@@ -386,3 +386,7 @@ img{max-width:100%;height:auto;display:block}
 /* Distinguish truthful demo disclosure from the product artwork. */
 .hero-disclaimer{padding:13px 0 9px;font-size:11px;line-height:1.4;color:#587169}
 @media(max-width:470px){.hero-disclaimer{font-size:10px;padding:11px 0 6px}}
+
+/* A subtle, accessible hand-off between project UI screenshots. */
+#demo-screen.preview-swap{animation:preview-swap-in .28s ease-out both}
+@keyframes preview-swap-in{from{opacity:.2;filter:blur(4px)}to{opacity:1;filter:blur(0)}}
