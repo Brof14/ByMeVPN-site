@@ -68,6 +68,7 @@ const screens = Object.freeze({
 const stage = document.getElementById("demo-stage");
 const preview = document.getElementById("demo-screen");
 const screenDesc = document.getElementById("screen-description");
+const screenTitle = document.getElementById("screen-title");
 const live = document.getElementById("demo-live");
 const selectors = [...document.querySelectorAll(".display-tabs button[data-screen]")];
 function selectScreen(key) {
@@ -77,6 +78,10 @@ function selectScreen(key) {
   preview.src = next.src;
   preview.alt = next.alt;
   screenDesc.textContent = next.description;
+  if (screenTitle) screenTitle.textContent = next.title + ".";
+  preview.classList.remove("preview-swap");
+  void preview.offsetWidth;
+  preview.classList.add("preview-swap");
   selectors.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === key)));
   if (live) live.textContent = "Показан дизайн-макет экрана: " + next.title + ". Данные примерные, VPN не подключается.";
 }
