@@ -88,6 +88,7 @@ try {
       assert.equal(await button.getAttribute("aria-pressed"),"true");
       assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"),name);
       assert.equal(await page.locator("#demo-screen").getAttribute("src"),"assets/app/"+filename+".png");
+      assert.ok((await page.locator("#screen-title").innerText()).length>3,v.name+": missing gallery title");
       await page.locator("#demo-screen").evaluate(async image=>{
         if(!image.complete) await new Promise(resolveImage=>{
           image.addEventListener("load",resolveImage,{once:true});
@@ -96,7 +97,9 @@ try {
       });
       assert.ok(await page.locator("#demo-screen").evaluate(image=>image.naturalWidth>0),v.name+": missing image "+name);
     }
+    await page.locator('[data-screen="pricing"]').click();
     await page.screenshot({path:resolve(folder,"gallery-pricing.png")});
+    await page.locator('[data-screen="on"]').click();
 
     // Full prepaid totals, including "extra" months, need accurate arithmetic.
     const card=page.locator('.plan[data-months="3"]');
