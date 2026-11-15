@@ -76,7 +76,7 @@ try {
     }
 
     // Gallery uses genuine design PNGs and changes the real media, not a fake VPN status.
-    for (const screen of ["on", "servers", "account", "settings", "off"]) {
+    for (const screen of ["on", "servers", "account", "settings", "pricing", "off"]) {
       await page.locator('.showcase-controls button[data-screen="' + screen + '"]').click();
       assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"), screen);
       assert.equal(await page.locator('.showcase-controls button[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
