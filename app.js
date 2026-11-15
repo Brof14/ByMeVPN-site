@@ -76,7 +76,7 @@ const stage = document.getElementById("demo-stage");
 const image = document.getElementById("demo-screen");
 const description = document.getElementById("screen-description");
 const live = document.getElementById("demo-live");
-const buttons = [...document.querySelectorAll(".showcase-controls button[data-screen]")];
+const buttons = [...document.querySelectorAll(".screen-selector button[data-screen]")];
 const preloaded = new Set();
 function showScreen(name) {
   const item = screens[name];
@@ -84,6 +84,9 @@ function showScreen(name) {
   image.src = item.path;
   image.alt = item.alt;
   stage.dataset.screen = name;
+  image.classList.remove("screen-refresh");
+  void image.offsetWidth;
+  image.classList.add("screen-refresh");
   description.textContent = item.summary;
   buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === name)));
   if (live) live.textContent = "Показан дизайн-макет: " + item.title + ". Демонстрационные данные.";
