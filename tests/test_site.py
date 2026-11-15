@@ -70,7 +70,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn("дизайн-макеты", HTML.lower())
         self.assertIn("демонстрационные данные", HTML.lower())
         self.assertIn("Публичный подписанный релиз не подтверждён", HTML)
-        self.assertIn("VPN на сайте не подключается", JS)
+        self.assertIn("VPN на сайте не запускается", JS)
         self.assertIn("доступность отдельных переключателей зависит", HTML)
         self.assertIn("id=\"demo-screen\"", HTML)
         self.assertIn("id=\"demo-live\"", HTML)
