@@ -60,6 +60,8 @@ try {
     assert.ok(layout.phoneWidth >= 180 && layout.phoneHeight >= 400, name + ": product mockup absent");
     assert.equal(await page.locator(".hero-aside .pill-button").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
     assert.ok(layout.heroBackground !== "rgba(0, 0, 0, 0)", name + ": mint canvas missing");
+    const heroCrop = await page.evaluate(() => ({ stageTop: document.querySelector(".hero-canvas").getBoundingClientRect().top, phoneTop: document.querySelector(".hero-phone").getBoundingClientRect().top }));
+    assert.ok(heroCrop.phoneTop >= heroCrop.stageTop - 3, name + ": app header is cropped above product stage");
     await page.screenshot({ path: resolve(out, "hero.png") });
 
     const sections = [
@@ -69,7 +71,7 @@ try {
     ];
     for (const [label, selector] of sections) {
       const node = page.locator(selector);
-      await node.scrollIntoViewIfNeeded();
+      await node.evaluate(el => window.scrollTo({ top: scrollY + el.getBoundingClientRect().top - 77, behavior: "instant" }));
       assert.ok(await node.isVisible(), name + " invisible " + selector);
       assert.ok(await node.evaluate(el => el.getBoundingClientRect().height > 120), name + " collapsed " + selector);
       await page.screenshot({ path: resolve(out, label + ".png") });
@@ -126,6 +128,7 @@ try {
     assert.deepEqual(metrics.badImages, [], name + ": broken image");
     assert.deepEqual(errors, [], name + ": JS errors");
     assert.deepEqual(outgoing, [], name + ": unexpected external requests");
+    if (name === "mobile-390" || name === "desktop-1440") await page.screenshot({ path: resolve(out, "full-page.png"), fullPage: true });
     report.viewports.push({ name, width, height, layout, metrics, errors, outgoing });
     await context.close();
     console.log(name + ": visuals, actual design screens, tier calculator, FAQ, keyboard and assets passed");
