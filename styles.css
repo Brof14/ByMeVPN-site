@@ -374,7 +374,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #17
  .footer-bottom{flex-direction:column;gap:9px}
 }
 @media(max-width:355px){
- .hero h1{font-size:43px}
+ .hero h1{font-size:46px;letter-spacing:-.09em}
+ .hero h1>span{white-space:normal}
  .hero-canvas{height:431px}
  .hero-phone{width:min(67%,235px)}
  .hero-mono{font-size:29vw}
