@@ -64,6 +64,12 @@ const screens = Object.freeze({
     alt: "Дизайн-макет настроек ByMeVPN",
     summary: "Предусмотренные в дизайне настройки. Их фактическая доступность зависит от версии приложения.",
   },
+  pricing: {
+    path: "assets/app/pricing.png",
+    title: "Тарифы",
+    alt: "Дизайн-макет выбора тарифа внутри приложения ByMeVPN",
+    summary: "Макет выбора срока и количества устройств. Актуальные суммы перед оплатой проверяются в боте.",
+  },
 });
 
 const stage = document.getElementById("demo-stage");
