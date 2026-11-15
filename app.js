@@ -84,6 +84,9 @@ function showScreen(name) {
   image.src = item.path;
   image.alt = item.alt;
   stage.dataset.screen = name;
+  image.classList.remove("screen-refresh");
+  void image.offsetWidth;
+  image.classList.add("screen-refresh");
   description.textContent = item.summary;
   buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === name)));
   if (live) live.textContent = "Показан дизайн-макет: " + item.title + ". Демонстрационные данные.";
