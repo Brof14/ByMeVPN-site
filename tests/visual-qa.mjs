@@ -77,14 +77,14 @@ try {
 
     // Gallery uses genuine design PNGs and changes the real media, not a fake VPN status.
     for (const screen of ["on", "servers", "account", "settings", "off"]) {
-      await page.locator('[data-screen="' + screen + '"]').click();
+      await page.locator('.showcase-controls button[data-screen="' + screen + '"]').click();
       assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"), screen);
-      assert.equal(await page.locator('[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
+      assert.equal(await page.locator('.showcase-controls button[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
       assert.equal(await page.locator("#demo-screen").getAttribute("src"), "assets/app/" + (screen === "off" ? "home-off" : screen === "on" ? "home-on" : screen) + ".png");
       await page.locator("#demo-screen").evaluate(async img => { if (!img.complete) await new Promise(resolveImg => { img.addEventListener("load", resolveImg, { once: true }); img.addEventListener("error", resolveImg, { once: true }); }); });
       assert.ok(await page.locator("#demo-screen").evaluate(img => img.naturalWidth > 0), name + " screenshot failed " + screen);
     }
-    await page.locator('[data-screen="on"]').click();
+    await page.locator('.showcase-controls button[data-screen="on"]').click();
     await page.screenshot({ path: resolve(out, "showcase-on.png") });
 
     // The website should never misstate the cost for the complete 3+1-month term.
