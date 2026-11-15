@@ -34,35 +34,35 @@ if (menu && mobileNav) {
 // These screens are V2 design references from the Android repository;
 // each image contains illustrative, not live, subscription and connection data.
 const screens = Object.freeze({
-  on: {
-    src: "assets/app/home-on.png",
-    title: "Подключение",
-    alt: "Дизайн-макет главного экрана ByMeVPN со статусом подключённого VPN",
-    description: "Крупная кнопка, статус соединения и выбранный сервер."
+  off: {
+    src: "assets/app/home-off.png",
+    title: "Главный экран",
+    alt: "Макет экрана ByMeVPN: VPN выключен, показаны выбор сервера и сведения о подписке",
+    description: "Макет главного экрана с состоянием подключения и выбором сервера."
   },
   servers: {
     src: "assets/app/servers.png",
     title: "Серверы",
     alt: "Дизайн-макет выбора сервера в приложении ByMeVPN",
-    description: "Автоматический выбор или список серверов, доступных по подписке."
+    description: "Макет списка с автоматическим выбором и примерами серверов."
   },
   account: {
     src: "assets/app/account.png",
     title: "Аккаунт",
     alt: "Дизайн-макет аккаунта ByMeVPN со сроком подписки",
-    description: "Срок доступа, лимит устройств и сведения о подписке."
+    description: "Макет аккаунта со сроком доступа и примером лимита устройств."
   },
   settings: {
     src: "assets/app/settings.png",
     title: "Настройки",
     alt: "Дизайн-макет настроек ByMeVPN",
-    description: "Параметры приложения собраны отдельно от главного экрана."
+    description: "Макет параметров приложения."
   },
   pricing: {
     src: "assets/app/pricing.png",
     title: "Тарифы",
     alt: "Дизайн-макет выбора тарифа внутри приложения ByMeVPN",
-    description: "Срок подписки и количество устройств перед покупкой."
+    description: "Макет выбора срока доступа и количества устройств."
   }
 });
 const stage = document.getElementById("demo-stage");
@@ -79,9 +79,6 @@ function selectScreen(key) {
   preview.alt = next.alt;
   screenDesc.textContent = next.description;
   if (screenTitle) screenTitle.textContent = next.title + ".";
-  preview.classList.remove("preview-swap");
-  void preview.offsetWidth;
-  preview.classList.add("preview-swap");
   selectors.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === key)));
   if (live) live.textContent = "Показан дизайн-макет экрана: " + next.title + ". Данные примерные, VPN не подключается.";
 }

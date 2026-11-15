@@ -44,9 +44,9 @@ class SiteTests(unittest.TestCase):
             self.assertFalse(href.lower().startswith("javascript:"))
             if href.startswith("#"):
                 self.assertIn(href[1:], self.dom.ids)
-        for name in ("main", "application", "servers", "account", "pricing", "devices", "how", "questions"):
+        for name in ("main", "application", "pricing", "how", "questions"):
             self.assertIn(name, self.dom.ids)
-        self.assertGreaterEqual(len(self.dom.sections), 9)
+        self.assertGreaterEqual(len(self.dom.sections), 7)
 
     def test_local_assets_and_image_alt(self):
         for img in self.dom.images:
@@ -68,8 +68,8 @@ class SiteTests(unittest.TestCase):
 
     def test_primary_conversion(self):
         self.assertGreaterEqual(HTML.count(BOT), 8)
-        self.assertIn("Начать бесплатно", HTML)
-        self.assertIn("Получить 3 дня бесплатно", HTML)
+        self.assertIn("Попробовать 3 дня", HTML)
+        self.assertIn("Открыть Telegram", HTML)
         self.assertIn(SUPPORT, HTML)
         self.assertNotIn("href=\"downloads/", HTML)
 
@@ -77,10 +77,10 @@ class SiteTests(unittest.TestCase):
         self.assertIn('id="demo-stage"', HTML)
         self.assertIn('id="demo-screen"', HTML)
         self.assertIn('role="status"', HTML)
-        self.assertIn("дизайн-проекта", HTML)
+        self.assertIn("дизайн-макеты Android-приложения V2", HTML)
         self.assertIn("сайт не подключает VPN", HTML)
         self.assertEqual(len([b for b in self.dom.buttons if b.get("data-screen")]), 5)
-        for key, filename in (("on", "home-on"), ("servers", "servers"),
+        for key, filename in (("off", "home-off"), ("servers", "servers"),
                               ("account", "account"), ("settings", "settings"), ("pricing", "pricing")):
             self.assertIn(f'data-screen="{key}"', HTML)
             self.assertIn(f'assets/app/{filename}.png', JS)
@@ -93,8 +93,8 @@ class SiteTests(unittest.TestCase):
             "const deviceSurchargeRub = Object.freeze({2: 0, 5: 20, 10: 40})",
         ):
             self.assertIn(source, JS)
-        self.assertIn("Каждый месяц указанного срока", HTML)
-        self.assertIn("условия автопродления", HTML)
+        self.assertIn("Дополнительные месяцы тоже оплачиваются", HTML)
+        self.assertIn("автопродление", HTML)
         for tier in (2, 5, 10):
             self.assertIn(f'data-tier="{tier}"', HTML)
         for months in (1, 3, 6, 12):
@@ -104,7 +104,7 @@ class SiteTests(unittest.TestCase):
         for phrase in ("100% аноним", "99.99%", "10 Гбит/с", "публичный APK", "no-logs",
                        "10000 пользователей", "гарантированно работает"):
             self.assertNotIn(phrase.lower(), HTML.lower())
-        self.assertIn("Публичный подписанный релиз приложения пока не подтверждён", HTML)
+        self.assertIn("Подписанный публичный релиз приложения пока не подтверждён", HTML)
         for api in ("fetch(", "XMLHttpRequest", "new WebSocket(", "sendBeacon("):
             self.assertNotIn(api, JS)
 

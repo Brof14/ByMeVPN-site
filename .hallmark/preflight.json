@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "scope": "page redesign",
+  "project": "ByMeVPN public marketing site",
+  "preserved": [
+    { "source": "README.md:9", "fact": "The Android screens are design references; a signed public app release and live VPN tunnel are not established." },
+    { "source": "README.md:16-19", "fact": "Three-day trial, 15-day first-referral bonus, device tiers 2/5/10 and the dated price snapshot." },
+    { "source": "docs/AUDIT_2026-11-15_PRODUCT.md:25-31", "fact": "ByMeVPN dark UI, mint accent and limits on Android/release claims." },
+    { "source": "assets/app/*.png", "fact": "Original ByMeVPN Android V2 design images; labelled as mockups wherever shown." },
+    { "source": "app.js", "fact": "Local gallery and tariff math; Telegram bot and support destinations." }
+  ],
+  "introduced": [
+    "Warm paper and dark product panels using local fonts and the existing app identity.",
+    "Short product-first hero, in-place screen gallery, prepaid price calculator, three setup steps and concise FAQ.",
+    "Mobile menu, focus states, reduced-motion handling and responsive price rows."
+  ],
+  "not_added": [
+    "No invented user counts, reviews, independent audits, no-logs statements or network-performance promises.",
+    "No app download claim or UI implying the site has established a VPN connection."
+  ]
+}
