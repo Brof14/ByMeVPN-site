@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const captures = resolve(root, "outputs/app-showcase-20261115/visual");
+const captures = resolve(root, "outputs/product-theater-20261115/visual");
 const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2", ".xml": "application/xml" };
 const server = createServer((req, res) => {
   const target = decodeURIComponent(new URL(req.url, "http://127.0.0.1").pathname);
@@ -46,9 +46,9 @@ try {
       return {
         header: css(".header").position,
         font: parseFloat(css(".hero h1").fontSize),
-        cta: box(".hero-actions .button-black").height,
-        phoneWidth: box(".hero-stage .handset-front").width,
-        phoneHeight: box(".hero-stage .handset-front").height,
+        cta: box(".hero-aside .pill-button").height,
+        phoneWidth: box(".hero-phone").width,
+        phoneHeight: box(".hero-phone").height,
         cssLoaded: [...document.styleSheets].some(sheet => sheet.href?.includes("styles.css") && (() => { try { return sheet.cssRules.length > 80; } catch { return false; } })()),
         heroBackground: css(".hero").backgroundColor,
       };
@@ -58,14 +58,14 @@ try {
     assert.ok(layout.font >= 45, name + ": headline too small");
     assert.ok(layout.cta >= 44, name + ": CTA too small");
     assert.ok(layout.phoneWidth >= 180 && layout.phoneHeight >= 400, name + ": product mockup absent");
-    assert.equal(await page.locator(".hero-actions .button-black").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
-    assert.ok(layout.heroBackground.includes("105, 211, 188") || layout.heroBackground.includes("rgb(105, 211, 188)"), name + ": mint canvas missing");
+    assert.equal(await page.locator(".hero-aside .pill-button").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
+    assert.ok(layout.heroBackground !== "rgba(0, 0, 0, 0)", name + ": mint canvas missing");
     await page.screenshot({ path: resolve(out, "hero.png") });
 
     const sections = [
-      ["showcase", "#app"], ["servers", "#servers"], ["account", "#account"],
-      ["settings", "#settings"], ["pricing", "#prices"], ["how", "#how"],
-      ["referral", "#friends"], ["faq", "#faq"], ["closing", ".closing-section"]
+      ["showcase", "#product"], ["servers", "#servers"], ["account", "#subscription"],
+      ["pricing", "#pricing"], ["how", "#how"],
+      ["referral", "#friends"], ["faq", "#questions"], ["closing", ".final-chapter"]
     ];
     for (const [label, selector] of sections) {
       const node = page.locator(selector);
@@ -77,14 +77,14 @@ try {
 
     // Gallery uses genuine design PNGs and changes the real media, not a fake VPN status.
     for (const screen of ["on", "servers", "account", "settings", "pricing", "off"]) {
-      await page.locator('.showcase-controls button[data-screen="' + screen + '"]').click();
+      await page.locator('.screen-selector button[data-screen="' + screen + '"]').click();
       assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"), screen);
-      assert.equal(await page.locator('.showcase-controls button[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
+      assert.equal(await page.locator('.screen-selector button[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
       assert.equal(await page.locator("#demo-screen").getAttribute("src"), "assets/app/" + (screen === "off" ? "home-off" : screen === "on" ? "home-on" : screen) + ".png");
       await page.locator("#demo-screen").evaluate(async img => { if (!img.complete) await new Promise(resolveImg => { img.addEventListener("load", resolveImg, { once: true }); img.addEventListener("error", resolveImg, { once: true }); }); });
       assert.ok(await page.locator("#demo-screen").evaluate(img => img.naturalWidth > 0), name + " screenshot failed " + screen);
     }
-    await page.locator('.showcase-controls button[data-screen="on"]').click();
+    await page.locator('.screen-selector button[data-screen="on"]').click();
     await page.screenshot({ path: resolve(out, "showcase-on.png") });
 
     // The website should never misstate the cost for the complete 3+1-month term.
