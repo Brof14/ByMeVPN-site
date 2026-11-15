@@ -531,3 +531,9 @@ img{max-width:100%}
  .hero-description,.benefit-card p,.pricing-note,.faq-list details p{color:#27364a}
  .plan,.steps-grid li,.faq-list details{border-color:#7a94b6}
 }
+
+/* Final mobile art direction: keep the central shield unobscured. */
+@media(max-width:490px){
+ .hero-float-left{display:none}
+ .hero-float-right{right:0;bottom:111px}
+}
