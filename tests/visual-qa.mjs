@@ -133,7 +133,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const page = await context.newPage();
   await page.goto(origin);
-  const duration = await page.locator(".handset").first().evaluate(node => getComputedStyle(node).transitionDuration);
+  const duration = await page.locator(".hero-phone").first().evaluate(node => getComputedStyle(node).transitionDuration);
   assert.ok(parseFloat(duration) <= 0.01, "Reduced motion not respected " + duration);
   report.reducedMotion = duration;
   await context.close();
