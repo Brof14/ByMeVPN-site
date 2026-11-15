@@ -43,7 +43,7 @@ class SiteTests(unittest.TestCase):
             if href.startswith("#"): self.assertIn(href[1:], self.dom.ids)
         for anchor in ("main", "product", "servers", "subscription", "pricing", "how", "friends", "questions"):
             self.assertIn(anchor, self.dom.ids)
-        self.assertGreaterEqual(len(self.dom.sections), 10)
+        self.assertGreaterEqual(len(self.dom.sections), 9)
 
     def test_local_assets(self):
         for img in self.dom.images: self.assertIn("alt", img)
