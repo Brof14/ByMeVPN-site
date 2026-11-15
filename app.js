@@ -1,125 +1,108 @@
 "use strict";
 
-// Marketing-site interactions only. No VPN, account, payment or tracking requests.
+// This marketing page has no access to user sessions, VPN tunnels or payment APIs.
 const year = document.getElementById("year");
 if (year) year.textContent = String(new Date().getFullYear());
 
-const menuButton = document.querySelector(".menu-toggle");
+const menu = document.querySelector(".menu-toggle");
 const mobileNav = document.getElementById("mobile-nav");
-if (menuButton && mobileNav) {
-  const closeMenu = (focus = false) => {
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Открыть меню");
+if (menu && mobileNav) {
+  const close = (focus = false) => {
+    menu.setAttribute("aria-expanded", "false");
+    menu.setAttribute("aria-label", "Открыть меню");
     mobileNav.hidden = true;
-    if (focus) menuButton.focus();
+    if (focus) menu.focus();
   };
-  menuButton.addEventListener("click", () => {
-    const opened = menuButton.getAttribute("aria-expanded") !== "true";
-    menuButton.setAttribute("aria-expanded", String(opened));
-    menuButton.setAttribute("aria-label", opened ? "Закрыть меню" : "Открыть меню");
-    mobileNav.hidden = !opened;
+  menu.addEventListener("click", () => {
+    const open = menu.getAttribute("aria-expanded") !== "true";
+    menu.setAttribute("aria-expanded", String(open));
+    menu.setAttribute("aria-label", open ? "Закрыть меню" : "Открыть меню");
+    mobileNav.hidden = !open;
   });
   mobileNav.addEventListener("click", event => {
-    if (event.target instanceof Element && event.target.closest("a")) closeMenu();
+    if (event.target instanceof Element && event.target.closest("a")) close();
   });
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && menuButton.getAttribute("aria-expanded") === "true") closeMenu(true);
+    if (event.key === "Escape" && menu.getAttribute("aria-expanded") === "true") close(true);
   });
   document.addEventListener("pointerdown", event => {
-    if (event.target instanceof Node && !menuButton.contains(event.target) && !mobileNav.contains(event.target)) closeMenu();
+    if (event.target instanceof Node && !menu.contains(event.target) && !mobileNav.contains(event.target)) close();
   });
-  window.matchMedia("(min-width: 761px)").addEventListener?.("change", () => closeMenu());
+  window.matchMedia("(min-width: 741px)").addEventListener?.("change", () => close());
 }
 
-// Source material: 2026 app V2 design PNGs committed under assets/app.
-// Screens are *design references*; their data are example values, never account state.
+// These screens are V2 design references from the Android repository;
+// each image contains illustrative, not live, subscription and connection data.
 const screens = Object.freeze({
-  off: {
-    path: "assets/app/home-off.png",
-    title: "VPN выключен",
-    alt: "Дизайн-макет главного экрана ByMeVPN с выключенным VPN",
-    summary: "Кнопка подключения, текущий статус и информация о подписке — на одном экране.",
-  },
   on: {
-    path: "assets/app/home-on.png",
-    title: "VPN подключён",
-    alt: "Дизайн-макет главного экрана ByMeVPN в состоянии подключённого VPN",
-    summary: "Пример того, как меняются кольцо и текст статуса при подключении. VPN на сайте не запускается.",
+    src: "assets/app/home-on.png",
+    title: "Подключение",
+    alt: "Дизайн-макет главного экрана ByMeVPN со статусом подключённого VPN",
+    description: "Крупная кнопка, статус соединения и выбранный сервер."
   },
   servers: {
-    path: "assets/app/servers.png",
-    title: "Выбор сервера",
-    alt: "Дизайн-макет списка серверов ByMeVPN с автоматическим выбором",
-    summary: "Автоматический выбор и список серверов. На изображении приведены демонстрационные узлы.",
+    src: "assets/app/servers.png",
+    title: "Серверы",
+    alt: "Дизайн-макет выбора сервера в приложении ByMeVPN",
+    description: "Автоматический выбор или список серверов, доступных по подписке."
   },
   account: {
-    path: "assets/app/account.png",
+    src: "assets/app/account.png",
     title: "Аккаунт",
-    alt: "Дизайн-макет аккаунта ByMeVPN со сроком подписки и устройствами",
-    summary: "Представление срока, устройств и продления. Числа на макете не связаны с реальным аккаунтом.",
+    alt: "Дизайн-макет аккаунта ByMeVPN со сроком подписки",
+    description: "Срок доступа, лимит устройств и сведения о подписке."
   },
   settings: {
-    path: "assets/app/settings.png",
+    src: "assets/app/settings.png",
     title: "Настройки",
     alt: "Дизайн-макет настроек ByMeVPN",
-    summary: "Предусмотренные в дизайне настройки. Их фактическая доступность зависит от версии приложения.",
+    description: "Параметры приложения собраны отдельно от главного экрана."
   },
   pricing: {
-    path: "assets/app/pricing.png",
+    src: "assets/app/pricing.png",
     title: "Тарифы",
     alt: "Дизайн-макет выбора тарифа внутри приложения ByMeVPN",
-    summary: "Макет выбора срока и количества устройств. Актуальные суммы перед оплатой проверяются в боте.",
-  },
+    description: "Срок подписки и количество устройств перед покупкой."
+  }
 });
-
 const stage = document.getElementById("demo-stage");
-const image = document.getElementById("demo-screen");
-const description = document.getElementById("screen-description");
+const preview = document.getElementById("demo-screen");
+const screenDesc = document.getElementById("screen-description");
 const live = document.getElementById("demo-live");
-const buttons = [...document.querySelectorAll(".screen-selector button[data-screen]")];
-const preloaded = new Set();
-function showScreen(name) {
-  const item = screens[name];
-  if (!item || !image || !stage || !description) return;
-  image.src = item.path;
-  image.alt = item.alt;
-  stage.dataset.screen = name;
-  image.classList.remove("screen-refresh");
-  void image.offsetWidth;
-  image.classList.add("screen-refresh");
-  description.textContent = item.summary;
-  buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === name)));
-  if (live) live.textContent = "Показан дизайн-макет: " + item.title + ". Демонстрационные данные.";
+const selectors = [...document.querySelectorAll(".display-tabs button[data-screen]")];
+function selectScreen(key) {
+  const next = screens[key];
+  if (!next || !stage || !preview || !screenDesc) return;
+  stage.dataset.screen = key;
+  preview.src = next.src;
+  preview.alt = next.alt;
+  screenDesc.textContent = next.description;
+  selectors.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.screen === key)));
+  if (live) live.textContent = "Показан дизайн-макет экрана: " + next.title + ". Данные примерные, VPN не подключается.";
 }
-buttons.forEach(button => {
-  button.addEventListener("click", () => showScreen(button.dataset.screen));
-  button.addEventListener("mouseenter", () => {
-    const item = screens[button.dataset.screen];
-    if (item && !preloaded.has(item.path)) {
-      const preload = new Image();
-      preload.src = item.path;
-      preloaded.add(item.path);
-    }
-  }, { once: true });
+selectors.forEach(button => {
+  button.addEventListener("click", () => selectScreen(button.dataset.screen));
 });
 
-// Static presentation of documented bot price constants. Actual checkout is in the bot.
+// Snapshot of the source tariff constants, NOT a quote from the live backend.
 const periodMonths = Object.freeze({1: 1, 3: 4, 6: 8, 12: 15});
 const baseMonthlyRub = Object.freeze({1: 89, 3: 79, 6: 69, 12: 59});
 const deviceSurchargeRub = Object.freeze({2: 0, 5: 20, 10: 40});
-const plans = [...document.querySelectorAll(".plan[data-months]")];
-const tiers = [...document.querySelectorAll("[data-tier]")];
-const format = new Intl.NumberFormat("ru-RU");
-function setTier(devices) {
+const planRows = [...document.querySelectorAll(".plan[data-months]")];
+const deviceButtons = [...document.querySelectorAll(".device-options button[data-tier]")];
+const rub = new Intl.NumberFormat("ru-RU");
+function selectTier(devices) {
   if (!Object.hasOwn(deviceSurchargeRub, devices)) return;
-  tiers.forEach(button => button.setAttribute("aria-pressed", String(Number(button.dataset.tier) === devices)));
-  for (const card of plans) {
-    const months = Number(card.dataset.months);
-    if (!Object.hasOwn(baseMonthlyRub, months)) continue;
-    const monthly = baseMonthlyRub[months] + deviceSurchargeRub[devices];
-    card.querySelector(".plan-price").textContent = format.format(monthly);
-    card.querySelector(".plan-total strong").textContent = format.format(monthly * periodMonths[months]) + " ₽";
+  const extra = deviceSurchargeRub[devices];
+  deviceButtons.forEach(button => button.setAttribute("aria-pressed", String(Number(button.dataset.tier) === devices)));
+  for (const row of planRows) {
+    const term = Number(row.dataset.months);
+    if (!Object.hasOwn(baseMonthlyRub, term)) continue;
+    const monthly = baseMonthlyRub[term] + extra;
+    const total = monthly * periodMonths[term];
+    row.querySelector(".plan-price").textContent = rub.format(monthly);
+    row.querySelector(".plan-total strong").textContent = rub.format(total) + " ₽";
   }
 }
-tiers.forEach(button => button.addEventListener("click", () => setTier(Number(button.dataset.tier))));
-setTier(2);
+deviceButtons.forEach(button => button.addEventListener("click", () => selectTier(Number(button.dataset.tier))));
+selectTier(2);
