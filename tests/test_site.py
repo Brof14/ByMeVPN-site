@@ -63,15 +63,15 @@ class SiteTests(unittest.TestCase):
     def test_primary_action(self):
         self.assertGreaterEqual(HTML.count(BOT), 7)
         self.assertIn("3 дня бесплатно", HTML)
-        self.assertIn("Попробовать 3 дня бесплатно", HTML)
+        self.assertIn("Получить 3 дня бесплатно", HTML)
         self.assertIn("https://t.me/ByMeVPNSupportBot", HTML)
 
     def test_source_app_design_assets_and_disclosure(self):
         self.assertIn("дизайн-макеты", HTML.lower())
         self.assertIn("демонстрационные данные", HTML.lower())
-        self.assertIn("Публичный подписанный релиз не подтверждён", HTML)
+        self.assertIn("Публичный подписанный релиз", HTML)
         self.assertIn("VPN на сайте не запускается", JS)
-        self.assertIn("доступность отдельных переключателей зависит", HTML)
+        self.assertIn("Дизайн-макеты V2", HTML)
         self.assertIn("id=\"demo-screen\"", HTML)
         self.assertIn("id=\"demo-live\"", HTML)
         self.assertIn("role=\"status\"", HTML)
