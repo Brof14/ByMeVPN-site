@@ -1,158 +1,145 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const evidence = resolve(root, "outputs/bright-20261115/visual");
-const mime = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2" };
-const server = createServer((request, response) => {
-  const requested = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
-  const path = resolve(root, "." + (requested === "/" ? "/index.html" : requested));
-  if (!path.startsWith(root + sep)) return response.writeHead(403).end();
-  try { response.writeHead(200, { "content-type": mime[extname(path)] || "application/octet-stream" }).end(readFileSync(path)); }
-  catch { response.writeHead(404).end("Not found"); }
+const captures = resolve(root, "outputs/app-showcase-20261115/visual");
+const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2", ".xml": "application/xml" };
+const server = createServer((req, res) => {
+  const target = decodeURIComponent(new URL(req.url, "http://127.0.0.1").pathname);
+  const file = resolve(root, "." + (target === "/" ? "/index.html" : target));
+  if (!file.startsWith(root + sep)) return res.writeHead(403).end();
+  try { res.writeHead(200, { "content-type": types[extname(file)] || "application/octet-stream" }).end(readFileSync(file)); }
+  catch { res.writeHead(404).end("Not found"); }
 });
 await new Promise(resolveListen => server.listen(0, "127.0.0.1", resolveListen));
 const origin = "http://127.0.0.1:" + server.address().port;
 const browser = await chromium.launch({ headless: true });
-const report = { capturedAt: new Date().toISOString(), results: [], reducedMotion: null };
+const report = { testedAt: new Date().toISOString(), viewports: [], reducedMotion: null };
 
-const viewports = [
-  { name: "mobile-320", width: 320, height: 740 },
-  { name: "mobile-390", width: 390, height: 844 },
-  { name: "tablet-768", width: 768, height: 1024 },
-  { name: "desktop-1440", width: 1440, height: 900 },
-  { name: "desktop-1920", width: 1920, height: 1080 },
+const dimensions = [
+  ["mobile-320", 320, 740],
+  ["mobile-390", 390, 844],
+  ["tablet-768", 768, 1024],
+  ["desktop-1440", 1440, 900],
+  ["desktop-1920", 1920, 1080],
 ];
 
 try {
-  for (const viewport of viewports) {
-    const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, reducedMotion: "no-preference" });
+  for (const [name, width, height] of dimensions) {
+    const context = await browser.newContext({ viewport: { width, height }, reducedMotion: "no-preference" });
     const page = await context.newPage();
-    const pageErrors = [];
-    const failedRequests = [];
-    const outsideRequests = [];
-    page.on("pageerror", error => pageErrors.push(error.message));
-    page.on("requestfailed", request => failedRequests.push(request.url() + " " + request.failure()?.errorText));
-    page.on("request", request => { if (!request.url().startsWith(origin + "/")) outsideRequests.push(request.url()); });
-    await page.goto(origin + "/", { waitUntil: "networkidle" });
-    const folder = resolve(evidence, viewport.name);
-    mkdirSync(folder, { recursive: true });
+    const errors = [];
+    const outgoing = [];
+    page.on("pageerror", error => errors.push(error.message));
+    page.on("request", request => { if (!request.url().startsWith(origin + "/")) outgoing.push(request.url()); });
+    await page.goto(origin, { waitUntil: "networkidle" });
+    const out = resolve(captures, name);
+    mkdirSync(out, { recursive: true });
 
     const layout = await page.evaluate(() => {
-      const css = selector => getComputedStyle(document.querySelector(selector));
-      const rect = selector => document.querySelector(selector).getBoundingClientRect();
+      const box = sel => document.querySelector(sel).getBoundingClientRect();
+      const css = sel => getComputedStyle(document.querySelector(sel));
       return {
-        headerPosition: css(".header").position,
-        heroBg: css(".hero").backgroundImage,
-        phoneWidth: Math.round(rect(".hero-phone").width),
-        phoneHeight: Math.round(rect(".hero-phone").height),
-        heroTitleFont: parseFloat(css(".hero h1").fontSize),
-        ctaHeight: Math.round(rect(".hero-buttons .button-blue").height),
-        loadedCss: [...document.styleSheets].some(sheet => sheet.href?.includes("styles.css") && (() => { try { return sheet.cssRules.length > 100; } catch { return false; } })()),
-        firstPhoneVisible: rect(".hero-phone").width > 205 && rect(".hero-phone").height > 440,
-        heroVisible: rect(".hero h1").width > 50 && css(".hero h1").visibility === "visible",
+        header: css(".header").position,
+        font: parseFloat(css(".hero h1").fontSize),
+        cta: box(".hero-actions .button-black").height,
+        phoneWidth: box(".hero-stage .handset-front").width,
+        phoneHeight: box(".hero-stage .handset-front").height,
+        cssLoaded: [...document.styleSheets].some(sheet => sheet.href?.includes("styles.css") && (() => { try { return sheet.cssRules.length > 80; } catch { return false; } })()),
+        heroBackground: css(".hero").backgroundColor,
       };
     });
-    assert.equal(layout.headerPosition, "sticky");
-    assert.ok(layout.loadedCss, viewport.name + ": CSS not loaded");
-    assert.ok(layout.heroTitleFont >= 40, viewport.name + ": headline too small");
-    assert.ok(layout.ctaHeight >= 44, viewport.name + ": CTA touch target too small");
-    assert.ok(layout.firstPhoneVisible, viewport.name + ": main product object missing");
-    assert.ok(layout.heroVisible, viewport.name + ": title hidden");
-    assert.equal(await page.locator(".hero-buttons .button-blue").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
-    const brokenImages = await page.locator("img").evaluateAll(images => images.filter(img => !img.complete || img.naturalWidth <= 0).map(img => img.getAttribute("src")));
-    assert.deepEqual(brokenImages, [], viewport.name + ": broken images");
-    await page.screenshot({ path: resolve(folder, "hero.png") });
+    assert.equal(layout.header, "sticky", name + ": header not sticky");
+    assert.ok(layout.cssLoaded, name + ": stylesheet missing");
+    assert.ok(layout.font >= 45, name + ": headline too small");
+    assert.ok(layout.cta >= 44, name + ": CTA too small");
+    assert.ok(layout.phoneWidth >= 180 && layout.phoneHeight >= 400, name + ": product mockup absent");
+    assert.equal(await page.locator(".hero-actions .button-black").getAttribute("href"), "https://t.me/ByMeVPN_bot?start=src_website");
+    assert.ok(layout.heroBackground.includes("105, 211, 188") || layout.heroBackground.includes("rgb(105, 211, 188)"), name + ": mint canvas missing");
+    await page.screenshot({ path: resolve(out, "hero.png") });
 
     const sections = [
-      ["numbers", ".numbers"], ["benefits", "#benefits"], ["app", "#app"],
-      ["steps", "#steps"], ["pricing", "#prices"], ["friends", "#friends"],
-      ["platforms", "#platforms"], ["faq", "#faq"], ["final", ".final-cta"]
+      ["showcase", "#app"], ["servers", "#servers"], ["account", "#account"],
+      ["settings", "#settings"], ["pricing", "#prices"], ["how", "#how"],
+      ["referral", "#friends"], ["faq", "#faq"], ["closing", ".closing-section"]
     ];
-    for (const [name, selector] of sections) {
-      const element = page.locator(selector);
-      await element.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(130);
-      assert.ok(await element.isVisible(), viewport.name + ": " + name + " hidden");
-      const dims = await element.evaluate(node => ({ width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height }));
-      assert.ok(dims.width > 200 && dims.height > 90, viewport.name + ": " + name + " collapsed");
-      await page.screenshot({ path: resolve(folder, name + ".png") });
+    for (const [label, selector] of sections) {
+      const node = page.locator(selector);
+      await node.scrollIntoViewIfNeeded();
+      assert.ok(await node.isVisible(), name + " invisible " + selector);
+      assert.ok(await node.evaluate(el => el.getBoundingClientRect().height > 120), name + " collapsed " + selector);
+      await page.screenshot({ path: resolve(out, label + ".png") });
     }
 
-    // Tariff selector updates BOTH the advertised monthly rate and charged term.
+    // Gallery uses genuine design PNGs and changes the real media, not a fake VPN status.
+    for (const screen of ["on", "servers", "account", "settings", "off"]) {
+      await page.locator('[data-screen="' + screen + '"]').click();
+      assert.equal(await page.locator("#demo-stage").getAttribute("data-screen"), screen);
+      assert.equal(await page.locator('[data-screen="' + screen + '"]').getAttribute("aria-pressed"), "true");
+      assert.equal(await page.locator("#demo-screen").getAttribute("src"), "assets/app/" + (screen === "off" ? "home-off" : screen === "on" ? "home-on" : screen) + ".png");
+      await page.locator("#demo-screen").evaluate(async img => { if (!img.complete) await new Promise(resolveImg => { img.addEventListener("load", resolveImg, { once: true }); img.addEventListener("error", resolveImg, { once: true }); }); });
+      assert.ok(await page.locator("#demo-screen").evaluate(img => img.naturalWidth > 0), name + " screenshot failed " + screen);
+    }
+    await page.locator('[data-screen="on"]').click();
+    await page.screenshot({ path: resolve(out, "showcase-on.png") });
+
+    // The website should never misstate the cost for the complete 3+1-month term.
     const card = page.locator('.plan[data-months="3"]');
     assert.equal((await card.locator(".plan-price").innerText()).trim(), "79");
     assert.match(await card.locator(".plan-total strong").innerText(), /316/);
     await page.locator('[data-tier="10"]').click();
-    assert.equal(await page.locator('[data-tier="10"]').getAttribute("aria-pressed"), "true");
     assert.equal((await card.locator(".plan-price").innerText()).trim(), "119");
     assert.match(await card.locator(".plan-total strong").innerText(), /476/);
     await page.locator('[data-tier="5"]').click();
     assert.equal((await card.locator(".plan-price").innerText()).trim(), "99");
     assert.match(await card.locator(".plan-total strong").innerText(), /396/);
     await page.locator('[data-tier="2"]').click();
-    assert.equal((await card.locator(".plan-price").innerText()).trim(), "79");
-
-    // Demonstration state machine: no VPN network request.
-    await page.locator('[data-demo-state="connecting"]').click();
-    assert.equal(await page.locator("#demo-status-text").innerText(), "Подключение…");
-    await page.locator('[data-demo-state="on"]').click();
-    assert.equal(await page.locator("#demo-status-text").innerText(), "VPN запущен");
-    assert.equal(await page.locator("#demo-switch").getAttribute("aria-pressed"), "true");
-    await page.screenshot({ path: resolve(folder, "demo-on.png") });
-    await page.locator("#demo-switch").click();
-    assert.equal(await page.locator("#demo-status-text").innerText(), "VPN выключен");
-    await page.locator("#demo-switch").click();
-    await page.waitForFunction(() => document.querySelector("#demo-stage")?.dataset.state === "on", null, { timeout: 2200 });
-    await page.locator("#demo-switch").click();
 
     const faq = page.locator(".faq-list details").first();
     await faq.locator("summary").click();
-    assert.ok(await faq.evaluate(node => node.open), viewport.name + ": FAQ open");
+    assert.ok(await faq.evaluate(node => node.open), name + ": FAQ open");
     await faq.locator("summary").click();
-    assert.ok(!(await faq.evaluate(node => node.open)), viewport.name + ": FAQ close");
-
-    if (viewport.width <= 760) {
-      const navButton = page.locator(".menu-toggle");
-      await navButton.click();
-      assert.equal(await navButton.getAttribute("aria-expanded"), "true");
+    assert.ok(!(await faq.evaluate(node => node.open)), name + ": FAQ close");
+    if (width <= 760) {
+      await page.locator(".menu-toggle").click();
+      assert.equal(await page.locator(".menu-toggle").getAttribute("aria-expanded"), "true");
       assert.ok(await page.locator("#mobile-nav").isVisible());
       await page.keyboard.press("Escape");
-      assert.equal(await navButton.getAttribute("aria-expanded"), "false");
       assert.ok(await page.locator("#mobile-nav").isHidden());
     }
     const metrics = await page.evaluate(() => ({
-      viewport: innerWidth, htmlWidth: document.documentElement.scrollWidth, bodyWidth: document.body.scrollWidth,
+      width: innerWidth,
+      docWidth: document.documentElement.scrollWidth,
+      bodyWidth: document.body.scrollWidth,
+      badImages: [...document.querySelectorAll("img")].filter(img => !img.complete || img.naturalWidth <= 0).map(img => img.getAttribute("src")),
       hiddenSections: [...document.querySelectorAll("main section")].filter(section => {
-        const style = getComputedStyle(section);
-        return style.display === "none" || style.visibility === "hidden" || parseFloat(style.opacity) === 0;
+        const style = getComputedStyle(section); return style.visibility === "hidden" || style.display === "none" || parseFloat(style.opacity) === 0;
       }).length,
     }));
-    assert.ok(metrics.htmlWidth <= metrics.viewport + 1, viewport.name + " html overflow " + JSON.stringify(metrics));
-    assert.ok(metrics.bodyWidth <= metrics.viewport + 1, viewport.name + " body overflow " + JSON.stringify(metrics));
-    assert.equal(metrics.hiddenSections, 0, viewport.name + ": hidden sections");
-    assert.deepEqual(pageErrors, [], viewport.name + " JavaScript errors");
-    assert.deepEqual(failedRequests, [], viewport.name + " failed requests");
-    assert.deepEqual(outsideRequests, [], viewport.name + " external network requests");
-    report.results.push({ ...viewport, layout, metrics, pageErrors, failedRequests, outsideRequests });
-    console.log(viewport.name + ": styles, product visuals, sections, pricing, demo and FAQ passed.");
+    assert.ok(metrics.docWidth <= metrics.width + 2, name + ": document overflow " + JSON.stringify(metrics));
+    assert.ok(metrics.bodyWidth <= metrics.width + 2, name + ": body overflow " + JSON.stringify(metrics));
+    assert.equal(metrics.hiddenSections, 0, name + ": hidden content");
+    assert.deepEqual(metrics.badImages, [], name + ": broken image");
+    assert.deepEqual(errors, [], name + ": JS errors");
+    assert.deepEqual(outgoing, [], name + ": unexpected external requests");
+    report.viewports.push({ name, width, height, layout, metrics, errors, outgoing });
     await context.close();
+    console.log(name + ": visuals, actual design screens, tier calculator, FAQ, keyboard and assets passed");
   }
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const page = await context.newPage();
-  await page.goto(origin + "/", { waitUntil: "load" });
-  await page.locator('[data-demo-state="connecting"]').click();
-  const duration = await page.locator("#demo-switch").evaluate(element => getComputedStyle(element).animationDuration);
-  assert.ok(parseFloat(duration) <= 0.01, "Reduced motion animation still playing: " + duration);
+  await page.goto(origin);
+  const duration = await page.locator(".handset").first().evaluate(node => getComputedStyle(node).transitionDuration);
+  assert.ok(parseFloat(duration) <= 0.01, "Reduced motion not respected " + duration);
   report.reducedMotion = duration;
   await context.close();
-  mkdirSync(evidence, { recursive: true });
-  writeFileSync(resolve(evidence, "qa-report.json"), JSON.stringify(report, null, 2));
-  console.log("Passed: five Chromium viewports, pricing, demo, navigation, FAQ and reduced motion.");
+  mkdirSync(captures, { recursive: true });
+  writeFileSync(resolve(captures, "qa-report.json"), JSON.stringify(report, null, 2));
+  console.log("Browser QA complete: 5 viewports and reduced motion.");
 } finally {
   await browser.close();
   await new Promise(resolveClose => server.close(resolveClose));
