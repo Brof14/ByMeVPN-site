@@ -1,6 +1,5 @@
 "use strict";
 
-// This marketing page has no access to user sessions, VPN tunnels or payment APIs.
 const year = document.getElementById("year");
 if (year) year.textContent = String(new Date().getFullYear());
 
@@ -31,8 +30,6 @@ if (menu && mobileNav) {
   window.matchMedia("(min-width: 741px)").addEventListener?.("change", () => close());
 }
 
-// These screens are V2 design references from the Android repository;
-// each image contains illustrative, not live, subscription and connection data.
 const screens = Object.freeze({
   off: {
     src: "assets/app/home-off.png",
@@ -86,7 +83,6 @@ selectors.forEach(button => {
   button.addEventListener("click", () => selectScreen(button.dataset.screen));
 });
 
-// Snapshot of the source tariff constants, NOT a quote from the live backend.
 const periodMonths = Object.freeze({1: 1, 3: 4, 6: 8, 12: 15});
 const baseMonthlyRub = Object.freeze({1: 89, 3: 79, 6: 69, 12: 59});
 const deviceSurchargeRub = Object.freeze({2: 0, 5: 20, 10: 40});
